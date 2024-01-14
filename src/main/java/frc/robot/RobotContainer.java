@@ -9,9 +9,10 @@ import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.RunShooterMotorsCommand;
+import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -37,7 +38,7 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
-  private static ExampleSubsystem exampleSubsystem;
+  public static ShooterSubsystem shooterSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -73,7 +74,7 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
-    exampleSubsystem = new ExampleSubsystem();
+    shooterSubsystem = new ShooterSubsystem();
   }
 
   /**
@@ -92,14 +93,15 @@ public class RobotContainer {
   }
 
   private void setupSmartDashboardCommands() {
-    // SmartDashboard.putData(new xxxxCommand());
+    // ShooterSubsystem
+    SmartDashboard.putData(new RunShooterMotorsCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
-    chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+    chooser.setDefaultOption("No autonomouse", new InstantCommand());
   }
 
   /**
