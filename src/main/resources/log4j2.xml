@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" packages="org.usfirst.frc3620.logger.log4j2">
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout pattern="%-5level %c{1.} %msg%n"/>
+        </Console>
+        <Routing name="LoggingFile">
+            <TimeIsSetFilter/>
+            <Routes pattern="x">
+                <Route>
+                    <File name="MyFile" createOnDemand="true" fileName="log-${date:yyyy_MM_dd HH.mm.ss}.log">
+                        <PatternLayout pattern="%d %c{1.} %p %m%n"/>
+                    </File>
+                </Route>
+            </Routes>
+        </Routing>
+        <DriverStation name="DS">
+            <PatternLayout pattern="%-5level %c{1.} %msg%n"/>
+        </DriverStation>
+        <!--
+        <DriverStation_v2 name="DS2"/>
+        <StringAppender name="SA"/>
+        -->
+    </Appenders>
+    <Loggers>
+        <ASyncRoot level="trace">
+            <AppenderRef ref="DS"/>
+            <AppenderRef ref="LoggingFile"/>
+            <!--
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="SA"/>
+            -->
+        </AsyncRoot>
+    </Loggers>
+</Configuration>
