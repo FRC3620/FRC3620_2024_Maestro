@@ -104,16 +104,6 @@ dependencies {
 test {
     useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
-
-    // FRC3620 ********************************************************************
-    // test wonderfulness
-    filter {
-        // https://stackoverflow.com/a/52879530/17887564
-        setFailOnNoMatchingTests(false)
-
-        // includeTestsMatching 'DummyTest'
-    }
-    // ****************************************************************************
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -198,6 +188,13 @@ tasks.withType(Test) {
         showStandardStreams true
         showExceptions true
     }
+}
+
+tasks.test {
+    // only run tests if explicitly specified
+    // https://discuss.gradle.org/t/dont-run-tests-unless-test-task-specified-on-command-line/33700/4 
+    // run tests with .\gradlew test --tests <test-names>
+    enabled = gradle.startParameter.taskNames.contains("test")
 }
 
 // spotless!

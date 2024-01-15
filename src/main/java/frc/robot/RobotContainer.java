@@ -9,9 +9,9 @@ import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -37,7 +37,7 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
-  private static ExampleSubsystem exampleSubsystem;
+  private static DriveSubsystem driveSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -73,7 +73,7 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
-    exampleSubsystem = new ExampleSubsystem();
+    driveSubsystem = new DriveSubsystem();
   }
 
   /**
@@ -99,7 +99,7 @@ public class RobotContainer {
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
-    chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+    chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
   }
 
   /**
