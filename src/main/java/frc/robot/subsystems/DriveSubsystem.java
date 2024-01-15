@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
-import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -57,7 +57,7 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 	public CANSparkMaxSendable rightFrontAzimuth;
 	public RelativeEncoder rightFrontDriveEncoder;
 	public RelativeEncoder rightFrontAzimuthEncoder;
-	public AnalogInput rightFrontHomeEncoder;
+	public DutyCycleEncoder rightFrontHomeEncoder;
 	public SparkPIDController rightFrontVelPID; // don't assign unless we have the motor controller
 	public SparkPIDController rightFrontPositionPID;
 
@@ -65,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 	public CANSparkMaxSendable leftFrontAzimuth;
 	public RelativeEncoder leftFrontDriveEncoder;
 	public RelativeEncoder leftFrontAzimuthEncoder;
-	public AnalogInput leftFrontHomeEncoder;
+	public DutyCycleEncoder leftFrontHomeEncoder;
 	public SparkPIDController leftFrontVelPID;
 	public SparkPIDController leftFrontPositionPID;
 
@@ -73,7 +73,7 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 	public CANSparkMaxSendable leftBackAzimuth;
 	public RelativeEncoder leftBackDriveEncoder;
 	public RelativeEncoder leftBackAzimuthEncoder;
-	public AnalogInput leftBackHomeEncoder;
+	public DutyCycleEncoder leftBackHomeEncoder;
 	public SparkPIDController leftBackVelPID;
 	public SparkPIDController leftBackPositionPID;
 
@@ -81,7 +81,7 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 	public CANSparkMaxSendable rightBackAzimuth;
 	public RelativeEncoder rightBackDriveEncoder;
 	public RelativeEncoder rightBackAzimuthEncoder;
-	public AnalogInput rightBackHomeEncoder;
+	public DutyCycleEncoder rightBackHomeEncoder;
 	public SparkPIDController rightBackVelPID;
 	public SparkPIDController rightBackPositionPID;
 
@@ -785,12 +785,12 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 	
 	}
 
-	public double getHomeEncoderHeading(AnalogInput encoder){
-		double heading = encoder.getValue();
-		heading = ((heading+1)*360)/4096; // converting heading from tics (ranging from 0 to 4095) to degrees (ranging from 1 to 0)
+	public double getHomeEncoderHeading(DutyCycleEncoder encoder) {
+		double heading = encoder.getDistance();
 		if(heading>180){
 			heading = heading-360;         // converting from 1-360 degrees to -180 to 180 degrees
 		}
+		// TODO check this
 		return -heading;
 	}
 
@@ -1005,7 +1005,7 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 		}
 	}
 
-	AnalogInput getHomeEncoderForCorner(Corner corner) {
+	DutyCycleEncoder getHomeEncoderForCorner(Corner corner) {
 		switch (corner) {
 			case LF:
 				return leftFrontHomeEncoder;
@@ -1052,14 +1052,14 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 
 	public double homeEncoderOffset(Corner corner) {
 		RelativeEncoder motorEncoder = getAzimuthEncoderForCorner(corner);
-		AnalogInput homeEncoder = getHomeEncoderForCorner(corner);
+		DutyCycleEncoder homeEncoder = getHomeEncoderForCorner(corner);
 		double motorEncoderHeading = (motorEncoder == null) ? 0.0 : motorEncoder.getPosition();
 		return SwerveCalculator.calculateAngleDifference(motorEncoderHeading, getHomeEncoderHeading(homeEncoder));
 	}
 
 	public double encoderDifference(Corner corner) {
 		RelativeEncoder motorEncoder = getAzimuthEncoderForCorner(corner);
-		AnalogInput homeEncoder = getHomeEncoderForCorner(corner);
+		DutyCycleEncoder homeEncoder = getHomeEncoderForCorner(corner);
 		double offset = getHomeOffsetForCorner(corner);
 		double motorEncoderPosition = (motorEncoder) == null ? 0 : motorEncoder.getPosition();
 		double homeEncoderPosition = getHomeEncoderHeading(homeEncoder) - offset;
@@ -1135,11 +1135,17 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 		setOneDriveIdle(rightBackDrive, idleMode);
 	}
 
+	DutyCycleEncoder makeDutyCycleEncoder (int channel) {
+		DutyCycleEncoder rv = new DutyCycleEncoder(channel);
+		rv.setDistancePerRotation(360);
+		return rv;
+	}
+
 	void setupMotorsAndEncoders() {
-		rightFrontHomeEncoder = new AnalogInput(0);
-		leftFrontHomeEncoder = new AnalogInput(1);
-		leftBackHomeEncoder = new AnalogInput(2);
-		rightBackHomeEncoder = new AnalogInput(3);
+		rightFrontHomeEncoder = makeDutyCycleEncoder(0);
+		leftFrontHomeEncoder = makeDutyCycleEncoder(1);
+		leftBackHomeEncoder = makeDutyCycleEncoder(2);
+		rightBackHomeEncoder = makeDutyCycleEncoder(3);
 		addChild("RB home encoder", rightFrontHomeEncoder);
 		addChild("LR home encoder", leftFrontHomeEncoder);
 		addChild("LB home encoder", leftBackHomeEncoder);
@@ -1183,8 +1189,8 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 			rightBackAzimuth = new CANSparkMaxSendable(8, MotorType.kBrushless);
 			rightBackAzimuthEncoder = rightBackAzimuth.getEncoder();
 
-      MotorSetup driveMotorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-      MotorSetup azimuthMotorSetup = new MotorSetup().setCurrentLimit(20).setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+      		MotorSetup driveMotorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+     		 MotorSetup azimuthMotorSetup = new MotorSetup().setCurrentLimit(20).setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
 			driveMotorSetup.apply(rightFrontDrive);
 
@@ -1196,9 +1202,9 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 
 			driveMotorSetup.apply(leftBackDrive);
 
-      azimuthMotorSetup.apply(leftBackAzimuth);
+      		azimuthMotorSetup.apply(leftBackAzimuth);
 
-      driveMotorSetup.apply(rightBackDrive);
+      		driveMotorSetup.apply(rightBackDrive);
 
 			azimuthMotorSetup.apply(rightBackAzimuth);
 
