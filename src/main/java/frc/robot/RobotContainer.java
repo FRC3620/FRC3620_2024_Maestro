@@ -5,28 +5,35 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.INavigationSubsystem;
+import frc.robot.subsystems.NavXNavigationSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
+import org.usfirst.frc3620.misc.ChameleonController;
+import org.usfirst.frc3620.misc.ChameleonController.ControllerType;
+import org.usfirst.frc3620.misc.FlySkyConstants;
+import org.usfirst.frc3620.misc.RobotMode;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
   public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
-  
+
   // need this
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
@@ -37,18 +44,22 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
-  private static DriveSubsystem driveSubsystem;
+  public static INavigationSubsystem navigationSubsystem;
+  @SuppressWarnings("unused") private static DriveSubsystem driveSubsystem;
 
   // joysticks here....
-  public static Joystick driverJoystick;
+  public static Joystick rawDriverJoystick;
+  public static ChameleonController driverJoystick;
   public static Joystick operatorJoystick;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
-    logger.info ("got parameters for chassis '{}'", robotParameters.getName());
+    logger.info("got parameters for chassis '{}'", robotParameters.getName());
 
     practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
@@ -73,21 +84,22 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
-    driveSubsystem = new DriveSubsystem();
+    navigationSubsystem = new NavXNavigationSubsystem();
+    driveSubsystem = new DriveSubsystem(navigationSubsystem);
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverJoystick = new Joystick(0);
+    rawDriverJoystick = new Joystick(0);
+    driverJoystick = new ChameleonController(rawDriverJoystick);
     operatorJoystick = new Joystick(1);
-
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-      .onTrue(new LogCommand("'A' button hit"));
 
   }
 
@@ -96,6 +108,7 @@ public class RobotContainer {
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
+
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
@@ -109,7 +122,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, VisionSubsystem, intakeSubsystem);
+    // return new GoldenAutoCommand(driveSubsystem, shooterSubsystem,
+    // VisionSubsystem, intakeSubsystem);
     return chooser.getSelected();
   }
 
@@ -129,7 +143,7 @@ public class RobotContainer {
       return true;
     }
 
-    if(practiceBotJumper.get() == true){
+    if (practiceBotJumper.get() == true) {
       return true;
     }
 
@@ -141,7 +155,7 @@ public class RobotContainer {
   }
 
   /**
-   * Determine if we should make software objects, even if the device does 
+   * Determine if we should make software objects, even if the device does
    * not appear on the CAN bus.
    *
    * We should if it's connected to an FMS.
@@ -157,7 +171,7 @@ public class RobotContainer {
       return true;
     }
 
-    if(practiceBotJumper.get() == true){
+    if (practiceBotJumper.get() == true) {
       return true;
     }
 
@@ -166,6 +180,65 @@ public class RobotContainer {
     }
 
     return false;
+  }
+
+  public static double getDriveVerticalJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y, FlySkyConstants.AXIS_LEFT_Y);
+    double deadzone = 0.1;
+    if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
+      deadzone = 0.05;
+    }
+    SmartDashboard.putNumber("driver.y.raw", axisValue);
+    if (Math.abs(axisValue) < deadzone) {
+      return 0;
+    }
+    if (axisValue < 0) {
+      return (axisValue * axisValue);
+    }
+    return -axisValue * axisValue;
+  }
+
+  public static double getDriveHorizontalJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X, FlySkyConstants.AXIS_LEFT_X);
+    double deadzone = 0.1;
+    if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
+      deadzone = 0.05;
+    }
+    SmartDashboard.putNumber("driver.x.raw", axisValue);
+    if (Math.abs(axisValue) < deadzone) {
+      return 0;
+    }
+    if (axisValue < 0) {
+      return -(axisValue * axisValue);
+    }
+    return axisValue * axisValue;
+  }
+
+  public static double getDriveSpinJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X, FlySkyConstants.AXIS_RIGHT_X);
+    double deadzone = 0.1;
+    if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
+      deadzone = 0.05;
+    }
+    SmartDashboard.putNumber("driver.spin.raw", axisValue);
+    double rv = 0;
+    if (Math.abs(axisValue) >= deadzone) {
+      rv = axisValue * axisValue;
+      if (axisValue < 0) {
+        rv = -rv;
+      }
+    }
+
+    /*
+     * this should not be necessary, but autonomous code is looking at
+     * the spin joystick, so here we are...
+     */
+    if (Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
+      rv = 0;
+    }
+
+    SmartDashboard.putNumber("driver.spin.processed", rv);
+    return rv;
   }
 
 }

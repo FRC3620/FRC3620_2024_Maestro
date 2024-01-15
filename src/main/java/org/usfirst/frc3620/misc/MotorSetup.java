@@ -18,8 +18,9 @@ import com.revrobotics.CANSparkBase.IdleMode;
 /** Add your docs here. */
 public class MotorSetup {
     boolean inverted = false;
-    boolean coast = false;
+    boolean coast = true;
     Integer currentLimit = null;
+    Double closedLoopRampRate = null;
     static private int defaultCurrentLimit = 10;
 
     public MotorSetup setInverted (boolean inverted) {
@@ -34,6 +35,11 @@ public class MotorSetup {
 
     public MotorSetup setCurrentLimit (int currentLimit) {
         this.currentLimit = currentLimit;
+        return this;
+    }
+
+    public MotorSetup setClosedLoopRampRate (double closedLoopRampRate) {
+        this.closedLoopRampRate = closedLoopRampRate;
         return this;
     }
 
