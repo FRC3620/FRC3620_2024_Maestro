@@ -36,8 +36,8 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 	private final double DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT = 0.3;
 	private final double AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT = 0.3;
 
-	// encoder gives 360 degrees per encoder tick, and is geared 18:1 to the wheel.
-	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = 360. / 18.; // (1/(11.7))*235; 
+	// encoder gives 360 degrees per encoder tick, and is geared 63:1 to the wheel.
+	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = - 360. / 63.; // (1/(11.7))*235; 
 	private final double SPEED_ENCODER_TICS = 42;
 	//private final double WHEEL_TO_ENCODER_RATIO_VELOCITY = (1/8.31); //for every full wheel turn, the motor turns 8.31 times
 	private final double WHEEL_RADIUS = 2; //in inches
@@ -109,17 +109,17 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 	private double kPositionD = .0;
 	private double kPositionFF = 0;
 	private double kPositionIz = 0;
-	private double kPositionMaxOutput = 1;
+	private double kPositionMaxOutput = 0.1;
 	
-	private double kPositionMinOutput = -1;
+	private double kPositionMinOutput = -0.1;
 	
 	private double kVelocityP = 0.01;  //0.01
 	private double kVelocityI = 0.000000;
 	private double kVelocityD = 0.1;  //0.1
 	private double kVelocityFF = 0.0;
 	private double kVelocityIz = 0;
-	private double kVelocityMaxOutput = 1;
-	private double kVelocityMinOutput = -1;
+	private double kVelocityMaxOutput = 0.1;
+	private double kVelocityMinOutput = -0.1;
 
 	private boolean drivePIDTuning = false;
 
@@ -1190,7 +1190,7 @@ public class DriveSubsystem extends SubsystemBase implements Supplier<SwerveModu
 			rightBackAzimuthEncoder = rightBackAzimuth.getEncoder();
 
       		MotorSetup driveMotorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-     		 MotorSetup azimuthMotorSetup = new MotorSetup().setCurrentLimit(20).setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+     		MotorSetup azimuthMotorSetup = new MotorSetup().setInverted(true).setCurrentLimit(20).setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
 			driveMotorSetup.apply(rightFrontDrive);
 

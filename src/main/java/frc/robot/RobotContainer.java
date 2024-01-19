@@ -61,7 +61,7 @@ public class RobotContainer {
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
 
-    practiceBotJumper = new DigitalInput(0);
+    practiceBotJumper = new DigitalInput(9);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
