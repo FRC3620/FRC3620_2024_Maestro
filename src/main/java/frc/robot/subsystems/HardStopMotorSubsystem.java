@@ -44,7 +44,7 @@ public class HardStopMotorSubsystem extends SubsystemBase {
       PID = motor.getPIDController();
 
       // set up PID for turretPID here
-      PID.setP(0.2); // 0.1
+      PID.setP(0.4); // 0.1
       PID.setI(0.0); // 0.0
       PID.setD(0); // 10
       PID.setFF(0.0); // 0.0
@@ -53,8 +53,8 @@ public class HardStopMotorSubsystem extends SubsystemBase {
     }
 
     if (encoder != null) {
-      encoder.setPositionConversionFactor(15 / 30.4);
-      // encoder.setVelocityConversionFactor(1);
+      encoder.setPositionConversionFactor(1);
+      encoder.setVelocityConversionFactor(1);
     }
   }
 
@@ -108,14 +108,14 @@ public class HardStopMotorSubsystem extends SubsystemBase {
     }
   }
 
-  public void setExtension(double length) {
-    length = MathUtil.clamp(length, 0, 45);
-    SmartDashboard.putNumber(name + ".requestedLength", length);
-    requestedPosition = length;
+  public void setExtension(double pos) {
+    pos = MathUtil.clamp(pos, 0, 45);
+    SmartDashboard.putNumber(name + ".requestedPosition", pos);
+    requestedPosition = pos;
     if (encoderCalibrated) {
-      PID.setReference(length, ControlType.kPosition);
+      PID.setReference(pos, ControlType.kPosition);
     } else {
-      requestedPositionWhileCalibrating = length;
+      requestedPositionWhileCalibrating = pos;
     }
   }
 

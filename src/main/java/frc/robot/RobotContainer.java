@@ -9,6 +9,7 @@ import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
+import frc.robot.commands.SetMotorPositionCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HardStopMotorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -96,6 +97,10 @@ public class RobotContainer {
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
+    SmartDashboard.putData("Set Position: 7", new SetMotorPositionCommand(hardStopMotorSubsystem, 7));
+    SmartDashboard.putData("Set Position: 15", new SetMotorPositionCommand(hardStopMotorSubsystem, 15));
+    SmartDashboard.putData("Set Position: 7.25", new SetMotorPositionCommand(hardStopMotorSubsystem, 7.25));
+    SmartDashboard.putData("Set Position: 7.5", new SetMotorPositionCommand(hardStopMotorSubsystem, 7.5));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
