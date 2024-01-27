@@ -134,11 +134,14 @@ public class Robot extends TimedRobot {
 
     processRobotModeChange(RobotMode.TELEOP);
     logMatchInfo();
+    RobotContainer.shooterSubsystem.setSpeed(10);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // RobotContainer.shooterSubsystem.periodic();
+  }
 
   @Override
   public void testInit() {
