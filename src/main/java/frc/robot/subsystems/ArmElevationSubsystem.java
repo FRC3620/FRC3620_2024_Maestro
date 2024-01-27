@@ -26,16 +26,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ArmElevationSubsystem extends SubsystemBase {
   /** Creates a new ArmElevationSubsystem. */
 
+  // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMaxSendable motor;
   RelativeEncoder motorEncoder;
   Timer calibrationTimer;
 
   SparkPIDController pid = null;
 
+  // Robot is set to "not calibrated" by default
   boolean encoderCalibrated = false;
   int elevateEncoderValueAt90Degrees;
 
-  Double requestedPositionWhileCalibrating = null;
+  Double requestedElevationWhileCalibrating = null; // to save a requested position if robot is not calibrated
 
   final double kP = 0.4; // change PID later
   final double kI = 0;
@@ -46,7 +48,7 @@ public class ArmElevationSubsystem extends SubsystemBase {
 
   double elevationOffset;
 
-  double requestedPosition = 0; // degrees change later
+  double requestedElevation = 0; // degrees change later
 
   final String name = "Arm Elevate";
 
@@ -72,34 +74,35 @@ public class ArmElevationSubsystem extends SubsystemBase {
 
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
 
-    if (motor != null) {
+    if (motor != null) { //If there is a motor, display these
       SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
       SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
 
-      if (motorEncoder != null) {
-        double spinSpeed = motorEncoder.getVelocity();
-        double spinPosition = motorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".speed", spinSpeed);
-        SmartDashboard.putNumber(name + ".position", spinPosition);
+      if (motorEncoder != null) { // and there is an encoder, display these
+        double velocity = motorEncoder.getVelocity();
+        double elevation = motorEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".speed", velocity);
+        SmartDashboard.putNumber(name + ".elevation", elevation);
 
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
-          if (!encoderCalibrated) {
-            setPower(0.03);
+          if (!encoderCalibrated) { 
+            setPower(0.03); //If the robot is running, and the encoder is "not calibrated," run motor very slowly
 
-            if (calibrationTimer == null) {
+            if (calibrationTimer == null) { //If there is no timer, make one
               calibrationTimer = new Timer();
               calibrationTimer.reset();
               calibrationTimer.start();
-            } else {
+            } else {//When there is a timer, wait for 0.5 seconds
               if (calibrationTimer.get() > 0.5) {
-                if (Math.abs(spinSpeed) < 2) {
+                if (Math.abs(velocity) < 2) {
+                  //Then, if the motor is not moving, stop the motor, set encoder position to 0, and set calibration to true
                   encoderCalibrated = true;
                   setPower(0.0);
                   motorEncoder.setPosition(0.0);
-                  if (requestedPositionWhileCalibrating != null) {
-                    setElevation(requestedPositionWhileCalibrating);
-                    requestedPositionWhileCalibrating = null;
+                  if (requestedElevationWhileCalibrating != null) { //If there was a requested position, go there
+                    setElevation(requestedElevationWhileCalibrating);
+                    requestedElevationWhileCalibrating = null;
                   } else {
                     // this might try to extend arm while vertical, a big no-no!
                     // setLength(encoder.getPosition());
@@ -116,34 +119,34 @@ public class ArmElevationSubsystem extends SubsystemBase {
   public void setElevation(double elevation) {
     elevation = MathUtil.clamp(elevation, -45, 200);
     SmartDashboard.putNumber(name + ".requestedElevation", elevation);
-    requestedPosition = elevation;
+    requestedElevation = elevation;
     if (encoderCalibrated) {
       pid.setReference(elevation, ControlType.kPosition);
     } else {
-      requestedPositionWhileCalibrating = elevation;
+      requestedElevationWhileCalibrating = elevation;
     }
   }
 
   public double getRequestedElevation() {
-    return requestedPosition;
+    return requestedElevation;
   }
 
   public void setPower(double power) {
     motor.set(power);
   }
 
-  public double getCurrentPosition() {
+  public double getCurrentElevation() {
     if (motorEncoder == null)
       return 0;
     double motorEncoderValue = motorEncoder.getPosition();
     // converting heading from tics (ranging from 0 to 4095) to degrees
-    double position = (motorEncoderValue - elevateEncoderValueAt90Degrees) * (360.0 / 4096.0) + 90;
+    double elevation = (motorEncoderValue - elevateEncoderValueAt90Degrees) * (360.0 / 4096.0) + 90;
     // get it into the -180..180 range
-    position = Utilities.normalizeAngle(position);
+    elevation = Utilities.normalizeAngle(elevation);
     // get it into the -90..270 range
-    if (position < -90) {
-      position = position + 360;
+    if (elevation < -90) {
+      elevation = elevation + 360;
     }
-    return position;
+    return elevation;
   }
-}
+} // Remember that power and elevation are different things
