@@ -35,34 +35,35 @@ public class ArmElevationSubsystem extends SubsystemBase {
 
   // Robot is set to "not calibrated" by default
   boolean encoderCalibrated = false;
-  int elevateEncoderValueAt90Degrees;
+  int homePosition;
 
-  Double requestedElevationWhileCalibrating = null; // to save a requested position if robot is not calibrated
+  Double requestedPositionWhileCalibrating = null; // to save a requested position if encoder is not calibrated
 
-  final double kP = 0.4; // change PID later
+  // Setting the PID parameters
+  final double kP = 0.4; //
   final double kI = 0;
   final double kD = 0;
-  final double kFF = 0;
+  final double kFF = 0; // define FF
 
-  final double outputLimit = 0.2;
+  final double outputLimit = 0.2; // the limit that the position cannot exceed
 
-  double elevationOffset;
+  double elevationOffset; // If there is an absolute encoder, the offset betweed the absolute and relative is saved here
 
-  double requestedElevation = 0; // degrees change later
+  double requestedPosition = 0; // saves the requested position
 
   final String name = "Arm Elevate";
 
-  public ArmElevationSubsystem(CANSparkMaxSendable motor) {
+  public ArmElevationSubsystem(CANSparkMaxSendable motor) { //The constructor
 
     this.motor = motor;
     this.motorEncoder = motor.getEncoder();
 
     pid = motor.getPIDController();
-
-    pid.setP(kP); // 0.1
-    pid.setI(kI); // 0.0
-    pid.setD(kD); // 10
-    pid.setFF(kFF); // 0.0
+    // setting values for PID using variables
+    pid.setP(kP); // 
+    pid.setI(kI); // 
+    pid.setD(kD); // 
+    pid.setFF(kFF); //
 
     pid.setOutputRange(-outputLimit, outputLimit);
 
@@ -100,9 +101,9 @@ public class ArmElevationSubsystem extends SubsystemBase {
                   encoderCalibrated = true;
                   setPower(0.0);
                   motorEncoder.setPosition(0.0);
-                  if (requestedElevationWhileCalibrating != null) { //If there was a requested position, go there
-                    setElevation(requestedElevationWhileCalibrating);
-                    requestedElevationWhileCalibrating = null;
+                  if (requestedPositionWhileCalibrating != null) { //If there was a requested position, go there
+                    setElevation(requestedPositionWhileCalibrating);
+                    requestedPositionWhileCalibrating = null;
                   } else {
                     // this might try to extend arm while vertical, a big no-no!
                     // setLength(encoder.getPosition());
@@ -119,16 +120,16 @@ public class ArmElevationSubsystem extends SubsystemBase {
   public void setElevation(double elevation) {
     elevation = MathUtil.clamp(elevation, -45, 200);
     SmartDashboard.putNumber(name + ".requestedElevation", elevation);
-    requestedElevation = elevation;
+    requestedPosition = elevation;
     if (encoderCalibrated) {
       pid.setReference(elevation, ControlType.kPosition);
     } else {
-      requestedElevationWhileCalibrating = elevation;
+      requestedPositionWhileCalibrating = elevation;
     }
   }
 
   public double getRequestedElevation() {
-    return requestedElevation;
+    return requestedPosition;
   }
 
   public void setPower(double power) {
@@ -140,7 +141,7 @@ public class ArmElevationSubsystem extends SubsystemBase {
       return 0;
     double motorEncoderValue = motorEncoder.getPosition();
     // converting heading from tics (ranging from 0 to 4095) to degrees
-    double elevation = (motorEncoderValue - elevateEncoderValueAt90Degrees) * (360.0 / 4096.0) + 90;
+    double elevation = (motorEncoderValue - homePosition) * (360.0 / 4096.0) + 90;
     // get it into the -180..180 range
     elevation = Utilities.normalizeAngle(elevation);
     // get it into the -90..270 range
