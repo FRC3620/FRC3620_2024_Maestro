@@ -40,7 +40,7 @@ public class RobotContainer {
 
   // subsystems here
   private static DriveSubsystem driveSubsystem;
-  private static ClimbElevationSubsystem climbElevationSubsystem;
+  public static ClimbElevationSubsystem climbElevationSubsystem;
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;

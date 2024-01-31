@@ -5,15 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ClimbElevationSubsystem;
 
 public class SetClimberPositionCommand extends Command {
 
   double position;
-  ClimbElevationSubsystem climbElevationSubsystem= new ClimbElevationSubsystem();
+  ClimbElevationSubsystem climbElevationSubsystem;
   /** Creates a new SetClimberPositionCommand. */
   public SetClimberPositionCommand(double _position) {
     this.position=_position;
+    climbElevationSubsystem= RobotContainer.climbElevationSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

@@ -24,7 +24,7 @@ import frc.robot.Robot;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbElevationSubsystem extends SubsystemBase {
-  final String name = "Climb Elevator";
+  final String name = "climber";
 
   // PID parameters and encoder conversion factors
   final double kP = 0.4; //
@@ -82,7 +82,7 @@ public class ClimbElevationSubsystem extends SubsystemBase {
       SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
       SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-      SmartDashboard.putBoolean("Limit status", isLimitSwitchPressed());
+      SmartDashboard.putBoolean(name+".Limit status", isLimitSwitchPressed());
 
       if (motorEncoder != null) { // if there is an encoder, display these
         double velocity = motorEncoder.getVelocity();
