@@ -9,6 +9,8 @@ import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
+import frc.robot.commands.SetClimberPositionCommand;
+import frc.robot.subsystems.ClimbElevationSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -38,7 +40,7 @@ public class RobotContainer {
 
   // subsystems here
   private static DriveSubsystem driveSubsystem;
-
+  private static ClimbElevationSubsystem climbElevationSubsystem;
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
@@ -74,6 +76,7 @@ public class RobotContainer {
 
   private void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
+    climbElevationSubsystem= new ClimbElevationSubsystem();
   }
 
   /**
@@ -93,6 +96,9 @@ public class RobotContainer {
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
+    SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
+    SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
+
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
