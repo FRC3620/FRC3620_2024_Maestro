@@ -3,6 +3,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.LogCommand;
@@ -56,13 +60,27 @@ public class RobotContainer {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
     }
 
+    /*
     if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || iAmACompetitionRobot) {
       pneumaticModuleType = PneumaticsModuleType.REVPH;
     } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
       pneumaticModuleType = PneumaticsModuleType.CTREPCM;
     }
+    */
 
     makeSubsystems();
+
+    canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "RF Drive");
+
+    // CAN bus ok?
+    Set<CANDeviceFinder.NamedCANDevice> missingDevices = canDeviceFinder.getMissingDeviceSet();
+    if (missingDevices.size() > 0) {
+      SmartDashboard.putBoolean("can.ok", false);
+      SmartDashboard.putString("can.missing", missingDevices.toString());
+    } else {
+      SmartDashboard.putBoolean("can.ok", true);
+      SmartDashboard.putString("can.missing", "");
+    }
 
     // Configure the button bindings
     configureButtonBindings();
