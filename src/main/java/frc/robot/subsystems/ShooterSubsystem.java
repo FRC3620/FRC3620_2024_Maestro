@@ -16,9 +16,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   TalonFXConfiguration configs = new TalonFXConfiguration();
   private static final String canBusName = "";
-  private final TalonFX topMotor = new TalonFX(14, canBusName);
-  private final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
-  private final TalonFX bottomMotor = new TalonFX(15, canBusName);
+  public final TalonFX topMotor = new TalonFX(14, canBusName);
+  public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
+  public final TalonFX bottomMotor = new TalonFX(15, canBusName);
   private double speed = 0.6;
 
   /** Creates a new ShooterSubsystem. */
@@ -35,7 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
     configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
                              // volts / Rotation per second
 
-    // Peak output of 40 amps
+    // Peak output of 10 amps
     configs.TorqueCurrent.PeakForwardTorqueCurrent = 10;
     configs.TorqueCurrent.PeakReverseTorqueCurrent = -10;
 
@@ -59,6 +59,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setSpeed(double speed) {
     this.speed = speed;
+  }
+
+ public double getMotorVelocity(TalonFX motor){
+    return motor.getVelocity().getValueAsDouble();
   }
 
   void putMotorInformationToDashboard(String motorName, TalonFX motor) {
