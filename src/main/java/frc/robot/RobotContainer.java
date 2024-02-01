@@ -1,10 +1,15 @@
 package frc.robot;
-
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
+import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
+import java.io.File;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -13,9 +18,10 @@ import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
-import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -29,6 +35,14 @@ import org.usfirst.frc3620.misc.XBoxConstants;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+                                                                          "swerve"));
+
+  private final SuperSwerveController superSwerveController = new SuperSwerveController(drivebase);
+
+
+
   public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
   
   // need this
@@ -40,11 +54,11 @@ public class RobotContainer {
 
   public static PneumaticsModuleType pneumaticModuleType = null;
 
-  // subsystems here
-  private static DriveSubsystem driveSubsystem;
 
   // joysticks here....
-  public static Joystick driverJoystick;
+  CommandJoystick driverController = new CommandJoystick(1);
+  XboxController driverXbox = new XboxController(0);
+
   public static Joystick operatorJoystick;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -88,10 +102,30 @@ public class RobotContainer {
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
+
+    SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase, 
+                                                    superSwerveController,
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftY(),
+                                                                                 OperatorConstants.LEFT_Y_DEADBAND),
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
+                                                                                 OperatorConstants.LEFT_X_DEADBAND),
+                                                    () -> -driverXbox.getRawAxis(4), () -> true);
+
+    Command sitThereCommand = new TestDriveCommand(
+        drivebase,
+        () -> 0.0,
+        () -> 0.0,
+        () -> 0.0,
+        () -> false
+    );
+
+    drivebase.setDefaultCommand(SuperFieldRel);
+
+
   }
 
   private void makeSubsystems() {
-    driveSubsystem = new DriveSubsystem();
+
   }
 
   /**
@@ -101,12 +135,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverJoystick = new Joystick(0);
-    operatorJoystick = new Joystick(1);
 
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-      .onTrue(new LogCommand("'A' button hit"));
-
+    new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
+    new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
   }
 
   private void setupSmartDashboardCommands() {
@@ -118,6 +149,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
+    chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
   }
 
   /**
@@ -184,6 +216,11 @@ public class RobotContainer {
     }
 
     return false;
+  }
+
+  public void setMotorBrake(boolean brake)
+  {
+    drivebase.setMotorBrake(brake);
   }
 
 }
