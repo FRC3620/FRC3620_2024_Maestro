@@ -17,10 +17,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 public class IntakeExtendMechanism {
-  final String name = "Intake Extend";
+  final String name = "intake.extend";
 
   // PID parameters and encoder conversion factors
   final double kP = 0.4; //
@@ -152,7 +150,9 @@ public class IntakeExtendMechanism {
   // Remember that power and position are different things. this should probably only
   // be used by the calibration routine in periodic()
   void setPower(double power) {
-    motor.set(power);
+    if (motor != null) {
+      motor.set(power);
+    }
   }
 
 }

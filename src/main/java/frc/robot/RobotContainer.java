@@ -9,10 +9,9 @@ import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeLocation;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.SetIntakeLocationCommand;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;

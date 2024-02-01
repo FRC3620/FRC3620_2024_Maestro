@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -29,26 +30,16 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeRollersMechanism intakeRollerMechanism;
 
   public CANSparkMaxSendable shoulder;
-  // TODO: shoulder uses abs. encoder, change from rel. encoder
-  public RelativeEncoder shoulderMotorEncoder;
-  // public AnalogInput shoulderEncoder;
-
-  // public CANSparkMaxSendable elevation2;
-  // public RelativeEncoder elevationMotorEncoder2;
+  public DutyCycleEncoder shoulderEncoder;
 
   public CANSparkMaxSendable extend;
-  public RelativeEncoder extendEncoder;
   public DigitalInput extendHomeSwitch;
 
   public CANSparkMaxSendable extend2;
-  public RelativeEncoder extendEncoder2;
 
   public CANSparkMaxSendable roll;
-  public RelativeEncoder rollEncoder;
 
   public CANSparkMaxSendable wrist;
-  // public RelativeEncoder wristMotorEncoder;
-  // public Encoder wristEncoder;
   public DigitalInput wristHomeSwitch;
 
   public CANSparkMaxSendable rollers;
@@ -58,7 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     setupMotors();
     intakeExtendMechanism = new IntakeExtendMechanism(extend, extend2);
-    intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder, shoulderMotorEncoder);
+    intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder, shoulderEncoder);
     intakeWristMechanism = new IntakeWristMechanism(wrist, wristHomeSwitch);
     intakeRollerMechanism = new IntakeRollersMechanism(rollers);
   }
@@ -104,8 +95,8 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeRollerMechanism.setPower(rollerSpeed);
   }
 
-  public double getRollerPower() {
-    return intakeRollerMechanism.getPower();
+  public double getRollerVelocity() {
+    return intakeRollerMechanism.getVelocity();
   }
 
   public double getRequestedWristPosition() {
@@ -151,12 +142,6 @@ public class IntakeSubsystem extends SubsystemBase {
       MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(shoulder);
       addChild("shoulder", shoulder);
-
-      shoulderMotorEncoder = shoulder.getEncoder();
-      // by coincidence, it's seems that the motor encoder
-      // position scaling match the arm encoder, so we don't
-      // need to set the position scaling
-      logger.info("Shoulder motor position scale = {}", shoulderMotorEncoder.getPositionConversionFactor());
     }
 
     /*

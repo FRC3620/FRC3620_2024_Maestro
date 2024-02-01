@@ -27,17 +27,14 @@ public class IntakeRollersMechanism {
   Double requestedPositionWhileCalibrating = null;
   Double requestedPosition = null;
 
-  final String name = "Rollers";
+  final String name = "intake.rollers";
 
   public IntakeRollersMechanism(CANSparkMaxSendable motor) {
     this.motor = motor;
     if (motor != null) {
       this.encoder = motor.getEncoder();
-    }
-
-    if (encoder != null) {
-      encoder.setPositionConversionFactor(65/2.3);
-      //encoder.setVelocityConversionFactor(1);
+      encoder.setPositionConversionFactor(1);
+      encoder.setVelocityConversionFactor(1);
     }
   }
 
@@ -93,7 +90,7 @@ public class IntakeRollersMechanism {
     }
   }
 
-  public double getPower() {
+  public double getVelocity() {
     if (encoder == null) return 0;
     return encoder.getVelocity();
   }
