@@ -7,7 +7,8 @@ package frc.robot.subsystems;
 
 /** Add your docs here. */
 public class IntakeLocation {
-    //public static IntakeLocation coneHighLocation = new IntakeLocation(44, 35.5, -75);
+    public static IntakeLocation testLocation1 = new IntakeLocation(0, 0, 0);
+    public static IntakeLocation testLocation2 = new IntakeLocation(1, 1, 1);
     double shoulder;
     double extend;
     double wrist;

@@ -51,7 +51,7 @@ public class IntakeShoulderMechanism {
   public IntakeShoulderMechanism(CANSparkMaxSendable motor, RelativeEncoder motorEncoder) { //The constructor
     this.motor = motor;
     if (motor != null) {
-      motorEncoder = motor.getEncoder();
+      this.motorEncoder = motorEncoder;
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
       motorEncoder.setVelocityConversionFactor(velocityConverionFactor);
 

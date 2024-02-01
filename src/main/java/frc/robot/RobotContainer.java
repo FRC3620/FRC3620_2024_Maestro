@@ -10,6 +10,9 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeLocation;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.SetIntakeLocationCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -38,6 +41,7 @@ public class RobotContainer {
 
   // subsystems here
   private static DriveSubsystem driveSubsystem;
+  public static IntakeSubsystem intakeSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -74,6 +78,7 @@ public class RobotContainer {
 
   private void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
   }
 
   /**
@@ -93,6 +98,8 @@ public class RobotContainer {
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
+    SmartDashboard.putData("Intake Location Test", new SetIntakeLocationCommand(IntakeLocation.testLocation1));
+    SmartDashboard.putData("Intake Location Test 2", new SetIntakeLocationCommand(IntakeLocation.testLocation2));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
