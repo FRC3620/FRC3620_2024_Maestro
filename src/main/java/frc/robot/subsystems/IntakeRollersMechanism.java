@@ -11,7 +11,7 @@ package frc.robot.subsystems;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,7 +22,7 @@ public class IntakeRollersMechanism {
   Timer calibrationTimer;
   CANSparkMaxSendable motor;
   RelativeEncoder encoder;
-  SparkMaxPIDController PID = null;
+  SparkPIDController PID = null;
   
   Double requestedPositionWhileCalibrating = null;
   Double requestedPosition = null;

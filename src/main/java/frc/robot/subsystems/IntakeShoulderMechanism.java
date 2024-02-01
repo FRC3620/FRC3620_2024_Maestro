@@ -48,7 +48,7 @@ public class IntakeShoulderMechanism {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
-  public IntakeShoulderMechanism(CANSparkMaxSendable motor) { //The constructor
+  public IntakeShoulderMechanism(CANSparkMaxSendable motor, RelativeEncoder motorEncoder) { //The constructor
     this.motor = motor;
     if (motor != null) {
       motorEncoder = motor.getEncoder();
@@ -64,7 +64,6 @@ public class IntakeShoulderMechanism {
     }
   }
 
-  @Override
   public void periodic() {
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
 

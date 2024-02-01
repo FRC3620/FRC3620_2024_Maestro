@@ -11,6 +11,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
 import edu.wpi.first.math.MathUtil;
@@ -34,6 +35,7 @@ public class IntakeWristMechanism extends SubsystemBase {
 
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMaxSendable motor;
+  DigitalInput homeSwitch;
   RelativeEncoder motorEncoder;
   Timer calibrationTimer;
 
@@ -48,7 +50,7 @@ public class IntakeWristMechanism extends SubsystemBase {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
-  public IntakeWristMechanism(CANSparkMaxSendable motor) { //The constructor
+  public IntakeWristMechanism(CANSparkMaxSendable motor, DigitalInput homeSwitch) { //The constructor
     this.motor = motor;
     if (motor != null) {
       motorEncoder = motor.getEncoder();

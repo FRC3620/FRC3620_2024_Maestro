@@ -34,6 +34,7 @@ public class IntakeExtendMechanism {
 
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMaxSendable motor;
+  CANSparkMaxSendable motor2;
   RelativeEncoder motorEncoder;
   Timer calibrationTimer;
 
@@ -48,8 +49,9 @@ public class IntakeExtendMechanism {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
-  public IntakeExtendMechanism(CANSparkMaxSendable motor) { //The constructor
+  public IntakeExtendMechanism(CANSparkMaxSendable motor, CANSparkMaxSendable motor2) { //The constructor
     this.motor = motor;
+    this.motor2 = motor2;
     if (motor != null) {
       motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
@@ -64,7 +66,6 @@ public class IntakeExtendMechanism {
     }
   }
 
-  @Override
   public void periodic() {
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
 

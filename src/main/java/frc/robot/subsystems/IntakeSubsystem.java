@@ -12,13 +12,13 @@ import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.CannonLocation;
 import frc.robot.RobotContainer;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -28,15 +28,17 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeWristMechanism intakeWristMechanism;
   public IntakeRollersMechanism intakeRollerMechanism;
 
-  public CANSparkMaxSendable elevation;
-  public RelativeEncoder elevationMotorEncoder;
-  public AnalogInput elevationEncoder;
+  public CANSparkMaxSendable shoulder;
+  // TODO: shoulder uses abs. encoder, change from rel. encoder
+  public RelativeEncoder shoulderMotorEncoder;
+  // public AnalogInput shoulderEncoder;
 
-  public CANSparkMaxSendable elevation2;
-  public RelativeEncoder elevationMotorEncoder2;
+  // public CANSparkMaxSendable elevation2;
+  // public RelativeEncoder elevationMotorEncoder2;
 
   public CANSparkMaxSendable extend;
   public RelativeEncoder extendEncoder;
+  public DigitalInput extendHomeSwitch;
 
   public CANSparkMaxSendable extend2;
   public RelativeEncoder extendEncoder2;
@@ -44,20 +46,21 @@ public class IntakeSubsystem extends SubsystemBase {
   public CANSparkMaxSendable roll;
   public RelativeEncoder rollEncoder;
 
-  public CANSparkMaxSendable pitch;
-  public RelativeEncoder pitchMotorEncoder;
-  public Encoder pitchEncoder;
+  public CANSparkMaxSendable wrist;
+  // public RelativeEncoder wristMotorEncoder;
+  // public Encoder wristEncoder;
+  public DigitalInput wristHomeSwitch;
 
-  public CANSparkMaxSendable claw;
-  public RelativeEncoder clawEncoder;
+  public CANSparkMaxSendable rollers;
+  // public RelativeEncoder rollersEncoder;
 
   /** Creates a new ArmSubsystem. */
   public IntakeSubsystem() {
     setupMotors();
     intakeExtendMechanism = new IntakeExtendMechanism(extend, extend2);
-    intakeShoulderMechanism = new IntakeShoulderMechanism(elevation, elevationEncoder, elevationMotorEncoder, elevation2);
-    intakeWristMechanism = new IntakeWristMechanism(pitch, pitchEncoder, pitchMotorEncoder);
-    intakeRollerMechanism = new IntakeRollerMechanism(clwaw);
+    intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder, shoulderMotorEncoder);
+    intakeWristMechanism = new IntakeWristMechanism(wrist, wristHomeSwitch);
+    intakeRollerMechanism = new IntakeRollersMechanism(rollers);
   }
 
   @Override
@@ -77,9 +80,9 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeExtendMechanism.setPower(power);
   }
 
-  public void disableExtension() {
-    intakeExtendMechanism.disable();
-  }
+  // public void disableExtension() {
+  // intakeExtendMechanism.disable();
+  // }
 
   public void setShoulderPosition(double angle) {
     intakeShoulderMechanism.setPosition(angle);
@@ -109,10 +112,6 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeWristMechanism.getRequestedPosition();
   }
 
-  public double getClampedWrist() {
-    return intakeWristMechanism.getClampedPositon();
-  }
-
   public double getActualWristPosition() {
     return intakeWristMechanism.getActualPosition();
   }
@@ -133,9 +132,11 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeExtendMechanism.getActualPosition();
   }
 
-  public double getAdjustedRequestedExtension() {
-    return intakeExtendMechanism.getAdjustedRequestedExtension();
-  }
+  /*
+   * public double getAdjustedRequestedExtension() {
+   * return intakeExtendMechanism.getAdjustedRequestedExtension();
+   * }
+   */
 
   public void recalibrataePitch(boolean forward) {
     recalibrataePitch(forward);
@@ -147,9 +148,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 13, "Shoulder") || shouldMakeAllCANDevices) {
       shoulder = new CANSparkMaxSendable(13, MotorType.kBrushless);
-      MotorSetup.resetMaxToKnownState(shoulder, true);
-      shoulder.setSmartCurrentLimit(40);
-      shoulder.setIdleMode(IdleMode.kBrake);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
+      motorSetup.apply(shoulder);
       addChild("shoulder", shoulder);
 
       shoulderMotorEncoder = shoulder.getEncoder();
@@ -172,54 +172,51 @@ public class IntakeSubsystem extends SubsystemBase {
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "Extend") || shouldMakeAllCANDevices) {
       extend = new CANSparkMaxSendable(10, MotorType.kBrushless);
-      MotorSetup.resetMaxToKnownState(extend, true);
-      extend.setSmartCurrentLimit(40);
-      extend.setIdleMode(IdleMode.kBrake);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
+      motorSetup.apply(extend);
       addChild("extend", extend);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "Extend2") || shouldMakeAllCANDevices) {
       extend2 = new CANSparkMaxSendable(11, MotorType.kBrushless);
-      MotorSetup.resetMaxToKnownState(extend2, true);
-      extend2.setSmartCurrentLimit(40);
-      extend2.setIdleMode(IdleMode.kBrake);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
+      motorSetup.apply(extend2);
       addChild("extend2", extend2);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 12, "Wrist") || shouldMakeAllCANDevices) {
       wrist = new CANSparkMaxSendable(12, MotorType.kBrushless);
-      MotorSetup.resetMaxToKnownState(wrist, false);
-      wrist.setSmartCurrentLimit(40);
-      wrist.setIdleMode(IdleMode.kBrake);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
+      motorSetup.apply(wrist);
       addChild("wrist", wrist);
+    }
 
-      wristMotorEncoder = wrist.getEncoder();
+     /* wristMotorEncoder = wrist.getEncoder();
       // 360 to convert from rotations to degrees
       // 10 is a 5:1 gearbox and a 2:1 pulley reduction
       wristMotorEncoder.setPositionConversionFactor(360.0 / 10.0);
       logger.info("Wrist motor position scale = {}", wristMotorEncoder.getPositionConversionFactor());
+    
+    */
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "Rollers") || shouldMakeAllCANDevices) {
+      rollers = new CANSparkMaxSendable(9, MotorType.kBrushless);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
+      motorSetup.apply(rollers);
+      addChild("roller", rollers);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "Roller") || shouldMakeAllCANDevices) {
-      roller = new CANSparkMaxSendable(9, MotorType.kBrushless);
-      MotorSetup.resetMaxToKnownState(roller, false);
-      roller.setSmartCurrentLimit(20);
-      roller.setIdleMode(IdleMode.kBrake);
+    //shoulderEncoder = new AnalogInput(4);
+    //addChild("shoulderEncoder", shoulderEncoder);
 
-      addChild("roller", roller);
-    }
-
-    shoulderEncoder = new AnalogInput(4);
-    addChild("shoulderEncoder", shoulderEncoder);
-
-    wristEncoder = new Encoder(5, 6);
-    addChild("wristEncoder", wristEncoder);
+   // wristEncoder = new Encoder(5, 6);
+    //addChild("wristEncoder", wristEncoder);
   }
 
   public void setLocation(IntakeLocation intakeLocation) {
-    intakeShoulderMechanism.setElevation(intakeLocation.getElevation());
-    intakeExtendMechanism.setExtension(intakeLocation.getExtension());
-    intakeWristMechanism.setPitch(intakeLocation.getWristPitch());
+    intakeShoulderMechanism.setPosition(intakeLocation.getShoulder());
+    intakeExtendMechanism.setPosition(intakeLocation.getExtend());
+    intakeWristMechanism.setPosition(intakeLocation.getWrist());
   }
 }
 
