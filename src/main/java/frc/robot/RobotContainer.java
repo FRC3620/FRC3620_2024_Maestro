@@ -149,7 +149,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
-    chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
+    //chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
   }
 
   /**

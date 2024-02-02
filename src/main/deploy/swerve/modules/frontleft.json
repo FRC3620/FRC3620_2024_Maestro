@@ -16,7 +16,7 @@
     },
     "encoder": {
       "type": "ctre_mag",
-      "id": 1,
+      "id": 2,
       "canbus": null
     },
     "inverted": {
