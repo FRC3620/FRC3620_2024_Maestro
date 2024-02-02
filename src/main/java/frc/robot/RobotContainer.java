@@ -41,7 +41,7 @@ public class RobotContainer {
 
   // subsystems here
   private static DriveSubsystem driveSubsystem;
-  public static ShooterSubsystem shooterSubsystem=new ShooterSubsystem();
+  public ShooterSubsystem shooterSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -78,6 +78,7 @@ public class RobotContainer {
 
   private void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
+    shooterSubsystem=new ShooterSubsystem();
   }
 
   /**

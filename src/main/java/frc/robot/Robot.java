@@ -28,8 +28,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private SetShooterSpeedCommand shooterSpeedCommand;
-
   private Logger logger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
@@ -136,7 +134,7 @@ public class Robot extends TimedRobot {
     }
 
     processRobotModeChange(RobotMode.TELEOP);
-        shooterSpeedCommand=new SetShooterSpeedCommand(10, m_robotContainer.shooterSubsystem);
+        new SetShooterSpeedCommand(10, m_robotContainer.shooterSubsystem);
 
     logMatchInfo();
     

@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import org.usfirst.frc3620.misc.CANDeviceFinder;
+import org.usfirst.frc3620.misc.CANDeviceType;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -13,13 +16,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
-
+    CANDeviceFinder deviceFinder= new CANDeviceFinder();
   TalonFXConfiguration configs = new TalonFXConfiguration();
   private static final String canBusName = "";
-  public final TalonFX topMotor = new TalonFX(14, canBusName);
+  public  TalonFX topMotor;
   public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
-  public final TalonFX bottomMotor = new TalonFX(15, canBusName);
+  public  TalonFX bottomMotor;
   private double speed = 0.6;
+  private boolean areMotorsThere=false;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -38,9 +42,13 @@ public class ShooterSubsystem extends SubsystemBase {
     // Peak output of 10 amps
     configs.TorqueCurrent.PeakForwardTorqueCurrent = 10;
     configs.TorqueCurrent.PeakReverseTorqueCurrent = -10;
-
+if (deviceFinder.isDevicePresent(CANDeviceType.TALON, 15)&&deviceFinder.isDevicePresent(CANDeviceType.TALON, 14)) {
+ topMotor= new TalonFX(14, canBusName);
+ bottomMotor= new TalonFX(15, canBusName);
+ areMotorsThere=true;
     configMotor("motor1", topMotor);
-    configMotor("motor2", bottomMotor);
+    configMotor("motor2", bottomMotor); 
+}
 
   }
 
@@ -62,10 +70,12 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
  public double getMotorVelocity(TalonFX motor){
+  if(areMotorsThere){
     return motor.getVelocity().getValueAsDouble();
-  }
+  }else{return 0;}}
 
   void putMotorInformationToDashboard(String motorName, TalonFX motor) {
+   if(areMotorsThere){
     double currentVelocity = motor.getVelocity().getValueAsDouble();
     SmartDashboard.putNumber("shooter." + motorName + ".velocity:", currentVelocity);
     double getClosedLoopOutput = motor.getClosedLoopOutput().getValueAsDouble();
@@ -73,13 +83,16 @@ public class ShooterSubsystem extends SubsystemBase {
     double getTorqueCurrent = motor.getTorqueCurrent().getValueAsDouble();
     SmartDashboard.putNumber("shooter." + motorName + ".torqueCurrent", getTorqueCurrent);
   }
+  }
 
   @Override
   public void periodic() {
+    if (areMotorsThere) {
     putMotorInformationToDashboard("motor1", topMotor);
     putMotorInformationToDashboard("motor2", bottomMotor);
 
     topMotor.setControl(m_voltageVelocity.withVelocity(speed));
     bottomMotor.setControl(m_voltageVelocity.withVelocity(speed));
   }
+}
 }
