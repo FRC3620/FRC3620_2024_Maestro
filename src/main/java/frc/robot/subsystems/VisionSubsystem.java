@@ -25,11 +25,16 @@ import edu.wpi.first.apriltag.AprilTagFields;
 
 public class VisionSubsystem extends SubsystemBase {
 
-  //private PhotonCamera cam = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+  //private PhotonCamera cam = new PhotonCamera("Microsoft_LifeCam_HD-3000"); one to two inches off from around 60 inches, 2-3 inches off mid field, 3-4 inches off from 3/4 fields
+
   //private PhotonCamera cam = new PhotonCamera("Microsoft_LifeCam_HD-3000 (1)");
-  private PhotonCamera cam = new PhotonCamera("USB_2M_GS_camera"); //Zues camera
+  //private PhotonCamera cam = new PhotonCamera("HD_USB_Camera");
+  private PhotonCamera cam = new PhotonCamera("USB_2M_GS_camera"); //around one inch off from around 60 inches, around 2 inches off from mid, 2 inches off from around 3/4 field
 
   AprilTagFieldLayout fieldLayout;
+
+  Double camHeight = 1.0;//Ft, change accordingly
+  Double angCamToNote = 30.0;//Degrees, change accordingly
  
   
    public static final double targetWidth =
@@ -122,5 +127,14 @@ public class VisionSubsystem extends SubsystemBase {
         }
       
     }
-}
+       /* if (res.hasTargets()) {//for object detection TODO: find out how to determine what is an object
+                var bestTarget = res.getBestTarget();
+
+                SmartDashboard.putNumber("target.id", bestTarget.getFiducialId());
+
+                var camToTargetTransform = bestTarget.getBestCameraToTarget();
+
+
+        }*/
+  }
 }
