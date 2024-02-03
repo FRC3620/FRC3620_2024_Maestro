@@ -111,6 +111,14 @@ public class RobotContainer {
                                                                                  OperatorConstants.LEFT_X_DEADBAND),
                                                     () -> -driverXbox.getRawAxis(4), () -> true);
 
+    TestDriveCommand StandardYagslDrive = new TestDriveCommand(drivebase, 
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 
+                                                                                OperatorConstants.LEFT_Y_DEADBAND),
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
+                                                                                OperatorConstants.LEFT_X_DEADBAND),
+                                                    () -> -driverXbox.getRawAxis(4), () -> true);
+    
+
     Command sitThereCommand = new TestDriveCommand(
         drivebase,
         () -> 0.0,
@@ -119,7 +127,7 @@ public class RobotContainer {
         () -> false
     );
 
-    drivebase.setDefaultCommand(SuperFieldRel);
+    drivebase.setDefaultCommand(StandardYagslDrive);
 
 
   }
