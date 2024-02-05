@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2024.1.1"
+    id "edu.wpi.first.GradleRIO" version "2024.2.1"
     // FRC3620 ****************************************************************
     id "com.gorylenko.gradle-git-properties" version "2.4.1"
     // later:
