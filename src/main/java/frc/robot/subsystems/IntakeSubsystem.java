@@ -37,12 +37,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public CANSparkMaxSendable extend2;
 
-  public CANSparkMaxSendable roll;
+  //public CANSparkMaxSendable roll;
 
   public CANSparkMaxSendable wrist;
   public DigitalInput wristHomeSwitch;
 
   public CANSparkMaxSendable rollers;
+  public DigitalInput gamePieceObtained;
+
   // public RelativeEncoder rollersEncoder;
 
   /** Creates a new ArmSubsystem. */
@@ -51,7 +53,8 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeExtendMechanism = new IntakeExtendMechanism(extend, extend2);
     intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder, shoulderEncoder);
     intakeWristMechanism = new IntakeWristMechanism(wrist, wristHomeSwitch);
-    intakeRollerMechanism = new IntakeRollersMechanism(rollers);
+    intakeRollerMechanism = new IntakeRollersMechanism(rollers, gamePieceObtained);
+    
   }
 
   @Override
@@ -98,6 +101,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public double getRollerVelocity() {
     return intakeRollerMechanism.getVelocity();
   }
+
+  public boolean gamePieceDetected() {
+    return intakeRollerMechanism.gamePieceDetected();
+  } 
 
   public double getRequestedWristPosition() {
     return intakeWristMechanism.getRequestedPosition();
@@ -190,6 +197,11 @@ public class IntakeSubsystem extends SubsystemBase {
       motorSetup.apply(rollers);
       addChild("roller", rollers);
     }
+
+    gamePieceObtained = new DigitalInput(9);
+
+
+
 
     //shoulderEncoder = new AnalogInput(4);
     //addChild("shoulderEncoder", shoulderEncoder);

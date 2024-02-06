@@ -99,6 +99,7 @@ public class RobotContainer {
     // SmartDashboard.putData(new xxxxCommand());
     SmartDashboard.putData("Intake Location Test", new SetIntakeLocationCommand(IntakeLocation.testLocation1));
     SmartDashboard.putData("Intake Location Test 2", new SetIntakeLocationCommand(IntakeLocation.testLocation2));
+    SmartDashboard.putData("Intake Roller Test 1", new RunRollersUntilDetected());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

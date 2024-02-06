@@ -13,6 +13,7 @@ import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,14 +24,16 @@ public class IntakeRollersMechanism {
   CANSparkMaxSendable motor;
   RelativeEncoder encoder;
   SparkPIDController PID = null;
-  
+  DigitalInput gamePieceObtained;
+
   Double requestedPositionWhileCalibrating = null;
   Double requestedPosition = null;
 
   final String name = "intake.rollers";
 
-  public IntakeRollersMechanism(CANSparkMaxSendable motor) {
+  public IntakeRollersMechanism(CANSparkMaxSendable motor, DigitalInput gamePieceObtained) {
     this.motor = motor;
+    this.gamePieceObtained = gamePieceObtained;
     if (motor != null) {
       this.encoder = motor.getEncoder();
       encoder.setPositionConversionFactor(1);
@@ -40,49 +43,56 @@ public class IntakeRollersMechanism {
 
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean(name + "game_peice_detected", gamePieceDetected());
+
     if (motor != null) {
-      SmartDashboard.putNumber(name + ".motor_current",  motor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".motor_current", motor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
 
       if (encoder != null) {
         double elevateSpeed = encoder.getVelocity();
         SmartDashboard.putNumber(name + ".speed", elevateSpeed);
-        // SmartDashboard.putNumber(name + ".velocityConversionFactor", encoder.getVelocityConversionFactor());
+        // SmartDashboard.putNumber(name + ".velocityConversionFactor",
+        // encoder.getVelocityConversionFactor());
 
-        /*if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
-          if (!encoderIsValid) {
-            moveClawCannon(0.015);
-          
-            if (calibrationTimer == null) {
-              calibrationTimer = new Timer();
-              calibrationTimer.reset();
-              calibrationTimer.start();
-            } else {
-              if (calibrationTimer.get() > 0.75){
-                if (Math.abs(elevateSpeed) < 15) {
-                  encoderIsValid = true;
-                  moveClawCannon(0.0);
-                  encoder.setPosition(65);
-                  
-                  if (requestedPositionWhileCalibrating != null) {
-                    setPosition(requestedPositionWhileCalibrating);
-                    requestedPositionWhileCalibrating = null;
-                  }
-                }
-              }
-            }
-          }
-        } else {
-          calibrationTimer = null; // start over!
-        }*/
+        /*
+         * if(Robot.getCurrentRobotMode() == RobotMode.TELEOP ||
+         * Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
+         * if (!encoderIsValid) {
+         * moveClawCannon(0.015);
+         * 
+         * if (calibrationTimer == null) {
+         * calibrationTimer = new Timer();
+         * calibrationTimer.reset();
+         * calibrationTimer.start();
+         * } else {
+         * if (calibrationTimer.get() > 0.75){
+         * if (Math.abs(elevateSpeed) < 15) {
+         * encoderIsValid = true;
+         * moveClawCannon(0.0);
+         * encoder.setPosition(65);
+         * 
+         * if (requestedPositionWhileCalibrating != null) {
+         * setPosition(requestedPositionWhileCalibrating);
+         * requestedPositionWhileCalibrating = null;
+         * }
+         * }
+         * }
+         * }
+         * }
+         * } else {
+         * calibrationTimer = null; // start over!
+         * }
+         */
+      }
     }
   }
-}
 
   /**
    * Sets the cannon to extend the arm to 'length' inches. Increasing
    * length is a longer arm.
-   * "Extend" motor.*/
+   * "Extend" motor.
+   */
 
   public void setPower(double speed) {
     if (motor != null) {
@@ -90,8 +100,17 @@ public class IntakeRollersMechanism {
     }
   }
 
+  public boolean gamePieceDetected() {
+    if (gamePieceObtained.get()) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   public double getVelocity() {
-    if (encoder == null) return 0;
+    if (encoder == null)
+      return 0;
     return encoder.getVelocity();
   }
 }
