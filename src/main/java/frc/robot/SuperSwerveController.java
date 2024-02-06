@@ -31,7 +31,7 @@ public class SuperSwerveController {
 
     public void doTeleop(SwerveSubsystem swerve, double rX, double rY, double rOmega) {
         
-        if (Math.abs(rOmega) < 0.075) {  //TODO: Change minimum Omega value to CONSTANT
+        if (Math.abs(rOmega) < 0.4) {  //TODO: Change minimum Omega value to CONSTANT
             // There is not enough rotational input -- Keep the previous heading value
             //get heading
             targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), headingSetpoint);

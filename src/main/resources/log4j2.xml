@@ -4,6 +4,7 @@
         <Console name="Console">
             <PatternLayout pattern="%-5level %c{1.} %msg%n"/>
         </Console>
+        <!--
         <Routing name="LoggingFile">
             <TimeIsSetFilter/>
             <Routes pattern="x">
@@ -14,22 +15,21 @@
                 </Route>
             </Routes>
         </Routing>
-        <DriverStation name="DS">
+        <DrierStation name="DS">
             <PatternLayout pattern="%-5level %c{1.} %msg%n"/>
         </DriverStation>
-        <!--
         <DriverStation_v2 name="DS2"/>
         <StringAppender name="SA"/>
         -->
     </Appenders>
     <Loggers>
-        <ASyncRoot level="trace">
+        <Root level="trace">
+            <!--
             <AppenderRef ref="DS"/>
             <AppenderRef ref="LoggingFile"/>
-            <!--
-            <AppenderRef ref="Console"/>
             <AppenderRef ref="SA"/>
             -->
-        </AsyncRoot>
+            <AppenderRef ref="Console"/>
+        </Root>
     </Loggers>
 </Configuration>
