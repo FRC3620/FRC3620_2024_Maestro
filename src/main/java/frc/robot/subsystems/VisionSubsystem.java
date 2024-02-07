@@ -6,14 +6,18 @@ package frc.robot.subsystems;
 
 import java.io.IOException;
 
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import edu.wpi.first.math.Vector;
 //import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 //import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,7 +34,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   //private PhotonCamera cam = new PhotonCamera("Microsoft_LifeCam_HD-3000 (1)");
   //private PhotonCamera cam = new PhotonCamera("HD_USB_Camera");
-  private PhotonCamera cam = new PhotonCamera("USB_2M_GS_camera"); //around one inch off from around 60 inches, around 2 inches off from mid, 2 inches off from around 3/4 field
+  public PhotonCamera cam = new PhotonCamera("USB_2M_GS_camera"); //around one inch off from around 60 inches, around 2 inches off from mid, 2 inches off from around 3/4 field
 
   AprilTagFieldLayout fieldLayout;
 
@@ -76,7 +80,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-        
+
   cam.setPipelineIndex(PipelineIndex);
     // This method will be called once per scheduler run
     var res = cam.getLatestResult();
@@ -145,17 +149,44 @@ public class VisionSubsystem extends SubsystemBase {
 
                 double camDistToCenterTarget = Math.tan(Math.toRadians(camAngToTarget));
 
-                SmartDashboard.putNumber("DistanceToCenterTarget", camDistToCenterTarget);
+                var confidence = bestTarget.getPoseAmbiguity();
 
-                
+                SmartDashboard.putNumber("DistanceToCenterTarget", camDistToCenterTarget);
+                SmartDashboard.putNumber("confidence", confidence);
 
         }
 }
 }
-     
+public vectorToSpeaker camDistanceToTargetSpeaker(){//vision portion; based on numbers, rotate and drive
+        var res = cam.getLatestResult();
+        var bestTarget = res.getBestTarget();
+                if(bestTarget.getFiducialId()==4){
+
+                var camToTargetTransform = bestTarget.getBestCameraToTarget();
+
+                vectorToSpeaker result = new vectorToSpeaker();
+                
+                result.distance = 0;
+                result.yaw = 0;
+
+                return result;
+                }else{
+                        return null;
+                }
         
-        
+        }
+public static class vectorToSpeaker{
+
+        double distance;
+        double yaw;
+
 
 }
+
+     
+}   
+        
+
+
 
 
