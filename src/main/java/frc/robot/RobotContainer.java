@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
+import org.usfirst.frc3620.misc.JoystickAnalogButton;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
 
@@ -100,9 +101,9 @@ public class RobotContainer {
             .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition));
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
             .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
-    new JoystickButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
             .onTrue(new SetIntakeLocationCommand(IntakeLocation.trapPosition));
-    new JoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER)
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER)
             .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
   }
 
