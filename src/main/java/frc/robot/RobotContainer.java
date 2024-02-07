@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
+import org.usfirst.frc3620.misc.JoystickAnalogButton;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
 
@@ -93,12 +94,26 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
       .onTrue(new LogCommand("'A' button hit"));
 
+    // Operator intake controls
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
+            .onTrue(new SetIntakeLocationCommand(IntakeLocation.groundPosition));
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A)
+            .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition));
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
+            .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
+            .onTrue(new SetIntakeLocationCommand(IntakeLocation.trapPosition));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER)
+            .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
   }
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
-    SmartDashboard.putData("Intake Location Test", new SetIntakeLocationCommand(IntakeLocation.testLocation1));
-    SmartDashboard.putData("Intake Location Test 2", new SetIntakeLocationCommand(IntakeLocation.testLocation2));
+    SmartDashboard.putData("GroundPosition", new SetIntakeLocationCommand(IntakeLocation.groundPosition));
+    SmartDashboard.putData("HomePosition", new SetIntakeLocationCommand(IntakeLocation.homePosition));
+    SmartDashboard.putData("AmpPosition", new SetIntakeLocationCommand(IntakeLocation.ampPosition));
+    SmartDashboard.putData("TrapPosition", new SetIntakeLocationCommand(IntakeLocation.trapPosition));
+    SmartDashboard.putData("PreclimbPosition", new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
