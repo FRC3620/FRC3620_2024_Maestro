@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.swervedrive;
 
+import java.io.File;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -24,9 +26,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.io.File;
-import java.net.CacheRequest;
-
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
@@ -47,6 +46,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
   public double maximumSpeed = 0.4; //1
+  double targetHeading;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -98,15 +98,16 @@ public class SwerveSubsystem extends SubsystemBase {
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(5.0, 0.0, 0.0),
+            new PIDConstants(0.01, 0.0, 0.0),
             // Translation PID constants
             new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                 swerveDrive.swerveController.config.headingPIDF.i,
                 swerveDrive.swerveController.config.headingPIDF.d),
             // Rotation PID constants
-            4.5,
+            0.4,
             // Max module speed, in m/s
             swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
+              
             // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig()
         // Default path replanning config. See the API for the options here
@@ -130,6 +131,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param setOdomToStart Set the odometry position to the start of the path.
    * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
    */
+  /*
   public Command getAutonomousCommand(String pathName, boolean setOdomToStart) {
     // Load the path you want to follow using its name in the GUI
     PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
@@ -142,6 +144,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // event markers.
     return AutoBuilder.followPath(path);
   }
+   */
 
   /**
    * Construct the swerve drive.
@@ -213,6 +216,8 @@ public class SwerveSubsystem extends SubsystemBase {
       CANSparkMax driveMotor = (CANSparkMax) swerveModule.getDriveMotor().getMotor();
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Applied Output", driveMotor.getAppliedOutput());
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Amperage", driveMotor.getOutputCurrent());
+
+      SmartDashboard.putNumber("Drive Radius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
     }
   }
 
@@ -270,7 +275,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPose(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumVelocity(), 4.0,
+        swerveDrive.getMaximumVelocity(), 0.4,
         swerveDrive.getMaximumAngularVelocity(), Units.degreesToRadians(720));
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindToPose(

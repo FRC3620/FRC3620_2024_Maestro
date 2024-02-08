@@ -4,6 +4,9 @@ import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -128,9 +133,13 @@ public class RobotContainer {
         () -> false
     );
 
-    drivebase.setDefaultCommand(StandardYagslDrive);
+    drivebase.setDefaultCommand(SuperFieldRel);
 
-
+    if (drivebase.getCurrentCommand() != null){
+      SmartDashboard.putString("CurrentCommand", drivebase.getCurrentCommand().toString());
+    } else {
+      SmartDashboard.putString("CurrentCommand", "No Command");
+    }
   }
 
   private void makeSubsystems() {
@@ -155,10 +164,13 @@ public class RobotContainer {
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
+    chooser = AutoBuilder.buildAutoChooser();
+
     SmartDashboard.putData("Auto mode", chooser);
 
-    chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
-    //chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
+    //chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
+    //chooser.addOption("PathPlannerAuto", getAutonomousCommand());
+    //chooser.addOption("Auto Command", drivebase.driveToPose(new Pose2d(new Translation2d(1.5, 0), new Rotation2d(0))));
   }
 
   /**

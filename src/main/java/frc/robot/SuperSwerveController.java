@@ -8,7 +8,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 
@@ -25,13 +27,13 @@ public class SuperSwerveController {
     public SuperSwerveController(SwerveSubsystem drivebase) {        
         headingPID = new PIDController(kSpinP, kSpinI, kSpinD);
         headingPID.enableContinuousInput(-180, 180); //sets a circular range instead of a linear one. 
-        headingPID.setTolerance(3);
+        headingPID.setTolerance(5);
         this.drivebase = drivebase;
     } 
 
     public void doTeleop(SwerveSubsystem swerve, double rX, double rY, double rOmega) {
         
-        if (Math.abs(rOmega) < 0.4) {  //TODO: Change minimum Omega value to CONSTANT
+        if (Math.abs(rOmega) < 0.1) {  //TODO: Change minimum Omega value to CONSTANT
             // There is not enough rotational input -- Keep the previous heading value
             //get heading
             targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), headingSetpoint);
