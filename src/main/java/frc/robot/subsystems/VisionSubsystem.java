@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.io.IOException;
 
+import javax.naming.spi.DirStateFactory.Result;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -93,8 +95,21 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+        vectorToSpeaker camDistanceToSpeaker = new vectorToSpeaker();
+        double speakerYaw = camDistanceToSpeaker.yaw;
+        double speakerDistance = camDistanceToSpeaker.distance; 
+        SmartDashboard.putNumber("note Distance", speakerDistance);
+        SmartDashboard.putNumber("note yaw", speakerYaw);
+        /*
+        vectorToNote camDistanceToNote = new vectorToNote();
+        double noteConfidence = camDistanceToNote.confidence;
+        double noteYaw = camDistanceToNote.yaw;
+        double noteDistance = camDistanceToNote.distance; 
+        SmartDashboard.putNumber("note Distance", noteDistance);
+        SmartDashboard.putNumber("note yaw", noteYaw);
+        SmartDashboard.putNumber("note confidence", noteConfidence);
+        */
 
-        camDistanceToNote();
 
         }
 
@@ -109,6 +124,8 @@ public vectorToSpeaker camDistanceToTargetRedSpeaker(){
 
                 result.distance = camToTargetDist;
                 result.yaw = bestTarget.getYaw();
+                
+                
 
                 return result;
                 }else{
@@ -150,6 +167,7 @@ public static class vectorToTag{
 
 }
 
+
 public vectorToNote camDistanceToNote(){
          var res = noteDetectCam.getLatestResult();
         if (res!= null){
@@ -169,6 +187,11 @@ public vectorToNote camDistanceToNote(){
                 result.distance = camDistToCenterNote;
                 result.yaw = bestTarget.getYaw();
                 result.confidence = confidenceNote;
+                SmartDashboard.putNumber("note Distance", result.distance);
+                SmartDashboard.putNumber("note yaw", result.yaw);
+                SmartDashboard.putNumber("note confidence", result.confidence);
+
+                
 
                 return result;
         }else{
