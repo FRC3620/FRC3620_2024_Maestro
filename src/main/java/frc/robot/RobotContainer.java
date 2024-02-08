@@ -11,6 +11,7 @@ import org.usfirst.frc3620.misc.CANDeviceFinder;
 
 import frc.robot.commands.SetShooterSpeedAndWaitCommand;
 import frc.robot.commands.SetShooterSpeedCommand;
+import frc.robot.commands.SetVariableShooterSpeedCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -100,6 +101,7 @@ public class RobotContainer {
     // SmartDashboard.putData(new xxxxCommand());
     SmartDashboard.putData("set shooter speed", new SetShooterSpeedCommand(10, shooterSubsystem));
     SmartDashboard.putData("set shooter speed+wait", new SetShooterSpeedAndWaitCommand(shooterSubsystem, 15));
+    SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand(shooterSubsystem));
 
   }
 
