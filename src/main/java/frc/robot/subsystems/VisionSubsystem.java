@@ -34,14 +34,21 @@ public class VisionSubsystem extends SubsystemBase {
 
   //private PhotonCamera cam = new PhotonCamera("Microsoft_LifeCam_HD-3000 (1)");
   //private PhotonCamera cam = new PhotonCamera("HD_USB_Camera");
-  public PhotonCamera cam = new PhotonCamera("USB_2M_GS_camera"); //around one inch off from around 60 inches, around 2 inches off from mid, 2 inches off from around 3/4 field
+ 
+
+  public PhotonCamera aprilTagCam; //around one inch off from around 60 inches, around 2 inches off from mid, 2 inches off from around 3/4 field
+  public PhotonCamera noteDetectCam;
 
   AprilTagFieldLayout fieldLayout;
-
   
-  int PipelineIndex = 0;
   Double camHeight = 1.0;//Ft, change accordingly
-  Double angCam = 30.0;//Degrees, change accordingly
+  Double angCamToObject = 30.0;//Degrees, change accordingly, facing down
+  Double angCamToApriltags = 30.0;//degrees, facing up
+
+  Double APRILTAGCAM_Y_OFFSET = 0.0;//change if neccessary, add to calculations
+  Double NOTEDETECTCAM_Y_OFFSET = 0.0;
+  Double APRILTAGCAM_X_OFFSET = 0.0;//change if neccessary 
+  Double NOTEDETECTCAM_X_OFFSET = 0.0;
  
   
    public static final double targetWidth =
@@ -67,9 +74,15 @@ public class VisionSubsystem extends SubsystemBase {
                     new Rotation3d(0.0, 0.0, Units.degreesToRadians(180)));
   /** Creates a new Vision. */
   public VisionSubsystem() {
-        SmartDashboard.putString("hey", "Hi, Gavin");
 
-            
+        aprilTagCam = new PhotonCamera("USB_2M_GS_camera");//big lense cams
+
+        noteDetectCam = new PhotonCamera("USB_2M_GS_camera(1)");
+
+        aprilTagCam.setPipelineIndex(0);
+
+        noteDetectCam.setPipelineIndex(0);
+
         try {
                 fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
         } catch (IOException e) {
@@ -81,22 +94,100 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-  cam.setPipelineIndex(PipelineIndex);
-    // This method will be called once per scheduler run
-    var res = cam.getLatestResult();
+        camDistanceToNote();
+
+        }
+
+public vectorToSpeaker camDistanceToTargetRedSpeaker(){
+        var res = aprilTagCam.getLatestResult();
+        var bestTarget = res.getBestTarget();
+                if(bestTarget.getFiducialId()==4){
+
+                vectorToSpeaker result = new vectorToSpeaker();
+
+                double camToTargetDist = (1.45-camHeight)/Math.sin(Math.toRadians(angCamToApriltags));
+
+                result.distance = camToTargetDist;
+                result.yaw = bestTarget.getYaw();
+
+                return result;
+                }else{
+                        return null;
+                }
+        
+        }
+
+public static class vectorToSpeaker{
+
+        double distance;
+        double yaw;
+
+}
+
+public vectorToTag camDistanceToTag(){
+        var res = aprilTagCam.getLatestResult();
+        if (res!= null){
+        var bestTarget = res.getBestTarget();
+
+                vectorToTag result = new vectorToTag();
+
+                double camToTagDist = (1.45-camHeight)/Math.sin(Math.toRadians(angCamToApriltags));
+
+                result.distance = camToTagDist;
+                result.yaw = bestTarget.getYaw();
+
+                return result;
+        }else{
+                return null;
+        }
+}
+
+public static class vectorToTag{
+
+
+        double distance;
+        double yaw;
+
+}
+
+public vectorToNote camDistanceToNote(){
+         var res = noteDetectCam.getLatestResult();
+        if (res!= null){
+        var bestTarget = res.getBestTarget();
+                SmartDashboard.putNumber("target.id", bestTarget.getFiducialId());
+
+                double pitch = bestTarget.getPitch(); //degrees
+
+                double camAngToTarget = 90-(angCamToObject-pitch); //degrees relative to horizon line
+
+                double camDistToCenterNote = Math.tan(Math.toRadians(camAngToTarget));
+
+                var confidenceNote = bestTarget.getPoseAmbiguity();
+                
+                vectorToNote result = new vectorToNote();
+
+                result.distance = camDistToCenterNote;
+                result.yaw = bestTarget.getYaw();
+                result.confidence = confidenceNote;
+
+                return result;
+        }else{
+                return null;
+        }
+}
+
+public static class vectorToNote{
+        double distance;
+        double yaw;
+        double confidence;
+}
+
+void aprilTagsPeriodic(){
+    var res = aprilTagCam.getLatestResult();
     if (res.hasTargets()) {
-
-        if(PipelineIndex == 0){//apriltags
-
                 var imageCaptureTime = res.getTimestampSeconds();
                 var bestTarget = res.getBestTarget();
                 SmartDashboard.putNumber("target.id", bestTarget.getFiducialId());
-                SmartDashboard.putNumber("target.area", bestTarget.getArea());
-
-                // int bestTargetID = bestTarget.getFiducialId(); //gets target ID number
-
-
-                // SmartDashboard.putNumber("bestTargetID", bestTargetID);
 
                 var camToTargetTransform = bestTarget.getBestCameraToTarget();
                 SmartDashboard.putNumber("transform.x", camToTargetTransform.getX());
@@ -135,58 +226,10 @@ public class VisionSubsystem extends SubsystemBase {
                         SmartDashboard.putNumber("rotationOfRobot.z", rotationCam.getZ()); //left and right
              
                 }
-        }
-        if(PipelineIndex == 1){//ringdetection
-
-                var imageCaptureTime = res.getTimestampSeconds();
-                var bestTarget = res.getBestTarget();
-                SmartDashboard.putNumber("target.id", bestTarget.getFiducialId());
-                SmartDashboard.putNumber("target.area", bestTarget.getArea());
-
-                double pitch = bestTarget.getPitch(); //degrees
-
-                double camAngToTarget = 90-(angCam-pitch); //degrees
-
-                double camDistToCenterTarget = Math.tan(Math.toRadians(camAngToTarget));
-
-                var confidence = bestTarget.getPoseAmbiguity();
-
-                SmartDashboard.putNumber("DistanceToCenterTarget", camDistToCenterTarget);
-                SmartDashboard.putNumber("confidence", confidence);
-
-        }
-}
-}
-public vectorToSpeaker camDistanceToTargetSpeaker(){//vision portion; based on numbers, rotate and drive
-        var res = cam.getLatestResult();
-        var bestTarget = res.getBestTarget();
-                if(bestTarget.getFiducialId()==4){
-
-                var camToTargetTransform = bestTarget.getBestCameraToTarget();
-
-                vectorToSpeaker result = new vectorToSpeaker();
-                
-                result.distance = 0;
-                result.yaw = 0;
-
-                return result;
-                }else{
-                        return null;
-                }
-        
-        }
-public static class vectorToSpeaker{
-
-        double distance;
-        double yaw;
-
 
 }
 
      
 }   
-        
 
-
-
-
+}
