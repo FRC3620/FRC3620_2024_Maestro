@@ -45,12 +45,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    if (deviceFinder.isDevicePresent(CANDeviceType.TALON, 15, "Bottom Shooter") || RobotContainer.shouldMakeAllCANDevices()) {
+    if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 15, "Bottom Shooter") || RobotContainer.shouldMakeAllCANDevices()) {
       bottomMotor = new TalonFX(15, canBusName);
       configMotor("bottom shooter", bottomMotor);
     }
 
-    if (deviceFinder.isDevicePresent(CANDeviceType.TALON, 14, "Top Shooter") || RobotContainer.shouldMakeAllCANDevices()) {
+    if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 14, "Top Shooter") || RobotContainer.shouldMakeAllCANDevices()) {
       topMotor = new TalonFX(14, canBusName);
       configMotor("top shooter", topMotor);
     }
