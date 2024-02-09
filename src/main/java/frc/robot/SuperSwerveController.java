@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -22,7 +23,7 @@ public class SuperSwerveController {
 	private double kSpinI = 0.00000;
 	private double kSpinD = 0.00;
     SwerveSubsystem drivebase;
-    double targetOmega;
+    
 
     public SuperSwerveController(SwerveSubsystem drivebase) {        
         headingPID = new PIDController(kSpinP, kSpinI, kSpinD);
@@ -31,17 +32,31 @@ public class SuperSwerveController {
         this.drivebase = drivebase;
     } 
 
+    Timer turnTimer = null;
+
     public void doTeleop(SwerveSubsystem swerve, double rX, double rY, double rOmega) {
-        
+        double targetOmega = 0;
+
         if (Math.abs(rOmega) < 0.1) {  //TODO: Change minimum Omega value to CONSTANT
             // There is not enough rotational input -- Keep the previous heading value
             //get heading
-            targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), headingSetpoint);
+            if (turnTimer == null) {
+                turnTimer = new Timer();
+                turnTimer.reset();
+                turnTimer.start();
+            } else if (turnTimer.get() > 0.5) {
+                headingSetpoint = drivebase.getHeading().getDegrees();
+                turnTimer.stop();
+                turnTimer.reset();
+                targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), headingSetpoint);
+            } else {
+                targetOmega = 0;
+            }
         } else {
-            // The driver is providing rotational input. Set Omega accordin to driver input
+            // The driver is providing rotational input. Set Omega according to driver input
             // and store current heading
+            turnTimer = null;
             targetOmega = rOmega;
-            headingSetpoint = drivebase.getHeading().getDegrees();
         }
         
         targetOmega = MathUtil.clamp(targetOmega, -1, 1);
