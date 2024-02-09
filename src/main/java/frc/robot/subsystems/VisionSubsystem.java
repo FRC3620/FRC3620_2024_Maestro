@@ -43,7 +43,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   AprilTagFieldLayout fieldLayout;
   
-  Double camHeight = 1.0;//Ft, change accordingly
+  Double camHeight = 0.53975;//Ft, change accordingly
   Double angCamToObject = 30.0;//Degrees, change accordingly, facing down
   Double angCamToApriltags = 30.0;//degrees, facing up
 
@@ -77,7 +77,7 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new Vision. */
   public VisionSubsystem() {
 
-        aprilTagCam = new PhotonCamera("USB_2M_GS_camera");//big lense cams
+        aprilTagCam = new PhotonCamera("AprilTagCam");//big lense cams
 
         noteDetectCam = new PhotonCamera("USB_2M_GS_camera(1)");
 
@@ -95,11 +95,20 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-        vectorToSpeaker camDistanceToSpeaker = new vectorToSpeaker();
+        var res = aprilTagCam.getLatestResult();
+        vectorToSpeaker camDistanceToSpeaker = camDistanceToTargetSpeaker();
+        if(camDistanceToSpeaker !=null){
+
         double speakerYaw = camDistanceToSpeaker.yaw;
         double speakerDistance = camDistanceToSpeaker.distance; 
-        SmartDashboard.putNumber("note Distance", speakerDistance);
-        SmartDashboard.putNumber("note yaw", speakerYaw);
+        double speakerXDistance = camDistanceToSpeaker.distanceX;
+        double speakerYDistance = camDistanceToSpeaker.distanceY;
+
+        SmartDashboard.putNumber("Speaker Distance", speakerDistance);
+        SmartDashboard.putNumber("Speaker yaw", speakerYaw);
+        SmartDashboard.putNumber("Speaker Distance X", speakerXDistance);
+        SmartDashboard.putNumber("Speaker Distance Y", speakerYDistance);
+
         /*
         vectorToNote camDistanceToNote = new vectorToNote();
         double noteConfidence = camDistanceToNote.confidence;
@@ -109,35 +118,48 @@ public class VisionSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("note yaw", noteYaw);
         SmartDashboard.putNumber("note confidence", noteConfidence);
         */
-
+        }
 
         }
 
-public vectorToSpeaker camDistanceToTargetRedSpeaker(){
+public vectorToSpeaker camDistanceToTargetSpeaker(){
         var res = aprilTagCam.getLatestResult();
-        var bestTarget = res.getBestTarget();
-                if(bestTarget.getFiducialId()==4){
+        if (res.hasTargets()){
+                
+                var bestTarget = res.getBestTarget();
+                if(bestTarget.getFiducialId() == 3){
 
                 vectorToSpeaker result = new vectorToSpeaker();
 
+                var camToTargetTransform = bestTarget.getBestCameraToTarget();
+
                 double camToTargetDist = (1.45-camHeight)/Math.sin(Math.toRadians(angCamToApriltags));
+                double distanceXFromTarget = camToTargetTransform.getX();
+                double distanceYFromTarget = camToTargetTransform.getY();
 
                 result.distance = camToTargetDist;
                 result.yaw = bestTarget.getYaw();
+                result.distanceX = distanceXFromTarget;
+                result.distanceY = distanceYFromTarget;
                 
-                
-
                 return result;
                 }else{
                         return null;
                 }
-        
+
+        }else{
+                return null;
         }
+        
+}
+
 
 public static class vectorToSpeaker{
 
         double distance;
         double yaw;
+        double distanceX;
+        double distanceY;
 
 }
 
