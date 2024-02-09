@@ -28,6 +28,8 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -40,7 +42,7 @@ public class RobotContainer {
                                                                           "swerve"));
 
   private final SuperSwerveController superSwerveController = new SuperSwerveController(drivebase);
-
+  private final SendableChooser<Command> autoChooser;
 
 
   public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
@@ -64,7 +66,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
-
+    
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info ("got parameters for chassis '{}'", robotParameters.getName());
 
@@ -101,7 +103,12 @@ public class RobotContainer {
 
     setupSmartDashboardCommands();
 
-    setupAutonomousCommands();
+    //setupAutonomousCommands();
+  
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
 
     SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase, 
                                                     superSwerveController,
@@ -144,13 +151,14 @@ public class RobotContainer {
     // SmartDashboard.putData(new xxxxCommand());
   }
 
+  /* 
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
     //chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
-  }
+  }*/
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -160,7 +168,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, VisionSubsystem, intakeSubsystem);
-    return chooser.getSelected();
+    return autoChooser.getSelected();
   }
 
   /**
