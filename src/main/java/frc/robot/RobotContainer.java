@@ -36,10 +36,9 @@ import org.usfirst.frc3620.misc.XBoxConstants;
  */
 public class RobotContainer {
 
-  private SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                          "swerve"));
+  private SwerveSubsystem drivebase = null;
 
-  private final SuperSwerveController superSwerveController = new SuperSwerveController(drivebase);
+  private SuperSwerveController superSwerveController;
 
 
 
@@ -63,6 +62,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    Robot.printMemoryStatus("starting CANDeviceFinder");
     canDeviceFinder = new CANDeviceFinder();
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
@@ -82,6 +82,11 @@ public class RobotContainer {
     }
     */
 
+    Robot.printMemoryStatus("making drivebase");
+    drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+    Robot.printMemoryStatus("making superSwerveController");
+    superSwerveController =  new SuperSwerveController(drivebase);
+    Robot.printMemoryStatus("making subsystems");
     makeSubsystems();
 
     canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "RF Drive");
@@ -149,7 +154,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
-    chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
+    // chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
   }
 
   /**
