@@ -40,12 +40,6 @@ import org.usfirst.frc3620.misc.XBoxConstants;
  */
 public class RobotContainer {
 
-  private SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                          "swerve"));
-
-  private final SuperSwerveController superSwerveController = new SuperSwerveController(drivebase);
-
-
 
   public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
   
@@ -53,17 +47,20 @@ public class RobotContainer {
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
 
+  // subsystems here
+  public static IntakeSubsystem intakeSubsystem;
+  public static ClimbElevationSubsystem climbElevationSubsystem;
+
+  private SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+                                                                          "swerve"));
+
+  private final SuperSwerveController superSwerveController = new SuperSwerveController(drivebase);
+
   // hardware here...
   private static DigitalInput practiceBotJumper;
 
   public static PneumaticsModuleType pneumaticModuleType = null;
 
-<<<<<<< HEAD
-  public static IntakeSubsystem intakeSubsystem;
-
-=======
-  public static ClimbElevationSubsystem climbElevationSubsystem;
->>>>>>> test
   // joysticks here....
   CommandJoystick driverController = new CommandJoystick(1);
   XboxController driverXbox = new XboxController(0);
@@ -134,12 +131,8 @@ public static BlinkySubsystem blinkySubsystem;
   }
 
   private void makeSubsystems() {
-
-<<<<<<< HEAD
     intakeSubsystem = new IntakeSubsystem();
-=======
     climbElevationSubsystem= new ClimbElevationSubsystem();
->>>>>>> test
   }
 
   /**
@@ -167,17 +160,15 @@ public static BlinkySubsystem blinkySubsystem;
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
-<<<<<<< HEAD
     SmartDashboard.putData("GroundPosition", new SetIntakeLocationCommand(IntakeLocation.groundPosition));
     SmartDashboard.putData("HomePosition", new SetIntakeLocationCommand(IntakeLocation.homePosition));
     SmartDashboard.putData("AmpPosition", new SetIntakeLocationCommand(IntakeLocation.ampPosition));
     SmartDashboard.putData("TrapPosition", new SetIntakeLocationCommand(IntakeLocation.trapPosition));
     SmartDashboard.putData("PreclimbPosition", new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
-=======
+    
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
 
->>>>>>> test
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
