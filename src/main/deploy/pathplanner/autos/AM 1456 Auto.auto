@@ -8,37 +8,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SC to 3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "3 to 2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2 to 1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "pathName": "AM to 1"
           }
         },
         {
@@ -48,15 +18,33 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 1.5
+            "pathName": "4 to shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4 to shoot"
+            "pathName": "Shoot to 5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5 to Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot to 6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6 to shoot"
           }
         }
       ]
