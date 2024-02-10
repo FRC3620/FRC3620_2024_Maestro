@@ -57,12 +57,12 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // joysticks here....
-  CommandJoystick driverController = new CommandJoystick(1);
-  XboxController driverXbox = new XboxController(0);
+  public static XboxController driverJoystick;
   public static Joystick operatorJoystick;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    Robot.printMemoryStatus("starting CANDeviceFinder");
     canDeviceFinder = new CANDeviceFinder();
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info ("got parameters for chassis '{}'", robotParameters.getName());
@@ -104,11 +104,11 @@ public class RobotContainer {
 
     SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase, 
                                                     superSwerveController,
-                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftY(),
+                                                    () -> MathUtil.applyDeadband(-driverJoystick.getLeftY(),
                                                                                  OperatorConstants.LEFT_Y_DEADBAND),
-                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
+                                                    () -> MathUtil.applyDeadband(-driverJoystick.getLeftX(),
                                                                                  OperatorConstants.LEFT_X_DEADBAND),
-                                                    () -> -driverXbox.getRawAxis(XBoxConstants.AXIS_RIGHT_X), () -> true);
+                                                    () -> -driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X), () -> true);
     drivebase.setDefaultCommand(SuperFieldRel);
   }
 
@@ -117,8 +117,11 @@ public class RobotContainer {
     climbElevationSubsystem = new ClimbElevationSubsystem();
     shooterSubsystem = new ShooterSubsystem();
     blinkySubsystem = new BlinkySubsystem();
+    Robot.printMemoryStatus("making drivebase");
     drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+    Robot.printMemoryStatus("making superSwerveController");
     superSwerveController = new SuperSwerveController(drivebase);
+    Robot.printMemoryStatus("making subsystems");
   }
 
   /**
@@ -128,9 +131,12 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    driverJoystick = new XboxController(0);
+    operatorJoystick = new Joystick(1);
+
     // Driver controls
-    new JoystickButton(driverXbox, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
-    new JoystickButton(driverXbox, XBoxConstants.BUTTON_X).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
+    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
 
     // Operator intake controls
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
@@ -165,7 +171,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
-    //chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
+    // chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
   }
 
   /**

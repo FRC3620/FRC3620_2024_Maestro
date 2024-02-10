@@ -42,12 +42,10 @@ private SolidPattern solidPattern;
    */
   @Override
   public void robotInit() {
+    printMemoryStatus("setting up logger");
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
-    Blink=new LightSegment(0, 3);
-    lightSegment=new LightSegment(3, 10);
-    solidPattern= new SolidPattern();
-    blinkPattern=new BlinkPattern();
+    printMemoryStatus("logger is up");
 
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
@@ -72,15 +70,18 @@ private SolidPattern solidPattern;
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    printMemoryStatus("making RobotContainer");
     m_robotContainer = new RobotContainer();
 
     // get data logging going
+    printMemoryStatus("setting up data logger");
     DataLogger robotDataLogger = new DataLogger();
     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
     robotDataLogger.setInterval(0.25);
     robotDataLogger.start();
 
     FileSaver.add("networktables.ini");
+    printMemoryStatus("robotInit done");
   }
 
   /**
@@ -215,6 +216,18 @@ private SolidPattern solidPattern;
         hasCANBusBeenLogged = true;
       }
     }
+  }
+
+  static public void printMemoryStatus (String label) {
+    StringBuilder sb = new StringBuilder("Memory: ");
+    sb.append(label);
+    sb.append("; free=");
+    sb.append(Runtime.getRuntime().freeMemory());
+    sb.append(" total=");
+    sb.append(Runtime.getRuntime().totalMemory());
+    sb.append("; max=");
+    sb.append(Runtime.getRuntime().maxMemory());
+    System.out.println (sb.toString());
   }
 
 }
