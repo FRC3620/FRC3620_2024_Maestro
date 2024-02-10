@@ -99,7 +99,7 @@ public class SwerveSubsystem extends SubsystemBase {
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(0.01, 0.0, 0.0),
+            new PIDConstants(1, 0.0, 0.0),
             // Translation PID constants
             new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                 swerveDrive.swerveController.config.headingPIDF.i,
@@ -220,6 +220,10 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Amperage", driveMotor.getOutputCurrent());
 
       SmartDashboard.putNumber("Drive Radius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
+
+      SmartDashboard.putNumber("Swerve.pose.x", getPose().getX());
+      SmartDashboard.putNumber("Swerve.pose.y", getPose().getY());
+      SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
     }
   }
 
