@@ -1,20 +1,17 @@
 package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
-import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 
 import java.io.File;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
@@ -39,41 +36,34 @@ import org.usfirst.frc3620.misc.XBoxConstants;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-
   public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
   
-  // need this
+  // need these
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
 
   // subsystems here
   public static IntakeSubsystem intakeSubsystem;
   public static ClimbElevationSubsystem climbElevationSubsystem;
+  public static ShooterSubsystem shooterSubsystem;
+  public static BlinkySubsystem blinkySubsystem;
+  private SwerveSubsystem drivebase;
 
-  private SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                          "swerve"));
-
-  private final SuperSwerveController superSwerveController = new SuperSwerveController(drivebase);
+  private SuperSwerveController superSwerveController;
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
 
   public static PneumaticsModuleType pneumaticModuleType = null;
 
-  private static DriveSubsystem driveSubsystem;
-  public ShooterSubsystem shooterSubsystem;
-
   // joysticks here....
   CommandJoystick driverController = new CommandJoystick(1);
   XboxController driverXbox = new XboxController(0);
-public static BlinkySubsystem blinkySubsystem;
   public static Joystick operatorJoystick;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
-    blinkySubsystem=new BlinkySubsystem();
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info ("got parameters for chassis '{}'", robotParameters.getName());
 
@@ -118,25 +108,17 @@ public static BlinkySubsystem blinkySubsystem;
                                                                                  OperatorConstants.LEFT_Y_DEADBAND),
                                                     () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
                                                                                  OperatorConstants.LEFT_X_DEADBAND),
-                                                    () -> -driverXbox.getRawAxis(4), () -> true);
-
-    Command sitThereCommand = new TestDriveCommand(
-        drivebase,
-        () -> 0.0,
-        () -> 0.0,
-        () -> 0.0,
-        () -> false
-    );
-
+                                                    () -> -driverXbox.getRawAxis(XBoxConstants.AXIS_RIGHT_X), () -> true);
     drivebase.setDefaultCommand(SuperFieldRel);
-
-
   }
 
   private void makeSubsystems() {
     intakeSubsystem = new IntakeSubsystem();
-    climbElevationSubsystem= new ClimbElevationSubsystem();
-    shooterSubsystem=new ShooterSubsystem();
+    climbElevationSubsystem = new ClimbElevationSubsystem();
+    shooterSubsystem = new ShooterSubsystem();
+    blinkySubsystem = new BlinkySubsystem();
+    drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+    superSwerveController = new SuperSwerveController(drivebase);
   }
 
   /**
@@ -146,9 +128,10 @@ public static BlinkySubsystem blinkySubsystem;
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Driver controls
+    new JoystickButton(driverXbox, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
+    new JoystickButton(driverXbox, XBoxConstants.BUTTON_X).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
 
-    new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
     // Operator intake controls
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
             .onTrue(new SetIntakeLocationCommand(IntakeLocation.groundPosition));
@@ -163,7 +146,6 @@ public static BlinkySubsystem blinkySubsystem;
   }
 
   private void setupSmartDashboardCommands() {
-    // SmartDashboard.putData(new xxxxCommand());
     SmartDashboard.putData("set shooter speed", new SetShooterSpeedCommand(10, shooterSubsystem));
     SmartDashboard.putData("set shooter speed+wait", new SetShooterSpeedAndWaitCommand(shooterSubsystem, 15));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand(shooterSubsystem));
@@ -176,7 +158,6 @@ public static BlinkySubsystem blinkySubsystem;
     
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
-
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
@@ -251,11 +232,6 @@ public static BlinkySubsystem blinkySubsystem;
     }
 
     return false;
-  }
-
-  public void setMotorBrake(boolean brake)
-  {
-    drivebase.setMotorBrake(brake);
   }
 
 }

@@ -17,12 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-<<<<<<< HEAD
-import frc.robot.commands.SetShooterSpeedCommand;
-=======
-import frc.robot.commands.SetIntakeLocationCommand;
-import frc.robot.subsystems.IntakeLocation;
->>>>>>> test
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -146,14 +140,8 @@ private SolidPattern solidPattern;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-        solidPattern.setColor(Color.kYellow);
-    // solidPattern.start(lightSegment);
-     blinkPattern.setColor(Color.kLightGoldenrodYellow);
-     blinkPattern.setBlink( 0.5);
-    Blink.setPattern(new BlinkPattern().setBlink(0.75).setColor(Color.kAquamarine));
-    // chasePattern.setColor(Color.kAliceBlue);
+
     processRobotModeChange(RobotMode.TELEOP);
-        new SetShooterSpeedCommand(10, m_robotContainer.shooterSubsystem);
 
     logMatchInfo();
     
@@ -162,15 +150,6 @@ private SolidPattern solidPattern;
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-<<<<<<< HEAD
-    // RobotContainer.shooterSubsystem.periodic();
-=======
-    lightSegment.setPattern(solidPattern);
-    lightSegment.setPattern(blinkPattern);
-    // lightSegment.setPattern(chasePattern);
-    lightSegment.periodic();
-    Blink.periodic();
->>>>>>> test
   }
 
   @Override
