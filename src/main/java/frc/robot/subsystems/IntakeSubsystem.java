@@ -27,6 +27,7 @@ import frc.robot.RobotContainer;
 
 public class IntakeSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
   public IntakeExtendMechanism intakeExtendMechanism;
   public IntakeShoulderMechanism intakeShoulderMechanism;
   public IntakeWristMechanism intakeWristMechanism;
@@ -151,7 +152,8 @@ public class IntakeSubsystem extends SubsystemBase {
       shoulder = new CANSparkMax(13, MotorType.kBrushless);
       MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(shoulder);
-      addChild("shoulder", new CANSparkMaxSendableShim(shoulder));
+      CANSparkMaxSendableShim shim = new CANSparkMaxSendableShim(shoulder);
+      addChild("shoulder", shim);
     }
 
     /*

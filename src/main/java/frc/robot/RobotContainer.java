@@ -102,14 +102,16 @@ public class RobotContainer {
 
     setupAutonomousCommands();
 
-    SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase, 
-                                                    superSwerveController,
-                                                    () -> MathUtil.applyDeadband(-driverJoystick.getLeftY(),
-                                                                                 OperatorConstants.LEFT_Y_DEADBAND),
-                                                    () -> MathUtil.applyDeadband(-driverJoystick.getLeftX(),
-                                                                                 OperatorConstants.LEFT_X_DEADBAND),
-                                                    () -> -driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X), () -> true);
-    drivebase.setDefaultCommand(SuperFieldRel);
+    if (drivebase != null) {
+      SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase, 
+                                                      superSwerveController,
+                                                      () -> MathUtil.applyDeadband(-driverJoystick.getLeftY(),
+                                                                                  OperatorConstants.LEFT_Y_DEADBAND),
+                                                      () -> MathUtil.applyDeadband(-driverJoystick.getLeftX(),
+                                                                                  OperatorConstants.LEFT_X_DEADBAND),
+                                                      () -> -driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X), () -> true);
+      drivebase.setDefaultCommand(SuperFieldRel);
+    }
   }
 
   private void makeSubsystems() {
@@ -117,11 +119,13 @@ public class RobotContainer {
     climbElevationSubsystem = new ClimbElevationSubsystem();
     shooterSubsystem = new ShooterSubsystem();
     blinkySubsystem = new BlinkySubsystem();
+    /*
     Robot.printMemoryStatus("making drivebase");
     drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     Robot.printMemoryStatus("making superSwerveController");
     superSwerveController = new SuperSwerveController(drivebase);
     Robot.printMemoryStatus("making subsystems");
+    */
   }
 
   /**
@@ -134,9 +138,11 @@ public class RobotContainer {
     driverJoystick = new XboxController(0);
     operatorJoystick = new Joystick(1);
 
-    // Driver controls
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    if (drivebase != null) {
+      // Driver controls
+      new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
+      new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    }
 
     // Operator intake controls
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
