@@ -1,0 +1,28 @@
+{
+    "location": {
+      "front": 9.85,
+      "left": 9.85
+    },
+    "absoluteEncoderOffset": 176,
+    "drive": {
+      "type": "sparkmax",
+      "id": 3,
+      "canbus": null
+    },
+    "angle": {
+      "type": "sparkmax",
+      "id": 4,
+      "canbus": null
+    },
+    "encoder": {
+      "type": "ctre_mag",
+      "id": 2,
+      "canbus": null
+    },
+    "inverted": {
+      "drive": true,
+      "angle": true
+    },
+    "useCosineCompensator": false,
+    "absoluteEncoderInverted": false
+  }

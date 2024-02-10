@@ -6,8 +6,8 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 
 public class CANSparkMaxSendable extends CANSparkMax implements Sendable  {
-    public CANSparkMaxSendable(int deviceId, MotorType motorType) {
-        super(deviceId, motorType);
+    public CANSparkMaxSendable(int deviceId, com.revrobotics.CANSparkLowLevel.MotorType kbrushless) {
+        super(deviceId, kbrushless);
 
         SendableRegistry.addLW(this, "SparkMax", deviceId);
     }

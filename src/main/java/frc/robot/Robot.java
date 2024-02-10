@@ -13,9 +13,16 @@ import org.usfirst.frc3620.misc.RobotMode;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+<<<<<<< HEAD
 import frc.robot.commands.SetShooterSpeedCommand;
+=======
+import frc.robot.commands.SetIntakeLocationCommand;
+import frc.robot.subsystems.IntakeLocation;
+>>>>>>> test
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,7 +34,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
+  LightSegment lightSegment;
+  LightSegment Blink;
+private BlinkPattern blinkPattern;
+private SolidPattern solidPattern;
   private Logger logger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
@@ -40,6 +50,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
+    Blink=new LightSegment(0, 3);
+    lightSegment=new LightSegment(3, 10);
+    solidPattern= new SolidPattern();
+    blinkPattern=new BlinkPattern();
 
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
@@ -132,7 +146,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
+        solidPattern.setColor(Color.kYellow);
+    // solidPattern.start(lightSegment);
+     blinkPattern.setColor(Color.kLightGoldenrodYellow);
+     blinkPattern.setBlink( 0.5);
+    Blink.setPattern(new BlinkPattern().setBlink(0.75).setColor(Color.kAquamarine));
+    // chasePattern.setColor(Color.kAliceBlue);
     processRobotModeChange(RobotMode.TELEOP);
         new SetShooterSpeedCommand(10, m_robotContainer.shooterSubsystem);
 
@@ -143,7 +162,15 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+<<<<<<< HEAD
     // RobotContainer.shooterSubsystem.periodic();
+=======
+    lightSegment.setPattern(solidPattern);
+    lightSegment.setPattern(blinkPattern);
+    // lightSegment.setPattern(chasePattern);
+    lightSegment.periodic();
+    Blink.periodic();
+>>>>>>> test
   }
 
   @Override
