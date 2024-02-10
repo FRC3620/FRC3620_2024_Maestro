@@ -1,6 +1,7 @@
 package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.HatePathplannerCommand;
+import frc.robot.commands.TurnToCommand;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
+import org.usfirst.frc3620.misc.DPad;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
 
@@ -154,14 +156,25 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    DPad driverDPad = new DPad(driverXbox, 0);
 
     new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
     new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+
+    driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
+    driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
+    driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
+    driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
+    
+
   }
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
     SmartDashboard.putData("setChassisSpeeds Command", new HatePathplannerCommand(drivebase));
+    SmartDashboard.putData("TurnTo90", new TurnToCommand(drivebase, superSwerveController, 90));
+    SmartDashboard.putData("TurnTo1800", new TurnToCommand(drivebase, superSwerveController, 180));
+    SmartDashboard.putData("TurnTo-90", new TurnToCommand(drivebase, superSwerveController, -90));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
