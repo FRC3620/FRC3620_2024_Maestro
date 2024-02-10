@@ -4,9 +4,9 @@
 
 package frc.robot.subsystems;
 
-import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.RobotMode;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
@@ -32,7 +32,7 @@ public class IntakeShoulderMechanism {
   final double velocityConverionFactor = 1.0;
 
   // Ingredients: Motor, Encoder, PID, and Timer
-  CANSparkMaxSendable motor;
+  CANSparkMax motor;
   RelativeEncoder motorEncoder;
   DutyCycleEncoder absoluteEncoder;
   Timer calibrationTimer;
@@ -48,7 +48,7 @@ public class IntakeShoulderMechanism {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
-  public IntakeShoulderMechanism(CANSparkMaxSendable motor, DutyCycleEncoder absoluteEncoder) { //The constructor
+  public IntakeShoulderMechanism(CANSparkMax motor, DutyCycleEncoder absoluteEncoder) { //The constructor
     this.motor = motor;
     this.absoluteEncoder = absoluteEncoder;
     if (motor != null) {

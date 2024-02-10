@@ -4,12 +4,13 @@
 
 package frc.robot.subsystems;
 
+import org.usfirst.frc3620.misc.CANDeviceFinder;
+import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 import org.usfirst.frc3620.misc.RobotMode;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -20,7 +21,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
-
+import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbElevationSubsystem extends SubsystemBase {
@@ -54,7 +55,12 @@ public class ClimbElevationSubsystem extends SubsystemBase {
   Double requestedPositionWhileCalibrating = null;
 
   public ClimbElevationSubsystem() { //The constructor
-    this.motor = new CANSparkMaxSendable(17, MotorType.kBrushless);
+    CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
+    boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 17, "Climber") || shouldMakeAllCANDevices) {
+      this.motor = new CANSparkMaxSendable(17, MotorType.kBrushless);
+    }
     this.limitSwitch = new DigitalInput(8);
     
     if (motor != null) {

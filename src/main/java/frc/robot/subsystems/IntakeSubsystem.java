@@ -11,6 +11,9 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
+import com.revrobotics.CANSparkMax;
+import org.usfirst.frc3620.misc.CANSparkMaxSendableShim;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -29,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeWristMechanism intakeWristMechanism;
   public IntakeRollersMechanism intakeRollerMechanism;
 
-  public CANSparkMaxSendable shoulder;
+  public CANSparkMax shoulder;
   public DutyCycleEncoder shoulderEncoder;
 
   public CANSparkMaxSendable extend;
@@ -145,10 +148,10 @@ public class IntakeSubsystem extends SubsystemBase {
     boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 13, "Shoulder") || shouldMakeAllCANDevices) {
-      shoulder = new CANSparkMaxSendable(13, MotorType.kBrushless);
+      shoulder = new CANSparkMax(13, MotorType.kBrushless);
       MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(shoulder);
-      addChild("shoulder", shoulder);
+      addChild("shoulder", new CANSparkMaxSendableShim(shoulder));
     }
 
     /*
