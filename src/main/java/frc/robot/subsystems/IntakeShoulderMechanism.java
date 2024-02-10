@@ -11,16 +11,15 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-public class ArmElevationSubsystem extends SubsystemBase {
-  final String name = "Arm Elevate";
+public class IntakeShoulderMechanism {
+  final String name = "intake.shoulder";
 
   // PID parameters and encoder conversion factors
   final double kP = 0.4; //
@@ -35,6 +34,7 @@ public class ArmElevationSubsystem extends SubsystemBase {
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMaxSendable motor;
   RelativeEncoder motorEncoder;
+  DutyCycleEncoder absoluteEncoder;
   Timer calibrationTimer;
 
   SparkPIDController pid = null;
@@ -48,23 +48,23 @@ public class ArmElevationSubsystem extends SubsystemBase {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
-  public ArmElevationSubsystem(CANSparkMaxSendable motor) { //The constructor
+  public IntakeShoulderMechanism(CANSparkMaxSendable motor, DutyCycleEncoder absoluteEncoder) { //The constructor
     this.motor = motor;
+    this.absoluteEncoder = absoluteEncoder;
     if (motor != null) {
-      motorEncoder = motor.getEncoder();
-      motorEncoder.setPositionConversionFactor(positionConverionFactor);
-      motorEncoder.setVelocityConversionFactor(velocityConverionFactor);
-
       pid = motor.getPIDController();
       pid.setP(kP); // 
       pid.setI(kI); // 
       pid.setD(kD); // 
       pid.setFF(kFF); //
       pid.setOutputRange(-outputLimit, outputLimit);
+
+      this.motorEncoder = motor.getEncoder();
+      motorEncoder.setPositionConversionFactor(positionConverionFactor);
+      motorEncoder.setVelocityConversionFactor(velocityConverionFactor);
     }
   }
 
-  @Override
   public void periodic() {
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
 
@@ -142,16 +142,15 @@ public class ArmElevationSubsystem extends SubsystemBase {
    * @return the current position
    */
   public double getActualPosition() {
-    if (motorEncoder == null)
-      return 0;
-    double position = motorEncoder.getPosition();
-    return position;
+    return absoluteEncoder.getDistance();
   }
 
   // Remember that power and position are different things. this should probably only
   // be used by the calibration routine in periodic()
   void setPower(double power) {
-    motor.set(power);
+    if (motor != null) {
+      motor.set(power);
+    }
   }
 
 }
