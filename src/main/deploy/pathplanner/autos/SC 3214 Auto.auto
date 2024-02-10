@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.008186631757879,
-      "y": 5.531335051274091
-    },
-    "rotation": 0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -14,7 +8,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path"
+            "pathName": "SC to 3"
           }
         },
         {
@@ -26,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test2 Path"
+            "pathName": "3 to 2"
           }
         },
         {
@@ -38,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test3 Path"
+            "pathName": "2 to 1"
           }
         },
         {
@@ -50,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test4 Path"
+            "pathName": "1 to 4"
           }
         },
         {
