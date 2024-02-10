@@ -64,6 +64,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // meters to get meters/second.
     // The gear ratio is 6.75 motor revolutions per wheel rotation.
     // The encoder resolution per motor revolution is 1 per motor revolution.
+    
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(3.0), 100.0, 1.0);
     System.out.println("\"conversionFactor\": {");
     System.out.println("\t\"angle\": " + angleConversionFactor + ",");
@@ -212,6 +213,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
       CANSparkMax angleMotor = (CANSparkMax) swerveModule.getAngleMotor().getMotor();
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Angle Applied Output", angleMotor.getAppliedOutput());
+      SmartDashboard.putNumber("maxAngleVelocity", swerveDrive.getMaximumAngularVelocity());
 
       CANSparkMax driveMotor = (CANSparkMax) swerveModule.getDriveMotor().getMotor();
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Applied Output", driveMotor.getAppliedOutput());
@@ -255,6 +257,13 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Pose2d getPose() {
     return swerveDrive.getPose();
+  }
+
+  public Pose2d getFakePoseForPathPlanner() {
+    Pose2d p = getPose();
+    Translation2d pTrans = p.getTranslation().times(4);
+    Pose2d rV = new Pose2d(pTrans, p.getRotation());
+    return rV;
   }
 
   /**

@@ -1,5 +1,6 @@
 package frc.robot;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.HatePathplannerCommand;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -160,6 +161,7 @@ public class RobotContainer {
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
+    SmartDashboard.putData("setChassisSpeeds Command", new HatePathplannerCommand(drivebase));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
