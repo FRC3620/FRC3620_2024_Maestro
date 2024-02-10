@@ -18,6 +18,9 @@ import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
+import frc.robot.commands.SetClimberPositionCommand;
+import frc.robot.subsystems.ClimbElevationSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -54,7 +57,7 @@ public class RobotContainer {
 
   public static PneumaticsModuleType pneumaticModuleType = null;
 
-
+  public static ClimbElevationSubsystem climbElevationSubsystem;
   // joysticks here....
   CommandJoystick driverController = new CommandJoystick(1);
   XboxController driverXbox = new XboxController(0);
@@ -126,6 +129,7 @@ public class RobotContainer {
 
   private void makeSubsystems() {
 
+    climbElevationSubsystem= new ClimbElevationSubsystem();
   }
 
   /**
@@ -142,6 +146,9 @@ public class RobotContainer {
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
+    SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
+    SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
+
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
