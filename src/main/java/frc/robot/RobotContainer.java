@@ -58,18 +58,22 @@ public class RobotContainer {
 
   public static PneumaticsModuleType pneumaticModuleType = null;
 
+<<<<<<< HEAD
   public static IntakeSubsystem intakeSubsystem;
 
+=======
+  public static ClimbElevationSubsystem climbElevationSubsystem;
+>>>>>>> test
   // joysticks here....
   CommandJoystick driverController = new CommandJoystick(1);
   XboxController driverXbox = new XboxController(0);
-
+public static BlinkySubsystem blinkySubsystem;
   public static Joystick operatorJoystick;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
-
+    blinkySubsystem=new BlinkySubsystem();
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info ("got parameters for chassis '{}'", robotParameters.getName());
 
@@ -131,7 +135,11 @@ public class RobotContainer {
 
   private void makeSubsystems() {
 
+<<<<<<< HEAD
     intakeSubsystem = new IntakeSubsystem();
+=======
+    climbElevationSubsystem= new ClimbElevationSubsystem();
+>>>>>>> test
   }
 
   /**
@@ -159,11 +167,17 @@ public class RobotContainer {
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
+<<<<<<< HEAD
     SmartDashboard.putData("GroundPosition", new SetIntakeLocationCommand(IntakeLocation.groundPosition));
     SmartDashboard.putData("HomePosition", new SetIntakeLocationCommand(IntakeLocation.homePosition));
     SmartDashboard.putData("AmpPosition", new SetIntakeLocationCommand(IntakeLocation.ampPosition));
     SmartDashboard.putData("TrapPosition", new SetIntakeLocationCommand(IntakeLocation.trapPosition));
     SmartDashboard.putData("PreclimbPosition", new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
+=======
+    SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
+    SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
+
+>>>>>>> test
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
