@@ -10,8 +10,8 @@
             <TimeIsSetFilter/>
             <Routes pattern="x">
                 <Route>
-                    <File name="MyFile" createOnDemand="true" fileName="log-${date:yyyy_MM_dd HH.mm.ss}.log">
-                        <PatternLayout pattern="%d %c{1.} %p %m%n"/>
+                    <File name="MyFile" createOnDemand="true" fileName="${roborio:logdir}/${roborio:timestamp}.log">
+                        <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
                     </File>
                 </Route>
             </Routes>
@@ -32,5 +32,6 @@
             <AppenderRef ref="SA"/>
             -->
         </Root>
+        <Logger name="com.example" level="INFO" />
     </Loggers>
 </Configuration>

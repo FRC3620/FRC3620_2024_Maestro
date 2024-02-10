@@ -43,8 +43,7 @@ deploy {
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
                     jvmArgs.add("-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector")
                     jvmArgs.add("-Dlog4j2.asyncLoggerRingBufferSize=256")
-                    // jvmArgs.add("-Xms40M")
-                    jvmArgs.add("-Xmx60M")
+                    // jvmArgs.add("-Dlog4j2.debug=true")
                     if (useG1GC) {
                         gcType = 'Other'
                         jvmArgs.add("-XX:+UseG1GC")
@@ -90,7 +89,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.10'
     implementation group: 'org.slf4j', name: 'jul-to-slf4j', version: '2.0.10' // JUL bridge
 
-    annotationProcessor("org.apache.logging.log4j:log4j-core:2.22.1")
+    // annotationProcessor("org.apache.logging.log4j:log4j-core:2.22.1")
     implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.22.1'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.22.1'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.22.1'
