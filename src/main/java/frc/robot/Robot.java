@@ -75,9 +75,6 @@ public class Robot extends TimedRobot {
     robotDataLogger.start();
 
     FileSaver.add("networktables.ini");
-    SmartDashboard.putData("intake p1", new SetIntakeLocationCommand(IntakeLocation.testLocation1));
-    SmartDashboard.putData("intake p2", new SetIntakeLocationCommand(IntakeLocation.testLocation2));
-
   }
 
   /**
