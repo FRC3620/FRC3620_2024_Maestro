@@ -81,6 +81,9 @@ private SolidPattern solidPattern;
     robotDataLogger.start();
 
     FileSaver.add("networktables.ini");
+
+    enableLiveWindowInTest(true);
+    
     printMemoryStatus("robotInit done");
   }
 
