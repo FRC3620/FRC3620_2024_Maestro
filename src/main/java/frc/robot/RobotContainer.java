@@ -61,13 +61,13 @@ public class RobotContainer {
   // joysticks here....
   CommandJoystick driverController = new CommandJoystick(1);
   XboxController driverXbox = new XboxController(0);
-
+public static BlinkySubsystem blinkySubsystem;
   public static Joystick operatorJoystick;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
-
+    blinkySubsystem=new BlinkySubsystem();
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info ("got parameters for chassis '{}'", robotParameters.getName());
 
