@@ -12,7 +12,7 @@ import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
 import com.revrobotics.CANSparkMax;
-import org.usfirst.frc3620.misc.CANSparkMaxSendableShim;
+import org.usfirst.frc3620.misc.CANSparkMaxSendableWrapper;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -152,7 +152,7 @@ public class IntakeSubsystem extends SubsystemBase {
       shoulder = new CANSparkMax(13, MotorType.kBrushless);
       MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(shoulder);
-      CANSparkMaxSendableShim shim = new CANSparkMaxSendableShim(shoulder);
+      CANSparkMaxSendableWrapper shim = new CANSparkMaxSendableWrapper(shoulder);
       addChild("shoulder", shim);
     }
 
