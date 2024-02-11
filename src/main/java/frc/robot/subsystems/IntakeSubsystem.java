@@ -33,7 +33,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeWristMechanism intakeWristMechanism;
   public IntakeRollersMechanism intakeRollerMechanism;
 
-  public CANSparkMax shoulder;
+  public CANSparkMaxSendable shoulder;
   public DutyCycleEncoder shoulderEncoder;
 
   public CANSparkMaxSendable extend;
@@ -148,13 +148,15 @@ public class IntakeSubsystem extends SubsystemBase {
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
     boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 13, "Shoulder") || shouldMakeAllCANDevices) {
-      shoulder = new CANSparkMax(13, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 13, "Intake Elevation") || shouldMakeAllCANDevices) {
+      shoulder = new CANSparkMaxSendable(13, MotorType.kBrushless);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(20).setCoast(false);
       motorSetup.apply(shoulder);
-      CANSparkMaxSendableWrapper shim = new CANSparkMaxSendableWrapper(shoulder);
-      addChild("shoulder", shim);
+      addChild("elevation", shoulder);
     }
+
+    shoulderEncoder = new DutyCycleEncoder(7);
+    addChild("shoulderEncoder", shoulderEncoder);
 
     /*
      * if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 14, "Elevate2")
@@ -169,24 +171,30 @@ public class IntakeSubsystem extends SubsystemBase {
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "Extend") || shouldMakeAllCANDevices) {
       extend = new CANSparkMaxSendable(10, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(10).setCoast(true);
       motorSetup.apply(extend);
       addChild("extend", extend);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "Extend2") || shouldMakeAllCANDevices) {
       extend2 = new CANSparkMaxSendable(11, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(true);
       motorSetup.apply(extend2);
       addChild("extend2", extend2);
     }
 
+    extendHomeSwitch = new DigitalInput(5);
+    addChild("extendHomeSwitch", extendHomeSwitch);
+
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 12, "Wrist") || shouldMakeAllCANDevices) {
       wrist = new CANSparkMaxSendable(12, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(false);
       motorSetup.apply(wrist);
       addChild("wrist", wrist);
     }
+
+    wristHomeSwitch = new DigitalInput(6);
+    addChild("wristHomeSwitch", wristHomeSwitch);
 
      /* wristMotorEncoder = wrist.getEncoder();
       // 360 to convert from rotations to degrees
@@ -198,7 +206,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "Rollers") || shouldMakeAllCANDevices) {
       rollers = new CANSparkMaxSendable(9, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(20).setCoast(false);
       motorSetup.apply(rollers);
       addChild("roller", rollers);
     }
