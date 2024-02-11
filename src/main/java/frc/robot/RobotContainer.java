@@ -119,13 +119,11 @@ public class RobotContainer {
     climbElevationSubsystem = new ClimbElevationSubsystem();
     shooterSubsystem = new ShooterSubsystem();
     blinkySubsystem = new BlinkySubsystem();
-    /*
     Robot.printMemoryStatus("making drivebase");
     drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     Robot.printMemoryStatus("making superSwerveController");
     superSwerveController = new SuperSwerveController(drivebase);
     Robot.printMemoryStatus("making subsystems");
-    */
   }
 
   /**

@@ -24,8 +24,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.SwerveMotors;
+
 import java.io.File;
-import java.net.CacheRequest;
+
+import org.usfirst.frc3620.misc.FakeMotor;
 
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -47,6 +50,8 @@ public class SwerveSubsystem extends SubsystemBase {
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
   public double maximumSpeed = 0.4; //1
+
+  public SwerveMotors swerveMotors;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -82,6 +87,10 @@ public class SwerveSubsystem extends SubsystemBase {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+
+    swerveMotors = new SwerveMotors(this, swerveDrive);
+    addChild("cusscusscuss", new FakeMotor(999));
+
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via
                                              // angle.
 

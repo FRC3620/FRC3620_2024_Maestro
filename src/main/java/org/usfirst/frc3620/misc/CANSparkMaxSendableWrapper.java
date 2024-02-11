@@ -72,4 +72,9 @@ public class CANSparkMaxSendableWrapper implements Sendable, MotorController{
         builder.addDoubleProperty("Value", this::get, this::set);
     }
 
+    @Override
+    public String toString() {
+        return "CANSparkMaxSendableWrapper [deviceId=" + deviceId + ", motor=" + motor + "]";
+    }
+
 }
