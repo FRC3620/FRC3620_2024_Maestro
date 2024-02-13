@@ -72,6 +72,7 @@ public class Robot extends TimedRobot {
     robotDataLogger.start();
 
     FileSaver.add("networktables.ini");
+    enableLiveWindowInTest(true);
   }
 
   /**
