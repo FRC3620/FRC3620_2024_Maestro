@@ -9,9 +9,10 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 /** Add your docs here. */
-public class CANSparkMaxSendableWrapper implements Sendable {
+public class CANSparkMaxSendableWrapper implements Sendable, MotorController, AutoCloseable {
     Logger logger = EventLogging.getLogger(this.getClass(), Level.INFO);
     CANSparkMax motor;
     int deviceId;
@@ -30,6 +31,7 @@ public class CANSparkMaxSendableWrapper implements Sendable {
         builder.setActuator(true);
         builder.setSafeState(this::stopMotor);
         builder.addDoubleProperty("Value", this::get, this::set);
+        builder.publishConstString("id", "CANSparkMaxSendableWrapper[" + deviceId + "]");
     }
 
     public void set(double speed) {
@@ -64,7 +66,47 @@ public class CANSparkMaxSendableWrapper implements Sendable {
 
     @Override
     public String toString() {
-        return "CANSparkMaxSendableWrapper [deviceId=" + deviceId + ", motor=" + motor + "]";
+        String m = "(null)";
+        if (motor != null) m = motor.toString();
+        return "CANSparkMaxSendableWrapper [deviceId=" + deviceId + ", motor=" + m + "]";
+    }
+
+    @Override
+    public void setInverted(boolean isInverted) {
+        try {
+            logger.info("CANSparkMaxSendableWrapper[{}].setInverted({})", deviceId, isInverted);
+            if (motor != null)
+                motor.setInverted(isInverted);
+        } catch (Exception ex) {
+            logger.error("boom: {}", ex);
+        }
+    }
+
+    @Override
+    public boolean getInverted() {
+        try {
+            if (motor != null)
+                return motor.getInverted();
+        } catch (Exception ex) {
+            logger.error("boom: {}", ex);
+        }
+        return false;
+    }
+
+    @Override
+    public void disable() {
+        try {
+            logger.info("CANSparkMaxSendableWrapper[{}].disable()", deviceId);
+            if (motor != null)
+                motor.disable();
+        } catch (Exception ex) {
+            logger.error("boom: {}", ex);
+        }
+    }
+
+    @Override
+    public void close() throws Exception {
+        SendableRegistry.remove(this);
     }
 
 }

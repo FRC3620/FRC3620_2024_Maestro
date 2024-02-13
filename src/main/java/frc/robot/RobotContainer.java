@@ -116,8 +116,6 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
-    new FakeSubsystem("before", 61);
-    new FakeMotor(78787);
     intakeSubsystem = new IntakeSubsystem();
     climbElevationSubsystem = new ClimbElevationSubsystem();
     shooterSubsystem = new ShooterSubsystem();
@@ -127,8 +125,6 @@ public class RobotContainer {
     Robot.printMemoryStatus("making superSwerveController");
     superSwerveController = new SuperSwerveController(drivebase);
     Robot.printMemoryStatus("making subsystems");
-    swerveMotorTestSubsystem = new SwerveMotorTestSubsystem(drivebase.getSwerveDrive(), 59);
-    new FakeSubsystem("after", 62);
   }
 
   /**

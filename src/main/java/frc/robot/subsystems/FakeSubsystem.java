@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
-import org.usfirst.frc3620.misc.CSPMXSW;
+import org.usfirst.frc3620.misc.CANSparkMaxSendableWrapper;
 import org.usfirst.frc3620.misc.FakeMotor;
 
 import com.revrobotics.CANSparkMax;
@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class FakeSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
     FakeMotor m1, m2, m3, m5;
-    CSPMXSW m4;
+    CANSparkMaxSendableWrapper m4;
     boolean m5_added = false;
     public FakeSubsystem(String name, int canSparkMaxNumber) {
       super(name);
@@ -22,7 +22,7 @@ public class FakeSubsystem extends SubsystemBase {
       m2 = new FakeMotor(2);
       m3 = new FakeMotor(canSparkMaxNumber);
       CANSparkMax realCANSparkMax = new CANSparkMax(canSparkMaxNumber, MotorType.kBrushless);
-      m4 = new CSPMXSW(realCANSparkMax);
+      m4 = new CANSparkMaxSendableWrapper(realCANSparkMax);
       logger.info("{} has CANSparkMAX {}", name, realCANSparkMax.getDeviceId());
       addChild("foo", m1);
       addChild("bar", m2);

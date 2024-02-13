@@ -5,7 +5,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
-import org.usfirst.frc3620.misc.CSPMXSW;
+import org.usfirst.frc3620.misc.CANSparkMaxSendableWrapper;
 import org.usfirst.frc3620.misc.FakeMotor;
 import org.usfirst.frc3620.misc.Utilities;
 
@@ -24,15 +24,9 @@ public class SwerveMotorTestSubsystem extends SubsystemBase {
 
     Map<String, Object> motors = new TreeMap<>();
 
-    FakeMotor fm1, fm2;
-    CANSparkMax csm;
-
-    int i = 1000;
-
     public SwerveMotorTestSubsystem (SwerveDrive swerveDrive, int sm) {
-        Utilities.dumpSendables("startup", getName());
-        fm1 = new FakeMotor(4001);
-        addChild ("fakeyfakey1", fm1);
+        // Utilities.dumpSendables("startup", getName());
+
         SwerveModule[] modules = swerveDrive.getModules();
         NS ns;
         for (var module : modules) {
@@ -42,34 +36,13 @@ public class SwerveMotorTestSubsystem extends SubsystemBase {
                 addChild (ns.n, ns.s);
                 Utilities.dumpSendables("after " + ns.n, getName());
             }
-            ns = makeFakeSendable(moduleName, module.getAngleMotor(), "fakeangle");
-            if (ns != null) {
-                addChild (ns.n, ns.s);
-                Utilities.dumpSendables("after " + ns.n, getName());
-            }
             ns = makeRealSendable(moduleName, module.getDriveMotor(), "drive");
-            if (ns != null) {
-                addChild (ns.n, ns.s);
-                Utilities.dumpSendables("after " + ns.n, getName());
-            }
-            ns = makeFakeSendable(moduleName, module.getDriveMotor(), "fakedrive");
             if (ns != null) {
                 addChild (ns.n, ns.s);
                 Utilities.dumpSendables("after " + ns.n, getName());
             }
         }
         logger.info(motors.toString());
-
-        csm = new CANSparkMax(sm, MotorType.kBrushless);
-        CSPMXSW smw = new CSPMXSW(csm);
-        Utilities.dumpSendables("after smw", getName());
-        addChild("xfakeSparkMAX", smw);
-        Utilities.dumpSendables("after addChild smw", getName());
-
-        addChild("xfakeSparkMAXnull", null);
-
-        fm2 = new FakeMotor(4002);
-        addChild ("fakeyfakey2", fm2);
     }
 
     NS makeRealSendable (String moduleName, SwerveMotor swerveMotor, String motorName) {
@@ -82,7 +55,7 @@ public class SwerveMotorTestSubsystem extends SubsystemBase {
             sendable = (Sendable) realMotor;
         } else {
             if (realMotor instanceof CANSparkMax) {
-                sendable = new CSPMXSW((CANSparkMax) realMotor);
+                sendable = new CANSparkMaxSendableWrapper((CANSparkMax) realMotor);
             }
         }
         if (sendable != null) {
@@ -90,13 +63,6 @@ public class SwerveMotorTestSubsystem extends SubsystemBase {
             return new NS(name, sendable);
         }
         return null;
-    }
-
-    NS makeFakeSendable (String moduleName, SwerveMotor swerveMotor, String motorName) {
-        String name = moduleName + "." + motorName;
-        Sendable sendable = new FakeMotor(i+=100);
-        logger.info ("Adding sendable {}: {}", name, sendable);
-        return new NS("yyfake." + name, sendable);
     }
 
     class NS {
