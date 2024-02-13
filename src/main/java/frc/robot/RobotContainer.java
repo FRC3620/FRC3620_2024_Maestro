@@ -17,7 +17,6 @@ import org.usfirst.frc3620.misc.CANDeviceFinder;
 
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -25,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
+import org.usfirst.frc3620.misc.FakeMotor;
 import org.usfirst.frc3620.misc.JoystickAnalogButton;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
@@ -48,6 +48,7 @@ public class RobotContainer {
   public static ShooterSubsystem shooterSubsystem;
   public static BlinkySubsystem blinkySubsystem;
   private SwerveSubsystem drivebase;
+  public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
 
   private SuperSwerveController superSwerveController;
 
@@ -115,6 +116,8 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
+    new FakeSubsystem("before", 61);
+    new FakeMotor(78787);
     intakeSubsystem = new IntakeSubsystem();
     climbElevationSubsystem = new ClimbElevationSubsystem();
     shooterSubsystem = new ShooterSubsystem();
@@ -124,6 +127,8 @@ public class RobotContainer {
     Robot.printMemoryStatus("making superSwerveController");
     superSwerveController = new SuperSwerveController(drivebase);
     Robot.printMemoryStatus("making subsystems");
+    swerveMotorTestSubsystem = new SwerveMotorTestSubsystem(drivebase.getSwerveDrive(), 59);
+    new FakeSubsystem("after", 62);
   }
 
   /**

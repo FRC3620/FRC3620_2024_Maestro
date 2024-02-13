@@ -12,7 +12,7 @@ import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
 import com.revrobotics.CANSparkMax;
-import org.usfirst.frc3620.misc.CANSparkMaxSendableWrapper;
+import org.usfirst.frc3620.misc.CSPMXSW;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
