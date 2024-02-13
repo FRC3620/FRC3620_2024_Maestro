@@ -162,11 +162,11 @@ public class IntakeSubsystem extends SubsystemBase {
      * }
      */
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "Extend") || shouldMakeAllCANDevices) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "Extend1") || shouldMakeAllCANDevices) {
       extend = new CANSparkMaxSendable(10, MotorType.kBrushless);
       MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(extend);
-      addChild("extend", extend);
+      addChild("extend1", extend);
     }
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "Extend2") || shouldMakeAllCANDevices) {
