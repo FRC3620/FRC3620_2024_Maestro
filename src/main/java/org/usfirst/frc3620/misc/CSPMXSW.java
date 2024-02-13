@@ -10,7 +10,6 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 /** Add your docs here. */
 public class CSPMXSW implements Sendable, MotorController, AutoCloseable {
@@ -32,6 +31,7 @@ public class CSPMXSW implements Sendable, MotorController, AutoCloseable {
         builder.setActuator(true);
         builder.setSafeState(this::stopMotor);
         builder.addDoubleProperty("Value", this::get, this::set);
+        builder.publishConstString("id", "CSPMXSW[" + deviceId + "]");
     }
 
     public void set(double speed) {

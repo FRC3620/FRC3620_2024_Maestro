@@ -4,8 +4,18 @@
 
 package org.usfirst.frc3620.misc;
 
+import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
+import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.util.sendable.SendableRegistry.CallbackData;
+
 /** Add your docs here. */
 public class Utilities {
+	static Logger logger = EventLogging.getLogger(Utilities.class, Level.INFO);
     /**
 	 * This method makes sure the angle difference calculated falls between -180 degrees and 180 degrees
 	 * @param angle
@@ -24,6 +34,24 @@ public class Utilities {
 		if(angle == -0) {angle = 0;}
 		
 		return angle;
+	}
+
+	public static void dumpSendables(String label, String subsystemName) {
+		logger.info ("Dumping Sendables: {}", label);
+		SendableRegistry.foreachLiveWindow(0, new Callback(subsystemName));
+	}
+
+	static class Callback implements Consumer<SendableRegistry.CallbackData> {
+		String subsystemName;
+		Callback (String s) {
+			this.subsystemName = s;
+		}
+		@Override
+		public void accept(CallbackData t) {
+			if (subsystemName == null || subsystemName.equals(t.subsystem)) {
+				logger.info ("- {} -> {}", t.subsystem, t.name);
+			}
+		}
 	}
 
 }

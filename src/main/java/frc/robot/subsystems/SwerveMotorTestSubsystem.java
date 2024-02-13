@@ -7,6 +7,7 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CSPMXSW;
 import org.usfirst.frc3620.misc.FakeMotor;
+import org.usfirst.frc3620.misc.Utilities;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -29,6 +30,7 @@ public class SwerveMotorTestSubsystem extends SubsystemBase {
     int i = 1000;
 
     public SwerveMotorTestSubsystem (SwerveDrive swerveDrive, int sm) {
+        Utilities.dumpSendables("startup", getName());
         fm1 = new FakeMotor(4001);
         addChild ("fakeyfakey1", fm1);
         SwerveModule[] modules = swerveDrive.getModules();
@@ -36,19 +38,33 @@ public class SwerveMotorTestSubsystem extends SubsystemBase {
         for (var module : modules) {
             String moduleName = module.getConfiguration().name;
             ns = makeRealSendable(moduleName, module.getAngleMotor(), "angle");
-            if (ns != null) addChild (ns.n, ns.s);
+            if (ns != null) {
+                addChild (ns.n, ns.s);
+                Utilities.dumpSendables("after " + ns.n, getName());
+            }
             ns = makeFakeSendable(moduleName, module.getAngleMotor(), "fakeangle");
-            // if (ns != null) addChild (ns.n, ns.s);
+            if (ns != null) {
+                addChild (ns.n, ns.s);
+                Utilities.dumpSendables("after " + ns.n, getName());
+            }
             ns = makeRealSendable(moduleName, module.getDriveMotor(), "drive");
-            if (ns != null) addChild (ns.n, ns.s);
+            if (ns != null) {
+                addChild (ns.n, ns.s);
+                Utilities.dumpSendables("after " + ns.n, getName());
+            }
             ns = makeFakeSendable(moduleName, module.getDriveMotor(), "fakedrive");
-            if (ns != null) addChild (ns.n, ns.s);
+            if (ns != null) {
+                addChild (ns.n, ns.s);
+                Utilities.dumpSendables("after " + ns.n, getName());
+            }
         }
         logger.info(motors.toString());
 
         csm = new CANSparkMax(sm, MotorType.kBrushless);
         CSPMXSW smw = new CSPMXSW(csm);
+        Utilities.dumpSendables("after smw", getName());
         addChild("xfakeSparkMAX", smw);
+        Utilities.dumpSendables("after addChild smw", getName());
 
         addChild("xfakeSparkMAXnull", null);
 

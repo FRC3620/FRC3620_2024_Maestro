@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.SwerveMotorTestSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -159,6 +160,11 @@ private SolidPattern solidPattern;
   @Override
   public void testInit() {
     logCANBusIfNecessary();
+
+    if (RobotContainer.swerveMotorTestSubsystem == null) {
+          RobotContainer.swerveMotorTestSubsystem = new SwerveMotorTestSubsystem(RobotContainer.drivebase.getSwerveDrive(), 59);
+
+    }
 
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();

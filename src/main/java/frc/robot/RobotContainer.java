@@ -47,7 +47,7 @@ public class RobotContainer {
   public static ClimbElevationSubsystem climbElevationSubsystem;
   public static ShooterSubsystem shooterSubsystem;
   public static BlinkySubsystem blinkySubsystem;
-  private SwerveSubsystem drivebase;
+  public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
 
   private SuperSwerveController superSwerveController;

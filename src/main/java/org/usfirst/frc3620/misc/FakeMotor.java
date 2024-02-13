@@ -29,6 +29,7 @@ public class FakeMotor implements Sendable, MotorController, AutoCloseable {
         builder.setActuator(true);
         builder.setSafeState(this::stopMotor);
         builder.addDoubleProperty("Value", this::get, this::set);
+        builder.publishConstString("id", "FakeMotor[" + deviceId + "]");
     }
 
     @Override
