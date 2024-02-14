@@ -21,11 +21,11 @@ public class IntakeExtendMechanism {
   final String name = "intake.extend";
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.4; //
+  final double kP = 0.2; //
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
-  final double outputLimit = 0.2; // the limit that the power cannot exceed
+  final double outputLimit = 0.1; // the limit that the power cannot exceed
 
   final double positionConverionFactor = 1.0;
   final double velocityConverionFactor = 1.0;
@@ -85,10 +85,16 @@ public class IntakeExtendMechanism {
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
 
     // only do something if we actually have a motor
-    if (motor != null) {
+    if (motor != null && motor2 != null) {
       SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
       SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
+      SmartDashboard.putNumber(name + "2.current", motor2.getOutputCurrent());
+      SmartDashboard.putNumber(name + "2.power", motor2.getAppliedOutput());
+      SmartDashboard.putNumber(name + "2.temperature", motor2.getMotorTemperature());
+      
+
+      SmartDashboard.putBoolean("outOfWhack", outOfWhack());
 
       if (motorEncoder != null) { // and there is an encoder, display these
         double velocity = motorEncoder.getVelocity();
@@ -96,11 +102,18 @@ public class IntakeExtendMechanism {
         SmartDashboard.putNumber(name + ".velocity", velocity);
         SmartDashboard.putNumber(name + ".position", position);
 
+        if (motor2Encoder != null) { // and there is an encoder, display these
+          double velocity2 = motor2Encoder.getVelocity();
+          double position2 = motor2Encoder.getPosition();
+          SmartDashboard.putNumber(name + "2.velocity", velocity2);
+          SmartDashboard.putNumber(name + "2.position", position2);
+        }
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) {
             // If the robot is running, and the encoder is "not calibrated," run motor very
             // slowly towards the stop
             setPower(0.03);
+            setPower2(.03);
 
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
@@ -116,7 +129,9 @@ public class IntakeExtendMechanism {
                   // calibration to true
                   encoderCalibrated = true;
                   setPower(0.0);
+                  setPower2(0.0);
                   motorEncoder.setPosition(0.0);
+                  motor2Encoder.setPosition(0.0);
 
                   // If there was a requested position while we were calibrating, go there
                   if (requestedPositionWhileCalibrating != null) {
@@ -132,26 +147,24 @@ public class IntakeExtendMechanism {
 
             // tell motor2 to go to where motor1 currently is
             if (pid2 != null) {
-              pid2.setReference(motorEncoder.getPosition(), ControlType.kPosition);
+              setPIDReference2(motorEncoder.getPosition());
             }
             // not
             if (outOfWhack()) {
               // figure out where motor1 is
               temporaryPosition = motorEncoder.getPosition();
               if (pid != null) {
-                pid.setReference(temporaryPosition, ControlType.kPosition);
+                // tell motor1 to stay where it is right now
+                setPIDReference(temporaryPosition);
               }
-              // tell motor1 to stay where it is right now
-              // ??????????????????????????
             } else {
-              if (pid != null) {
-                pid.setReference(requestedPosition, ControlType.kPosition);
-              }
               // we are in whack
-
-              // tell motor1 to go to the position requested
-              // ????????????????????????????
+              if (pid != null) {
+                // tell motor1 to go to the position requested
+                 setPIDReference(requestedPosition);
+              }
             }
+
           }
         }
       }
@@ -164,7 +177,7 @@ public class IntakeExtendMechanism {
     double position1;
     position1 = motorEncoder.getPosition();
     position2 = motor2Encoder.getPosition();
-
+    SmartDashboard.putNumber("extend position difference", Math.abs(position2 - position1));
     if (Math.abs(position2 - position1) > 1) {
       // change 1 to actual restraint
       return true;
@@ -172,6 +185,7 @@ public class IntakeExtendMechanism {
       return false;
     }
   }
+
   // ???????????????????????????????????????????????????????
 
   /**
@@ -220,4 +234,19 @@ public class IntakeExtendMechanism {
     }
   }
 
+  void setPower2(double power) {
+    if (motor2 != null) {
+      motor2.set(power);
+    }
+  }
+
+  void setPIDReference(double position) {
+    pid.setReference(position, ControlType.kPosition);
+    SmartDashboard.putNumber("position motor1", position);
+  }
+
+  void setPIDReference2(double position) {
+    pid2.setReference(position, ControlType.kPosition);
+    SmartDashboard.putNumber("position motor2", position);
+  }
 }
