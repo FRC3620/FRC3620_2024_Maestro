@@ -230,8 +230,9 @@ private SolidPattern solidPattern;
   static public void printMemoryStatus (String label) {
     StringBuilder sb = new StringBuilder("Memory: ");
     sb.append(label);
-    sb.append("; free=");
-    sb.append(Runtime.getRuntime().freeMemory());
+    sb.append("; used=");
+    double used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+    sb.append(used);
     sb.append(" total=");
     sb.append(Runtime.getRuntime().totalMemory());
     sb.append("; max=");

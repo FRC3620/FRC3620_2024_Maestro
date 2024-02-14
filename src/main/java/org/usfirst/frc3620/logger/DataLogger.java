@@ -93,6 +93,10 @@ public class DataLogger extends DataLoggerBase {
                     data = new Object[namedDataProviders.size()];
                 }
 
+                for (var prelude : preludes) {
+                    prelude.dataLoggerPrelude();
+                }
+
                 for (int i = 0; i < data.length; i++) {
                     NamedDataProvider namedDataProvider = namedDataProviders.get(i);
                     try {
@@ -100,6 +104,10 @@ public class DataLogger extends DataLoggerBase {
                     } catch (Exception e) {
                         data[i] = e.toString(); // "ERROR";
                     }
+                }
+
+                for (var postlude : postludes) {
+                    postlude.dataLoggerPostlude();
                 }
 
                 double t = getTimeInSeconds();
