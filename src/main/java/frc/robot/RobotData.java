@@ -7,12 +7,16 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 
-public class RobotDataLogger {
+public class RobotData {
+	public static void fillInDataLogger (DataLogger dataLogger, CANDeviceFinder canDeviceFinder) {
+		new RobotData(dataLogger, canDeviceFinder);
+	}
+
 	PowerDistribution powerDistribution = null;
 	Runtime runtime = null;
+	MemoryDataLogger memoryDataLogger = null;
 
-	public RobotDataLogger (DataLogger dataLogger, CANDeviceFinder canDeviceFinder) {
-
+	RobotData (DataLogger dataLogger, CANDeviceFinder canDeviceFinder) {
 		dataLogger.addDataProvider("matchTime", () -> DataLogger.f2(DriverStation.getMatchTime()));
 		dataLogger.addDataProvider("robotMode", () -> Robot.getCurrentRobotMode().toString());
 		dataLogger.addDataProvider("robotModeInt", () -> Robot.getCurrentRobotMode().ordinal());
@@ -25,10 +29,7 @@ public class RobotDataLogger {
 			dataLogger.addDataProvider("pdp.totalEnergy", () -> DataLogger.f2(powerDistribution.getTotalEnergy()));
 		}
 
-		runtime = Runtime.getRuntime();
-
-		dataLogger.addDataProvider ("mem.free", () -> runtime.freeMemory());
-		dataLogger.addDataProvider ("mem.total", () -> runtime.totalMemory());
-		dataLogger.addDataProvider ("mem.max", () -> runtime.maxMemory());
+		// fill in stuff for logging memory use
+		memoryDataLogger = new MemoryDataLogger(dataLogger);
 	}
 }

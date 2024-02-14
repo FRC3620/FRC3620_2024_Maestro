@@ -77,7 +77,7 @@ private SolidPattern solidPattern;
     // get data logging going
     printMemoryStatus("setting up data logger");
     DataLogger robotDataLogger = new DataLogger();
-    new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
+    RobotData.fillInDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
     robotDataLogger.setInterval(0.25);
     robotDataLogger.start();
 
