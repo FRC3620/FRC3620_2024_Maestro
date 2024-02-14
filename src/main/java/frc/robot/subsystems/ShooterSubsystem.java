@@ -29,6 +29,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   private double speed = 0.6;
 
+  public final static int MOTORID_SHOOTER_BOTTOM = 14;
+  public final static int MOTORID_SHOOTER_TOP = 15;
   public final static int MOTORID_SHOOTER_ELEVATION = 16;
 
   /** Creates a new ShooterSubsystem. */
@@ -51,14 +53,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 14, "Bottom Shooter") || RobotContainer.shouldMakeAllCANDevices()) {
-      bottomMotor = new TalonFX(14, canBusName);
+    if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_BOTTOM, "Bottom Shooter") || RobotContainer.shouldMakeAllCANDevices()) {
+      bottomMotor = new TalonFX(MOTORID_SHOOTER_BOTTOM, canBusName);
       configMotor("bottom shooter", bottomMotor);
       addChild("bottom", bottomMotor);
     }
 
-    if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 15, "Top Shooter") || RobotContainer.shouldMakeAllCANDevices()) {
-      topMotor = new TalonFX(15, canBusName);
+    if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_TOP, "Top Shooter") || RobotContainer.shouldMakeAllCANDevices()) {
+      topMotor = new TalonFX(MOTORID_SHOOTER_TOP, canBusName);
       configMotor("top shooter", topMotor);
       addChild("top", topMotor);
     }
