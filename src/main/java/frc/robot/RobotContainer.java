@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -171,10 +172,6 @@ public class RobotContainer {
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
-    SmartDashboard.putData("setChassisSpeeds Command", new HatePathplannerCommand(drivebase));
-    SmartDashboard.putData("TurnTo90", new TurnToCommand(drivebase, superSwerveController, 90));
-    SmartDashboard.putData("TurnTo1800", new TurnToCommand(drivebase, superSwerveController, 180));
-    SmartDashboard.putData("TurnTo-90", new TurnToCommand(drivebase, superSwerveController, -90));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

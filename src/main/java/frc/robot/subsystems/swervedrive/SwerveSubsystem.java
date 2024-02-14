@@ -45,7 +45,7 @@ public class SwerveSubsystem extends SubsystemBase {
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public double maximumSpeed = 0.4; //1
+  public double maximumSpeed = 4; //1
   double targetHeading;
 
   /**
@@ -99,14 +99,14 @@ public class SwerveSubsystem extends SubsystemBase {
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(1, 0.0, 0.01),
-            // Translation PID constants
+        // Translation PID constants
+            new PIDConstants(1, 0.0, 0.0),
+            // Rotation PID constants
             new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                 swerveDrive.swerveController.config.headingPIDF.i,
                 swerveDrive.swerveController.config.headingPIDF.d),
-            // Rotation PID constants
-            0.4,
             // Max module speed, in m/s
+            4,
             swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
               
             // Drive base radius in meters. Distance from robot center to furthest module.
