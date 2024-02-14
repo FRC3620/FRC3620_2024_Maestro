@@ -26,6 +26,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.io.File;
+
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.FakeMotor;
+
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
@@ -37,11 +45,13 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase {
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   /**
    * Swerve drive object.
    */
   private final SwerveDrive swerveDrive;
+
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
@@ -66,10 +76,6 @@ public class SwerveSubsystem extends SubsystemBase {
     // The encoder resolution per motor revolution is 1 per motor revolution.
     
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(3.0), 100.0, 1.0);
-    System.out.println("\"conversionFactor\": {");
-    System.out.println("\t\"angle\": " + angleConversionFactor + ",");
-    System.out.println("\t\"drive\": " + driveConversionFactor);
-    System.out.println("}");
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.
@@ -83,6 +89,13 @@ public class SwerveSubsystem extends SubsystemBase {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+
+    FakeMotor fm = new FakeMotor(4098);
+    addChild ("fakeyfakey1", fm);
+
+    logger.info ("{} making motors", this);
+    addChild("cusscusscuss", new FakeMotor(999));
+
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via
                                              // angle.
 
@@ -433,5 +446,9 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void addFakeVisionReading() {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  }
+
+  public SwerveDrive getSwerveDrive() {
+    return swerveDrive;
   }
 }

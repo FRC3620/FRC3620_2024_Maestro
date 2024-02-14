@@ -36,7 +36,8 @@ public enum CANDeviceType {
 
     Talon FX and SRX are the same.
     */
-    TALON(0x02041441, 64),
+    TALON_PHOENIX5(0x02041441, 64),
+    TALON_PHOENIX6(0x02044855, 64),
 
     /*
     SPX used to be 0x01041400.

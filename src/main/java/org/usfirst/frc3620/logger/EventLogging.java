@@ -35,6 +35,29 @@ public class EventLogging {
     }
 
     /**
+     * Get an SLF4J logger for a class. Set the underlying j.u.l logger to INFO.
+     * 
+     * @param clazz
+     *            class for the logger
+     * @return
+     */
+    static public org.slf4j.Logger getLogger(Class<?> clazz) {
+        return getLogger(clazz.getName());
+    }
+
+    /**
+     * Get an SLF4J logger for a name. Set the underlying j.u.l logger to the
+     * INFO level.
+     * 
+     * @param sClazz
+     *            name for the logger
+     * @return
+     */
+    static public org.slf4j.Logger getLogger(String sClazz) {
+        return getLogger(sClazz, Level.INFO);
+    }
+    
+/**
      * Get an SLF4J logger for a name. Set the underlying j.u.l logger to the
      * desired level.
      * 
