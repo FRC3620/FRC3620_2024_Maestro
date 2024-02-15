@@ -5,18 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
+
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotController;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,7 +57,7 @@ public class RobotParametersContainer {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends RobotParametersBase> T getRobotParameters (Class<T> parametersClass, Path path, String mac) {
+    public static <T extends RobotParametersBase> T getRobotParameters (Class<T> parametersClass, Path path, String robotId) {
         if (! RobotParametersBase.class.isAssignableFrom(parametersClass)) {
             logger.error("getRobotParameters needs a subclass of RobotParameters, returning null");
             return null;
@@ -73,9 +74,9 @@ public class RobotParametersContainer {
         }
 
         if (parameterMap != null) {
-            rv = parameterMap.get(mac.toLowerCase());
+            rv = parameterMap.get(robotId.toLowerCase());
             if (rv == null) {
-                logger.info ("no entry in {} for \"{}\"", path, mac);
+                logger.info ("no entry in {} for \"{}\"", path, robotId);
             }
         }
         if (rv == null) {
@@ -106,42 +107,17 @@ public class RobotParametersContainer {
         return (T) rv;
     }
 
-    static String roboRIOMacAddress = null;
+    static String roboRIOId = null;
 
     public static String identifyRoboRIO() {
-        if (roboRIOMacAddress == null) {
-            String rv = "(unknown)";
+        if (roboRIOId == null) {
             if (Robot.isSimulation()) {
-                rv = "(simulation)";
+                roboRIOId = "(simulation)";
             } else {
-                try {
-                    for (Enumeration<NetworkInterface> e = NetworkInterface
-                            .getNetworkInterfaces(); e.hasMoreElements(); ) {
-                        NetworkInterface network = e.nextElement();
-                        byte[] mac = network.getHardwareAddress();
-                        if (mac == null) {
-                            logger.info("found network {}, no MAC", network.getName());
-                        } else {
-                            StringBuilder sb = new StringBuilder();
-                            for (int i = 0; i < mac.length; i++) {
-                                sb.append(String.format("%02X%s", mac[i],
-                                        (i < mac.length - 1) ? "-" : ""));
-                            }
-                            String macString = sb.toString();
-                            logger.info("found network {}, MAC address {}", network.getName(), macString);
-                            if (network.getName().equals("eth0")) {
-                                rv = macString;
-                                break;
-                            }
-                        }
-                    }
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                }
+                roboRIOId = RobotController.getSerialNumber();
             }
-            roboRIOMacAddress = rv;
         }
-        return roboRIOMacAddress;
+        return roboRIOId;
     }
 
 }
