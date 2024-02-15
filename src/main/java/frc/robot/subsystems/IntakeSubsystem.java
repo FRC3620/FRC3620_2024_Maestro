@@ -8,6 +8,7 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -37,6 +38,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public CANSparkMaxSendable rollers;
   public DigitalInput gamePieceObtained;
 
+  double temporaryPosition;
+
   /** Creates a new ArmSubsystem. */
   public IntakeSubsystem() {
     setupMotors();
@@ -44,7 +47,6 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder, shoulderEncoder);
     intakeWristMechanism = new IntakeWristMechanism(wrist, wristHomeSwitch);
     intakeRollerMechanism = new IntakeRollersMechanism(rollers, gamePieceObtained);
-    
   }
 
   @Override
@@ -54,6 +56,54 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeShoulderMechanism.periodic();
     intakeWristMechanism.periodic();
     intakeRollerMechanism.periodic();
+
+    if (cantElevate()) {
+      temporaryPosition = getActualShoulderElevation();
+      // tell shoulder to stay where it is right now
+      setShoulderPosition(temporaryPosition);
+      // sets extend to requested position
+      setExtendPosition(getRequestedExtendPosition());
+
+    } else {
+      // we can extend
+      // tell shoulder to go to the position requested
+      setShoulderPosition(getRequestedShoulderPosition());
+    }
+
+    if (cantHome()) {
+      temporaryPosition = getActualExtendPosition();
+      // tell shoulder to stay where it is right now
+      setExtendPosition(temporaryPosition);
+      // sets extend to requested position
+      setShoulderPosition(getRequestedShoulderPosition());
+
+    } else {
+      // we can extend
+      // tell shoulder to go to the position requested
+      setExtendPosition(getRequestedExtendPosition());
+    }
+  }
+
+  boolean cantElevate() {
+    double extendPosition;
+    extendPosition = intakeExtendMechanism.getActualPosition();
+    // change 1 to actual restraint
+    if (extendPosition > 1) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  boolean cantHome() {
+    double elevatePosition;
+    elevatePosition = intakeExtendMechanism.getActualPosition();
+    // change 1 to actual restraint
+    if (2 > elevatePosition && elevatePosition > 1) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   public void setExtendPosition(double length) {
@@ -90,7 +140,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public boolean gamePieceDetected() {
     return intakeRollerMechanism.gamePieceDetected();
-  } 
+  }
 
   public double getRequestedWristPosition() {
     return intakeWristMechanism.getRequestedPosition();
@@ -130,7 +180,8 @@ public class IntakeSubsystem extends SubsystemBase {
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
     boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ELEVATION, "Intake Elevation") || shouldMakeAllCANDevices) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ELEVATION, "Intake Elevation")
+        || shouldMakeAllCANDevices) {
       shoulder = new CANSparkMaxSendable(MOTORID_INTAKE_ELEVATION, MotorType.kBrushless);
       MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(20).setCoast(false);
       motorSetup.apply(shoulder);
@@ -140,14 +191,16 @@ public class IntakeSubsystem extends SubsystemBase {
     shoulderEncoder = new DutyCycleEncoder(7);
     addChild("shoulderEncoder", shoulderEncoder);
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND, "Extend") || shouldMakeAllCANDevices) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND, "Extend")
+        || shouldMakeAllCANDevices) {
       extend = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND, MotorType.kBrushless);
       MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(10).setCoast(true);
       motorSetup.apply(extend);
       addChild("extend1", extend);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND2, "Extend2") || shouldMakeAllCANDevices) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND2, "Extend2")
+        || shouldMakeAllCANDevices) {
       extend2 = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND2, MotorType.kBrushless);
       MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(true);
       motorSetup.apply(extend2);
@@ -157,7 +210,8 @@ public class IntakeSubsystem extends SubsystemBase {
     extendHomeSwitch = new DigitalInput(5);
     addChild("extendHomeSwitch", extendHomeSwitch);
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_WRIST, "Wrist") || shouldMakeAllCANDevices) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_WRIST, "Wrist")
+        || shouldMakeAllCANDevices) {
       wrist = new CANSparkMaxSendable(MOTORID_INTAKE_WRIST, MotorType.kBrushless);
       MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(false);
       motorSetup.apply(wrist);
@@ -167,7 +221,8 @@ public class IntakeSubsystem extends SubsystemBase {
     wristHomeSwitch = new DigitalInput(6);
     addChild("wristHomeSwitch", wristHomeSwitch);
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ROLLERS, "Rollers") || shouldMakeAllCANDevices) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ROLLERS, "Rollers")
+        || shouldMakeAllCANDevices) {
       rollers = new CANSparkMaxSendable(MOTORID_INTAKE_ROLLERS, MotorType.kBrushless);
       MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(20).setCoast(false);
       motorSetup.apply(rollers);
