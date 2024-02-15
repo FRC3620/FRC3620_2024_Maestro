@@ -14,6 +14,10 @@ public interface IDataLogger {
 
     public double getInterval();
 
+    public void addPrelude(DataLoggerPrelude prelude);
+
+    public void addPostlude(DataLoggerPostlude postlude);
+
     public void addDataProvider(String name, 
             IDataLoggerDataProvider iDataLoggerDataProvider);
 

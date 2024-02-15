@@ -7,8 +7,11 @@ package frc.robot.subsystems;
 
 /** Add your docs here. */
 public class IntakeLocation {
-    public static IntakeLocation testLocation1 = new IntakeLocation(0, 0, 0);
-    public static IntakeLocation testLocation2 = new IntakeLocation(1, 25, 1);
+    public static IntakeLocation groundPosition = new IntakeLocation(0.2, 0.2, 0.2);
+    public static IntakeLocation homePosition = new IntakeLocation(0.4, 0.4, 0.4);
+    public static IntakeLocation ampPosition = new IntakeLocation(0.6, 0.6, 0.6);
+    public static IntakeLocation trapPosition = new IntakeLocation(0.8, 0.8, 0.8);
+    public static IntakeLocation preclimbPosition = new IntakeLocation(1, 1, 1);
     double shoulder;
     /**
      * This is how far we want the intake to extend in centimeters

@@ -1,6 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
 import org.slf4j.Logger;
@@ -11,19 +8,16 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class IntakeSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
   public IntakeExtendMechanism intakeExtendMechanism;
   public IntakeShoulderMechanism intakeShoulderMechanism;
   public IntakeWristMechanism intakeWristMechanism;
@@ -37,15 +31,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public CANSparkMaxSendable extend2;
 
-  //public CANSparkMaxSendable roll;
-
   public CANSparkMaxSendable wrist;
   public DigitalInput wristHomeSwitch;
 
   public CANSparkMaxSendable rollers;
   public DigitalInput gamePieceObtained;
-
-  // public RelativeEncoder rollersEncoder;
 
   /** Creates a new ArmSubsystem. */
   public IntakeSubsystem() {
@@ -73,10 +63,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setExtendPower(double power) {
     intakeExtendMechanism.setPower(power);
   }
-
-  // public void disableExtension() {
-  // intakeExtendMechanism.disable();
-  // }
 
   public void setShoulderPosition(double angle) {
     intakeShoulderMechanism.setPosition(angle);
@@ -130,84 +116,65 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeExtendMechanism.getActualPosition();
   }
 
-  /*
-   * public double getAdjustedRequestedExtension() {
-   * return intakeExtendMechanism.getAdjustedRequestedExtension();
-   * }
-   */
-
   public void recalibrataePitch(boolean forward) {
     recalibrataePitch(forward);
   }
+
+  public final static int MOTORID_INTAKE_ROLLERS = 9;
+  public final static int MOTORID_INTAKE_EXTEND = 10;
+  public final static int MOTORID_INTAKE_EXTEND2 = 11;
+  public final static int MOTORID_INTAKE_WRIST = 12;
+  public final static int MOTORID_INTAKE_ELEVATION = 13;
 
   void setupMotors() {
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
     boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 13, "Shoulder") || shouldMakeAllCANDevices) {
-      shoulder = new CANSparkMaxSendable(13, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ELEVATION, "Intake Elevation") || shouldMakeAllCANDevices) {
+      shoulder = new CANSparkMaxSendable(MOTORID_INTAKE_ELEVATION, MotorType.kBrushless);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(20).setCoast(false);
       motorSetup.apply(shoulder);
-      addChild("shoulder", shoulder);
+      addChild("elevation", shoulder);
     }
 
-    /*
-     * if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 14, "Elevate2")
-     * || shouldMakeAllCANDevices) {
-     * elevation2 = new CANSparkMaxSendable(10, MotorType.kBrushless);
-     * MotorSetup.resetMaxToKnownState(elevation2, true);
-     * elevation2.setSmartCurrentLimit(40);
-     * elevation2.setIdleMode(IdleMode.kBrake);
-     * addChild("elevate2", elevation2);
-     * }
-     */
+    shoulderEncoder = new DutyCycleEncoder(7);
+    addChild("shoulderEncoder", shoulderEncoder);
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "Extend1") || shouldMakeAllCANDevices) {
-      extend = new CANSparkMaxSendable(10, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND, "Extend") || shouldMakeAllCANDevices) {
+      extend = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND, MotorType.kBrushless);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(10).setCoast(true);
       motorSetup.apply(extend);
       addChild("extend1", extend);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "Extend2") || shouldMakeAllCANDevices) {
-      extend2 = new CANSparkMaxSendable(11, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND2, "Extend2") || shouldMakeAllCANDevices) {
+      extend2 = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND2, MotorType.kBrushless);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(true);
       motorSetup.apply(extend2);
       addChild("extend2", extend2);
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 12, "Wrist") || shouldMakeAllCANDevices) {
-      wrist = new CANSparkMaxSendable(12, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
+    extendHomeSwitch = new DigitalInput(5);
+    addChild("extendHomeSwitch", extendHomeSwitch);
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_WRIST, "Wrist") || shouldMakeAllCANDevices) {
+      wrist = new CANSparkMaxSendable(MOTORID_INTAKE_WRIST, MotorType.kBrushless);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(false);
       motorSetup.apply(wrist);
       addChild("wrist", wrist);
     }
 
-     /* wristMotorEncoder = wrist.getEncoder();
-      // 360 to convert from rotations to degrees
-      // 10 is a 5:1 gearbox and a 2:1 pulley reduction
-      wristMotorEncoder.setPositionConversionFactor(360.0 / 10.0);
-      logger.info("Wrist motor position scale = {}", wristMotorEncoder.getPositionConversionFactor());
-    
-    */
+    wristHomeSwitch = new DigitalInput(6);
+    addChild("wristHomeSwitch", wristHomeSwitch);
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "Rollers") || shouldMakeAllCANDevices) {
-      rollers = new CANSparkMaxSendable(9, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ROLLERS, "Rollers") || shouldMakeAllCANDevices) {
+      rollers = new CANSparkMaxSendable(MOTORID_INTAKE_ROLLERS, MotorType.kBrushless);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(20).setCoast(false);
       motorSetup.apply(rollers);
       addChild("roller", rollers);
     }
 
     gamePieceObtained = new DigitalInput(9);
-
-
-
-
-    //shoulderEncoder = new AnalogInput(4);
-    //addChild("shoulderEncoder", shoulderEncoder);
-
-   // wristEncoder = new Encoder(5, 6);
-    //addChild("wristEncoder", wristEncoder);
   }
 
   public void setLocation(IntakeLocation intakeLocation) {
