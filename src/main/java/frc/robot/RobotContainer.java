@@ -1,8 +1,15 @@
 package frc.robot;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.HatePathplannerCommand;
+import frc.robot.commands.TurnToCommand;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
+import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,8 +33,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.FakeMotor;
 import org.usfirst.frc3620.misc.JoystickAnalogButton;
+import org.usfirst.frc3620.misc.DPad;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -58,7 +68,7 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // joysticks here....
-  public static XboxController driverJoystick;
+  public static XboxController driverXbox;
   public static Joystick operatorJoystick;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -103,15 +113,37 @@ public class RobotContainer {
 
     setupAutonomousCommands();
 
-    if (drivebase != null) {
-      SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase, 
-                                                      superSwerveController,
-                                                      () -> MathUtil.applyDeadband(-driverJoystick.getLeftY(),
-                                                                                  OperatorConstants.LEFT_Y_DEADBAND),
-                                                      () -> MathUtil.applyDeadband(-driverJoystick.getLeftX(),
-                                                                                  OperatorConstants.LEFT_X_DEADBAND),
-                                                      () -> -driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X), () -> true);
-      drivebase.setDefaultCommand(SuperFieldRel);
+    SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase, 
+                                                    superSwerveController,
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftY(),
+                                                                                 OperatorConstants.LEFT_Y_DEADBAND),
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
+                                                                                 OperatorConstants.LEFT_X_DEADBAND),
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(4),
+                                                                                OperatorConstants.RIGHT_X_DEADBAND), () -> true);
+
+    TestDriveCommand StandardYagslDrive = new TestDriveCommand(drivebase, 
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 
+                                                                                OperatorConstants.LEFT_Y_DEADBAND),
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
+                                                                                OperatorConstants.LEFT_X_DEADBAND),
+                                                    () -> -driverXbox.getRawAxis(4), () -> true);
+    
+
+    Command sitThereCommand = new TestDriveCommand(
+        drivebase,
+        () -> 0.0,
+        () -> 0.0,
+        () -> 0.0,
+        () -> false
+    );
+
+    drivebase.setDefaultCommand(SuperFieldRel);
+
+    if (drivebase.getCurrentCommand() != null){
+      SmartDashboard.putString("CurrentCommand", drivebase.getCurrentCommand().toString());
+    } else {
+      SmartDashboard.putString("CurrentCommand", "No Command");
     }
   }
 
@@ -134,13 +166,14 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverJoystick = new XboxController(0);
+    driverXbox = new XboxController(0);
     operatorJoystick = new Joystick(1);
+    DPad driverDPad = new DPad(driverXbox, 0);
 
     if (drivebase != null) {
       // Driver controls
-      new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
-      new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+      new JoystickButton(driverXbox, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
+      new JoystickButton(driverXbox, XBoxConstants.BUTTON_X).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
     }
 
     // Operator intake controls
@@ -154,6 +187,13 @@ public class RobotContainer {
             .onTrue(new SetIntakeLocationCommand(IntakeLocation.trapPosition));
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER)
             .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
+
+    driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
+    driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
+    driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
+    driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
+    
+
   }
 
   private void setupSmartDashboardCommands() {
@@ -173,10 +213,13 @@ public class RobotContainer {
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
+    chooser = AutoBuilder.buildAutoChooser();
+
     SmartDashboard.putData("Auto mode", chooser);
 
-    chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
-    // chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
+    //chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
+    //chooser.addOption("PathPlannerAuto", getAutonomousCommand());
+    //chooser.addOption("Auto Command", drivebase.driveToPose(new Pose2d(new Translation2d(1.5, 0), new Rotation2d(0))));
   }
 
   /**

@@ -95,7 +95,7 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.22.1'
 
     // https://mvnrepository.com/artifact/com.lmax/disruptor
-    implementation group: 'com.lmax', name: 'disruptor', version: '3.4.3'
+    // implementation group: 'com.lmax', name: 'disruptor', version: '3.4.3'
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
