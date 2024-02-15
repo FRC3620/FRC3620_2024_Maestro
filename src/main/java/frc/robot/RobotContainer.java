@@ -119,7 +119,7 @@ public class RobotContainer {
                                                                                  OperatorConstants.LEFT_Y_DEADBAND),
                                                     () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
                                                                                  OperatorConstants.LEFT_X_DEADBAND),
-                                                    () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(4),
+                                                    () -> MathUtil.applyDeadband(driverXbox.getRawAxis(4),
                                                                                 OperatorConstants.RIGHT_X_DEADBAND), () -> true);
 
     TestDriveCommand StandardYagslDrive = new TestDriveCommand(drivebase, 
