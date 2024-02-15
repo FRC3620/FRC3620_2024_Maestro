@@ -8,6 +8,7 @@ import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.DataLoggerPrelude;
 
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 
 public class MemoryDataLogger implements DataLoggerPrelude {
     Runtime runtime;
@@ -39,8 +40,10 @@ public class MemoryDataLogger implements DataLoggerPrelude {
             String name = gc.getName();
             String smooshedName = name.replace(" ", "");
             dataLogger.addDataProvider ("mem.gc." + smooshedName + ".count", () -> gcCounts.get(name));
+            gcRates.put(name, new DeltaOverTime());
             dataLogger.addDataProvider ("mem.gc." + smooshedName + ".rate", () -> gcRates.get(name).rate);
             dataLogger.addDataProvider ("mem.gc." + smooshedName + ".time", () -> gcTimes.get(name));
+            gcCPUFraction.put(name, new DeltaOverTime());
             dataLogger.addDataProvider ("mem.gc." + smooshedName + ".cpu", () -> gcCPUFraction.get(name).rate);
         }
     }
@@ -53,23 +56,25 @@ public class MemoryDataLogger implements DataLoggerPrelude {
 
         for (GarbageCollectorMXBean gc : ManagementFactory.getGarbageCollectorMXBeans()) {
             String name = gc.getName();
-            long t0 = RobotController.getFPGATime(); // microseconds
+            double t0 = Timer.getFPGATimestamp(); // seconds
             long c = gc.getCollectionCount();
             long t = gc.getCollectionTime(); // milliseconds
             gcCounts.put(name, gc.getCollectionCount());
             gcTimes.put(name, gc.getCollectionTime());
+            gcRates.get(name).update(t0, c);
+            gcCPUFraction.get(name).update(t0, t / 10.0); // units -> %, milliseconds -> seconds
         }
     }
 
     class DeltaOverTime {
-        Long t0;
-        Long v0;
+        Double t0;
+        Double v0;
         String rate = "";
 
-        void update(long t1, long v1) {
-            if (t0 != null && v0 != null) {
-                double d = v1 - v0;
-                rate = DataLogger.f2((d == 0) ? 0 : (t1 - t0) / d);
+        void update(double t1, double v1) {
+            if (t0 != null) {
+                double tDelta = t1 - t0;
+                rate = DataLogger.f2((tDelta == 0) ? 0 : (v1 - v0) / tDelta);
             }
             t0 = t1;
             v0 = v1;

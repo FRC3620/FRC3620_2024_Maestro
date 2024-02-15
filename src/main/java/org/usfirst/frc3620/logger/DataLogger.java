@@ -94,7 +94,11 @@ public class DataLogger extends DataLoggerBase {
                 }
 
                 for (var prelude : preludes) {
-                    prelude.dataLoggerPrelude();
+                    try {
+                        prelude.dataLoggerPrelude();
+                    } catch (Exception ex) {
+                        logger.error ("prelude threw error: {}", ex);
+                    }
                 }
 
                 for (int i = 0; i < data.length; i++) {
