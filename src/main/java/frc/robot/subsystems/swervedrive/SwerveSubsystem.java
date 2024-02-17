@@ -96,7 +96,7 @@ public class SwerveSubsystem extends SubsystemBase {
     logger.info ("{} making motors", this);
     addChild("cusscusscuss", new FakeMotor(999));
 
-    swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via
+    swerveDrive.setHeadingCorrection(true,0.1); // Heading correction should only be used while controlling the robot via
                                              // angle.
 
     setupPathPlanner();

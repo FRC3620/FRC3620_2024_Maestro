@@ -18,55 +18,49 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 /** Add your docs here. */
 public class SuperSwerveController {
     PIDController headingPID;
-    private double kSpinP = 0.01;
-    private double kSpinI = 0.00000;
-    private double kSpinD = 0.00;
+    private double kSpinP = 0.03; 
+    private double kSpinI = 0.00;
+    private double kSpinD = 0.00; //0.01
     SwerveSubsystem drivebase;
+    Double headingSetpoint = null;
 
     public SuperSwerveController(SwerveSubsystem drivebase) {
         headingPID = new PIDController(kSpinP, kSpinI, kSpinD);
         headingPID.enableContinuousInput(-180, 180); // sets a circular range instead of a linear one.
         headingPID.setTolerance(3);
         this.drivebase = drivebase;
+        headingSetpoint = drivebase.getHeading().getDegrees();
     }
 
-    Timer turnTimer = null;
-    Double headingSetpoint = null;
+    Timer turnTimer = new Timer();
 
     public void doTeleop(SwerveSubsystem swerve, double rX, double rY, double rOmega) {
 
             double targetOmega = 0;
-    
+
             if (Math.abs(rOmega) < 0.1) { // TODO: Change minimum Omega value to CONSTANT
                 // There is not enough rotational input -- Keep the previous heading value
-                // get heading
-                if (turnTimer == null) {
-                    turnTimer = new Timer();
-                    turnTimer.reset();
-                    turnTimer.start();
-                } else if (turnTimer.get() > 0.5) {
-                    headingSetpoint = drivebase.getHeading().getDegrees();
-                    turnTimer.stop();
-                    turnTimer.reset();
-                }
-    
-                if (headingSetpoint != null) {
+                // get heading  
+                if (turnTimer.get() > 0.5) {
+                    //headingSetpoint = drivebase.getHeading().getDegrees();
                     targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), headingSetpoint);
+                } else {
+                    targetOmega = 0;
                 }
             } else {
+                turnTimer.restart();
+                headingSetpoint = drivebase.getHeading().getDegrees();
+                targetOmega = rOmega;
                 // The driver is providing rotational input. Set Omega according to driver input
                 // and store current heading
-                turnTimer = null;
-                targetOmega = rOmega;
-                headingSetpoint = null;
             }
-    
+
             //targetOmega = MathUtil.clamp(targetOmega, -1, 1);
     
             swerve.drive(new Translation2d(
                             Math.pow(rX, 3) * swerve.getMaximumVelocity(), 
                             Math.pow(rY, 3) * swerve.getMaximumVelocity()), 
-                            Math.pow(rOmega, 3) * swerve.getMaximumAngularVelocity(), 
+                            Math.pow(targetOmega, 3) * swerve.getMaximumAngularVelocity(), 
                             true);
             SmartDashboard.putNumber("SuperSwerve.targetOmega", targetOmega);
             SmartDashboard.putNumber("SuperSwerve.rOmega", rOmega);
@@ -76,7 +70,7 @@ public class SuperSwerveController {
             if (headingSetpoint != null) {
                 SmartDashboard.putNumber("SuperSwerve.headingSetpoint", headingSetpoint);
             }
-            SmartDashboard.putNumber("drivebase.getHeading", drivebase.getHeading().getDegrees());
+            SmartDashboard.putNumber("SuperSwerve.getHeading", drivebase.getHeading().getDegrees());
     }
 
     public void turnTo(SwerveSubsystem swerve, double targetHeading) {
