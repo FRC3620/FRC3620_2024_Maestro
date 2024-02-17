@@ -13,8 +13,11 @@ import org.usfirst.frc3620.misc.RobotMode;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.SwerveMotorTestSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -26,7 +29,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
+  LightSegment lightSegment;
+  LightSegment Blink;
+private BlinkPattern blinkPattern;
+private SolidPattern solidPattern;
   private Logger logger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
@@ -37,8 +43,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    printMemoryStatus("setting up logger");
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
+    printMemoryStatus("logger is up");
 
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
@@ -63,15 +71,21 @@ public class Robot extends TimedRobot {
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    printMemoryStatus("making RobotContainer");
     m_robotContainer = new RobotContainer();
 
     // get data logging going
+    printMemoryStatus("setting up data logger");
     DataLogger robotDataLogger = new DataLogger();
     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
     robotDataLogger.setInterval(0.25);
     robotDataLogger.start();
 
     FileSaver.add("networktables.ini");
+
+    enableLiveWindowInTest(true);
+    
+    printMemoryStatus("robotInit done");
   }
 
   /**
@@ -133,16 +147,24 @@ public class Robot extends TimedRobot {
     }
 
     processRobotModeChange(RobotMode.TELEOP);
+
     logMatchInfo();
+    
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
   @Override
   public void testInit() {
     logCANBusIfNecessary();
+
+    if (RobotContainer.swerveMotorTestSubsystem == null) {
+          RobotContainer.swerveMotorTestSubsystem = new SwerveMotorTestSubsystem(RobotContainer.drivebase.getSwerveDrive(), 59);
+
+    }
 
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
@@ -203,6 +225,19 @@ public class Robot extends TimedRobot {
         hasCANBusBeenLogged = true;
       }
     }
+  }
+
+  static public void printMemoryStatus (String label) {
+    StringBuilder sb = new StringBuilder("Memory: ");
+    sb.append(label);
+    sb.append("; used=");
+    double used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+    sb.append(used);
+    sb.append(" total=");
+    sb.append(Runtime.getRuntime().totalMemory());
+    sb.append("; max=");
+    sb.append(Runtime.getRuntime().maxMemory());
+    System.out.println (sb.toString());
   }
 
 }

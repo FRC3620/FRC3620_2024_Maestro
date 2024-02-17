@@ -1,8 +1,9 @@
 [
   {
-    "name": "2022 competition",
+    "name": "2023 Swere",
     "macAddress": "00-80-2F-21-E4-EA",
-    "makeAllCANDevices": true
+    "makeAllCANDevices": false,
+    "swerveDirectoryName": "swerve"
   },
   {
     "name": "2021 competition",
