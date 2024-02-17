@@ -21,12 +21,13 @@ public class SetIntakeLocationCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    intakeSubsystem.setLocation(location);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.setLocation(location);
   }
 
   // Called once the command ends or is interrupted.

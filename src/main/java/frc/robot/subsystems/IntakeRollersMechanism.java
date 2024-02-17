@@ -31,6 +31,8 @@ public class IntakeRollersMechanism {
 
   final String name = "intake.rollers";
 
+  boolean disabledForDebugging = true;
+
   public IntakeRollersMechanism(CANSparkMaxSendable motor, DigitalInput gamePieceObtained) {
     this.motor = motor;
     this.gamePieceObtained = gamePieceObtained;
@@ -96,7 +98,9 @@ public class IntakeRollersMechanism {
 
   public void setPower(double speed) {
     if (motor != null) {
-      motor.set(speed);
+      if (!disabledForDebugging) {
+        motor.set(speed);
+      }
     }
   }
 

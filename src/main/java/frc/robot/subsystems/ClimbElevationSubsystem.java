@@ -54,6 +54,8 @@ public class ClimbElevationSubsystem extends SubsystemBase {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
+  boolean disabledForDebugging = true;
+
   public ClimbElevationSubsystem() { //The constructor
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
     boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
@@ -82,13 +84,13 @@ public class ClimbElevationSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+    SmartDashboard.putBoolean(name + ".Limit status", isLimitSwitchPressed());
 
     // only do something if we actually have a motor
     if (motor != null) { 
       SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
       SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-      SmartDashboard.putBoolean(name+".Limit status", isLimitSwitchPressed());
 
       if (motorEncoder != null) { // if there is an encoder, display these
         double velocity = motorEncoder.getVelocity();
@@ -114,9 +116,8 @@ public class ClimbElevationSubsystem extends SubsystemBase {
                   encoderCalibrated = true;
                   setPower(0.0);
                   motorEncoder.setPosition(0.0);
-                  
 
-                  //If there was a requested position while we were calibrating, go there
+                  // If there was a requested position while we were calibrating, go there
                   if (requestedPositionWhileCalibrating != null) {
                     setPosition(requestedPositionWhileCalibrating);
                     requestedPositionWhileCalibrating = null;
@@ -139,7 +140,9 @@ public class ClimbElevationSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(name + ".requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
-      pid.setReference(position, ControlType.kPosition);
+      if (!disabledForDebugging) {
+        pid.setReference(position, ControlType.kPosition);
+      }
     } else {
       requestedPositionWhileCalibrating = position;
     }
@@ -171,7 +174,9 @@ public class ClimbElevationSubsystem extends SubsystemBase {
   // Remember that power and position are different things. this should probably only
   // be used by the calibration routine in periodic()
   void setPower(double power) {
-    motor.set(power);
+    if (!disabledForDebugging) {
+      motor.set(power);
+    }
   }
 
 }

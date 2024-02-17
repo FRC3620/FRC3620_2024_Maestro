@@ -1,7 +1,5 @@
 package frc.robot;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.HatePathplannerCommand;
-import frc.robot.commands.TurnToCommand;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -153,10 +151,12 @@ public class RobotContainer {
     shooterSubsystem = new ShooterSubsystem();
     blinkySubsystem = new BlinkySubsystem();
     Robot.printMemoryStatus("making drivebase");
+
     String swerveFolder = robotParameters.getSwerveDirectoryName();
     if (swerveFolder == null) swerveFolder = "compbot";
-    SmartDashboard.putString("botType", robotParameters.getSwerveDirectoryName());
+    SmartDashboard.putString("swerveFolder", swerveFolder);
     drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
+
     Robot.printMemoryStatus("making superSwerveController");
     superSwerveController = new SuperSwerveController(drivebase);
     Robot.printMemoryStatus("making subsystems");
@@ -212,6 +212,11 @@ public class RobotContainer {
     
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
+
+    SmartDashboard.putData("Intake to 0",new SetIntakeLocationCommand(new IntakeLocation(0, 0, 0)));
+    SmartDashboard.putData("Intake to 10",new SetIntakeLocationCommand(new IntakeLocation(10, 0, 0)));
+    SmartDashboard.putData("Intake to 20",new SetIntakeLocationCommand(new IntakeLocation(20, 0, 0)));
+    SmartDashboard.putData("Intake to 40",new SetIntakeLocationCommand(new IntakeLocation(40, 0, 0)));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

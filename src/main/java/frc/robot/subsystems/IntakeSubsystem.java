@@ -57,6 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeWristMechanism.periodic();
     intakeRollerMechanism.periodic();
 
+    /*
     if (cantElevate()) {
       temporaryPosition = getActualShoulderElevation();
       // tell shoulder to stay where it is right now
@@ -82,6 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
       // tell shoulder to go to the position requested
       setExtendPosition(getRequestedExtendPosition());
     }
+    */
   }
 
   boolean cantElevate() {
@@ -183,7 +185,7 @@ public class IntakeSubsystem extends SubsystemBase {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ELEVATION, "Intake Elevation")
         || shouldMakeAllCANDevices) {
       shoulder = new CANSparkMaxSendable(MOTORID_INTAKE_ELEVATION, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(20).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(shoulder);
       addChild("elevation", shoulder);
     }
@@ -224,7 +226,7 @@ public class IntakeSubsystem extends SubsystemBase {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ROLLERS, "Rollers")
         || shouldMakeAllCANDevices) {
       rollers = new CANSparkMaxSendable(MOTORID_INTAKE_ROLLERS, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(20).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(false);
       motorSetup.apply(rollers);
       addChild("roller", rollers);
     }
@@ -233,6 +235,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setLocation(IntakeLocation intakeLocation) {
+    logger.info ("Setting intake to {}", intakeLocation);
     intakeShoulderMechanism.setPosition(intakeLocation.getShoulder());
     intakeExtendMechanism.setPosition(intakeLocation.getExtend());
     intakeWristMechanism.setPosition(intakeLocation.getWrist());

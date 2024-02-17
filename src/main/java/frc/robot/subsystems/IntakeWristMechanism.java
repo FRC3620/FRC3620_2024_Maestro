@@ -31,6 +31,8 @@ public class IntakeWristMechanism {
   final double positionConverionFactor = 1.0;
   final double velocityConverionFactor = 1.0;
 
+  boolean disabledForDebugging = true;
+
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMaxSendable motor;
   DigitalInput homeSwitch;
@@ -123,7 +125,9 @@ public class IntakeWristMechanism {
     SmartDashboard.putNumber(name + ".requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
-      pid.setReference(position, ControlType.kPosition);
+      if (!disabledForDebugging) {
+        pid.setReference(position, ControlType.kPosition);
+      }
     } else {
       requestedPositionWhileCalibrating = position;
     }
@@ -152,7 +156,9 @@ public class IntakeWristMechanism {
   // be used by the calibration routine in periodic()
   void setPower(double power) {
     if (motor != null) {
-      motor.set(power);
+      if (!disabledForDebugging) {
+        motor.set(power);
+      }
     }
   }
 

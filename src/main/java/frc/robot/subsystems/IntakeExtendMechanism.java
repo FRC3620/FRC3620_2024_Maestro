@@ -50,6 +50,8 @@ public class IntakeExtendMechanism {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
+  boolean disabledForDebugging = true;
+
   public IntakeExtendMechanism(CANSparkMaxSendable motor, CANSparkMaxSendable motor2) { // The constructor
     this.motor = motor;
     this.motor2 = motor2;
@@ -228,23 +230,31 @@ public class IntakeExtendMechanism {
   // be used by the calibration routine in periodic()
   void setPower(double power) {
     if (motor != null) {
-      motor.set(power);
+      if (!disabledForDebugging) {
+        motor.set(power);
+      }
     }
   }
 
   void setPower2(double power) {
     if (motor2 != null) {
-      motor2.set(power);
+      if (!disabledForDebugging) {
+        motor2.set(power);
+      }
     }
   }
 
   void setPIDReference(double position) {
-    pid.setReference(position, ControlType.kPosition);
+    if (!disabledForDebugging) {
+      pid.setReference(position, ControlType.kPosition);
+    }
     SmartDashboard.putNumber("position motor1", position);
   }
 
   void setPIDReference2(double position) {
-    pid2.setReference(position, ControlType.kPosition);
+    if (!disabledForDebugging) {
+      pid2.setReference(position, ControlType.kPosition);
+    }
     SmartDashboard.putNumber("position motor2", position);
   }
 }

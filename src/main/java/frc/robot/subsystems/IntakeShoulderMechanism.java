@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.misc.RobotMode;
 
 import com.revrobotics.CANSparkMax;
@@ -14,22 +16,23 @@ import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class IntakeShoulderMechanism {
   final String name = "intake.shoulder";
+  Logger logger = EventLogging.getLogger(getClass());
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.4; //
+  final double kP = 0.06; //
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
-  final double outputLimit = 0.2; // the limit that the power cannot exceed
+  //final double outputLimit = 0.5; // the limit that the power cannot exceed
 
-  final double positionConverionFactor = 1.0;
-  final double velocityConverionFactor = 1.0;
+  // convert rotations to degree, run through a 25:1 gearbox, chain drive is 64 / 24;
+  final double positionConverionFactor = 360 * ( 1 / 25.0) * (24.0 / 64.0); 
+  final double velocityConverionFactor = positionConverionFactor;
 
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMax motor;
@@ -48,6 +51,8 @@ public class IntakeShoulderMechanism {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
+  boolean disabledForDebugging = false;
+
   public IntakeShoulderMechanism(CANSparkMax motor, DutyCycleEncoder absoluteEncoder) { //The constructor
     this.motor = motor;
     this.absoluteEncoder = absoluteEncoder;
@@ -57,16 +62,19 @@ public class IntakeShoulderMechanism {
       pid.setI(kI); // 
       pid.setD(kD); // 
       pid.setFF(kFF); //
-      pid.setOutputRange(-outputLimit, outputLimit);
+      pid.setOutputRange(-0.1, 0.6);
 
       this.motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
-      motorEncoder.setVelocityConversionFactor(velocityConverionFactor);
+      motorEncoder.setVelocityConversionFactor(1);
     }
   }
 
   public void periodic() {
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+
+    SmartDashboard.putNumber(name + ".positionAbsolute", getActualPosition());
+    SmartDashboard.putBoolean(name + ".absoluteEncoderPresent", absoluteEncoder.isConnected());
 
     // only do something if we actually have a motor
     if (motor != null) { 
@@ -119,11 +127,14 @@ public class IntakeShoulderMechanism {
    * @param position units are ???, referenced from position 0 == ?????
    */
   public void setPosition(double position) {
-    position = MathUtil.clamp(position, -45, 200);
+    // new Exception("who is doing this?").printStackTrace();
+    logger.info ("Setting position to {}", position);
     SmartDashboard.putNumber(name + ".requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
-      pid.setReference(position, ControlType.kPosition);
+      if (!disabledForDebugging) {
+        pid.setReference(position, ControlType.kPosition);
+      }
     } else {
       requestedPositionWhileCalibrating = position;
     }
@@ -149,7 +160,9 @@ public class IntakeShoulderMechanism {
   // be used by the calibration routine in periodic()
   void setPower(double power) {
     if (motor != null) {
-      motor.set(power);
+      if (!disabledForDebugging) {
+        motor.set(power);
+      }
     }
   }
 

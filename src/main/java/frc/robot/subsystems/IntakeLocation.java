@@ -36,4 +36,10 @@ public class IntakeLocation {
     public double getExtend() {
         return extend;
     }
+
+    @Override
+    public String toString() {
+        return "IntakeLocation [shoulder=" + shoulder + ", extend=" + extend + ", wrist=" + wrist + "]";
+    }
+
 }
