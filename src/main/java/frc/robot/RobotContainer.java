@@ -155,6 +155,7 @@ public class RobotContainer {
     Robot.printMemoryStatus("making drivebase");
     String swerveFolder = robotParameters.getSwerveDirectoryName();
     if (swerveFolder == null) swerveFolder = "compbot";
+    SmartDashboard.putString("botType", robotParameters.getSwerveDirectoryName());
     drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
     Robot.printMemoryStatus("making superSwerveController");
     superSwerveController = new SuperSwerveController(drivebase);

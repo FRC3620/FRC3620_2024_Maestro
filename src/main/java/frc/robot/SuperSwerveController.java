@@ -61,11 +61,18 @@ public class SuperSwerveController {
                 headingSetpoint = null;
             }
     
-            targetOmega = MathUtil.clamp(targetOmega, -1, 1);
+            //targetOmega = MathUtil.clamp(targetOmega, -1, 1);
     
-            swerve.drive(new Translation2d(rX, rY), targetOmega, true);
+            swerve.drive(new Translation2d(
+                            Math.pow(rX, 3) * swerve.getMaximumVelocity(), 
+                            Math.pow(rY, 3) * swerve.getMaximumVelocity()), 
+                            Math.pow(rOmega, 3) * swerve.getMaximumAngularVelocity(), 
+                            true);
             SmartDashboard.putNumber("SuperSwerve.targetOmega", targetOmega);
             SmartDashboard.putNumber("SuperSwerve.rOmega", rOmega);
+            SmartDashboard.putNumber("SuperSwerve.calculatedX", Math.pow(rX, 3) * swerve.getMaximumVelocity());
+            SmartDashboard.putNumber("SuperSwerve.calculatedY", Math.pow(rY, 3) * swerve.getMaximumVelocity());
+            SmartDashboard.putNumber("SuperSwerve.calculatedOmega", Math.pow(rOmega, 3) * swerve.getMaximumAngularVelocity());
             if (headingSetpoint != null) {
                 SmartDashboard.putNumber("SuperSwerve.headingSetpoint", headingSetpoint);
             }

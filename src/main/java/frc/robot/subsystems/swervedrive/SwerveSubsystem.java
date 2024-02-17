@@ -451,4 +451,12 @@ public class SwerveSubsystem extends SubsystemBase {
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
   }
+
+  public Double getMaximumVelocity() {
+    return swerveDrive.getMaximumVelocity();
+  }
+
+  public Double getMaximumAngularVelocity() {
+    return swerveDrive.getMaximumAngularVelocity();
+  }
 }
