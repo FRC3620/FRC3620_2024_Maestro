@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.swervedrive;
 
+import java.io.File;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -53,7 +55,8 @@ public class SwerveSubsystem extends SubsystemBase {
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public double maximumSpeed = 0.4; //1
+  public double maximumSpeed = 4; //1
+  double targetHeading;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -71,6 +74,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // meters to get meters/second.
     // The gear ratio is 6.75 motor revolutions per wheel rotation.
     // The encoder resolution per motor revolution is 1 per motor revolution.
+    
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(3.0), 100.0, 1.0);
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
@@ -108,15 +112,16 @@ public class SwerveSubsystem extends SubsystemBase {
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(5.0, 0.0, 0.0),
-            // Translation PID constants
+        // Translation PID constants
+            new PIDConstants(1, 0.0, 0.0),
+            // Rotation PID constants
             new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                 swerveDrive.swerveController.config.headingPIDF.i,
                 swerveDrive.swerveController.config.headingPIDF.d),
-            // Rotation PID constants
-            4.5,
             // Max module speed, in m/s
+            4,
             swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
+              
             // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig()
         // Default path replanning config. See the API for the options here
@@ -140,6 +145,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param setOdomToStart Set the odometry position to the start of the path.
    * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
    */
+  /*
   public Command getAutonomousCommand(String pathName, boolean setOdomToStart) {
     // Load the path you want to follow using its name in the GUI
     PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
@@ -152,6 +158,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // event markers.
     return AutoBuilder.followPath(path);
   }
+   */
 
   /**
    * Construct the swerve drive.
@@ -219,10 +226,17 @@ public class SwerveSubsystem extends SubsystemBase {
 
       CANSparkMax angleMotor = (CANSparkMax) swerveModule.getAngleMotor().getMotor();
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Angle Applied Output", angleMotor.getAppliedOutput());
+      SmartDashboard.putNumber("maxAngleVelocity", swerveDrive.getMaximumAngularVelocity());
 
       CANSparkMax driveMotor = (CANSparkMax) swerveModule.getDriveMotor().getMotor();
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Applied Output", driveMotor.getAppliedOutput());
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Amperage", driveMotor.getOutputCurrent());
+
+      SmartDashboard.putNumber("Drive Radius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
+
+      SmartDashboard.putNumber("Swerve.pose.x", getPose().getX());
+      SmartDashboard.putNumber("Swerve.pose.y", getPose().getY());
+      SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
     }
   }
 
@@ -262,6 +276,13 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive.getPose();
   }
 
+  public Pose2d getFakePoseForPathPlanner() {
+    Pose2d p = getPose();
+    Translation2d pTrans = p.getTranslation().times(4);
+    Pose2d rV = new Pose2d(pTrans, p.getRotation());
+    return rV;
+  }
+
   /**
    * Set chassis speeds with closed-loop velocity control.
    *
@@ -280,7 +301,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPose(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumVelocity(), 4.0,
+        swerveDrive.getMaximumVelocity(), 0.4,
         swerveDrive.getMaximumAngularVelocity(), Units.degreesToRadians(720));
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindToPose(
@@ -429,5 +450,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
+  }
+
+  public Double getMaximumVelocity() {
+    return swerveDrive.getMaximumVelocity();
+  }
+
+  public Double getMaximumAngularVelocity() {
+    return swerveDrive.getMaximumAngularVelocity();
   }
 }
