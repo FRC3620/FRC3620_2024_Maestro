@@ -204,7 +204,7 @@ public class IntakeSubsystem extends SubsystemBase {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND2, "Extend2")
         || shouldMakeAllCANDevices) {
       extend2 = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND2, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(true);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(10).setCoast(true);
       motorSetup.apply(extend2);
       addChild("extend2", extend2);
     }

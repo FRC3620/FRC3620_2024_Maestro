@@ -45,7 +45,7 @@ public class IntakeRollersMechanism {
 
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean(name + "game_peice_detected", gamePieceDetected());
+    SmartDashboard.putBoolean(name + ".game_peice_detected", gamePieceDetected());
 
     if (motor != null) {
       SmartDashboard.putNumber(name + ".motor_current", motor.getOutputCurrent());

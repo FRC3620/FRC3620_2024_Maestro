@@ -213,10 +213,15 @@ public class RobotContainer {
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
 
-    SmartDashboard.putData("Intake to 0",new SetIntakeLocationCommand(new IntakeLocation(0, 0, 0)));
-    SmartDashboard.putData("Intake to 10",new SetIntakeLocationCommand(new IntakeLocation(10, 0, 0)));
-    SmartDashboard.putData("Intake to 20",new SetIntakeLocationCommand(new IntakeLocation(20, 0, 0)));
-    SmartDashboard.putData("Intake to 40",new SetIntakeLocationCommand(new IntakeLocation(40, 0, 0)));
+    SmartDashboard.putData("Intake elevate to 0",new SetIntakeLocationCommand(new IntakeLocation(0, 0, 0)));
+    SmartDashboard.putData("Intake elevate to 10",new SetIntakeLocationCommand(new IntakeLocation(10, 0, 0)));
+    SmartDashboard.putData("Intake elevate to 20",new SetIntakeLocationCommand(new IntakeLocation(20, 0, 0)));
+    SmartDashboard.putData("Intake elevate to 40",new SetIntakeLocationCommand(new IntakeLocation(40, 0, 0)));
+
+    SmartDashboard.putData("Intake elevate-extend to 10-2",new SetIntakeLocationCommand(new IntakeLocation(10, 2, 0)));
+    SmartDashboard.putData("Intake elevate-extend to 10-6",new SetIntakeLocationCommand(new IntakeLocation(10, 6, 0)));
+    SmartDashboard.putData("Intake elevate-extend to 10-8",new SetIntakeLocationCommand(new IntakeLocation(10, 8, 0)));
+
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

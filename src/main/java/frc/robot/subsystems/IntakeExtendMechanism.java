@@ -25,9 +25,9 @@ public class IntakeExtendMechanism {
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
-  final double outputLimit = 0.1; // the limit that the power cannot exceed
+  final double outputLimit = 0.4; // the limit that the power cannot exceed
 
-  final double positionConverionFactor = 1.0;
+  final double positionConverionFactor = 2 * 3.14159 * 0.75 / 9;  // 3/4" radius, moves one circumference for every motor revolution, 1:9
   final double velocityConverionFactor = 1.0;
 
   // Ingredients: Motor, Encoder, PID, and Timer
@@ -50,7 +50,7 @@ public class IntakeExtendMechanism {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
-  boolean disabledForDebugging = true;
+  boolean disabledForDebugging = false;
 
   public IntakeExtendMechanism(CANSparkMaxSendable motor, CANSparkMaxSendable motor2) { // The constructor
     this.motor = motor;
@@ -96,7 +96,7 @@ public class IntakeExtendMechanism {
       SmartDashboard.putNumber(name + "2.temperature", motor2.getMotorTemperature());
       
 
-      SmartDashboard.putBoolean("outOfWhack", outOfWhack());
+      SmartDashboard.putBoolean(name + ".inWhack", ! outOfWhack());
 
       if (motorEncoder != null) { // and there is an encoder, display these
         double velocity = motorEncoder.getVelocity();
@@ -179,7 +179,7 @@ public class IntakeExtendMechanism {
     double position1;
     position1 = motorEncoder.getPosition();
     position2 = motor2Encoder.getPosition();
-    SmartDashboard.putNumber("extend position difference", Math.abs(position2 - position1));
+    SmartDashboard.putNumber(name + ".extend position difference", Math.abs(position2 - position1));
     if (Math.abs(position2 - position1) > 1) {
       // change 1 to actual restraint
       return true;
@@ -194,11 +194,10 @@ public class IntakeExtendMechanism {
    * @param position units are ???, referenced from position 0 == ?????
    */
   public void setPosition(double position) {
-    position = MathUtil.clamp(position, -45, 200);
     SmartDashboard.putNumber(name + ".requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
-      // pid.setReference(teposition, ControlType.kPosition);
+      // setPIDReference(position);
     } else {
       requestedPositionWhileCalibrating = position;
     }
