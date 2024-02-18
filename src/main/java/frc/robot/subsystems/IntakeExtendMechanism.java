@@ -13,7 +13,6 @@ import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.wpilibj.Timer;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
@@ -21,11 +20,11 @@ public class IntakeExtendMechanism {
   final String name = "intake.extend";
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.2; //
+  final double kP = 0.8; //
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
-  final double outputLimit = 0.4; // the limit that the power cannot exceed
+  final double outputLimit = 0.6; // the limit that the power cannot exceed
 
   final double positionConverionFactor = 2 * 3.14159 * 0.75 / 9;  // 3/4" radius, moves one circumference for every motor revolution, 1:9
   final double velocityConverionFactor = 1.0;
@@ -94,7 +93,6 @@ public class IntakeExtendMechanism {
       SmartDashboard.putNumber(name + "2.current", motor2.getOutputCurrent());
       SmartDashboard.putNumber(name + "2.power", motor2.getAppliedOutput());
       SmartDashboard.putNumber(name + "2.temperature", motor2.getMotorTemperature());
-      
 
       SmartDashboard.putBoolean(name + ".inWhack", ! outOfWhack());
 
@@ -179,7 +177,7 @@ public class IntakeExtendMechanism {
     double position1;
     position1 = motorEncoder.getPosition();
     position2 = motor2Encoder.getPosition();
-    SmartDashboard.putNumber(name + ".extend position difference", Math.abs(position2 - position1));
+    SmartDashboard.putNumber(name + ".whackiness", Math.abs(position2 - position1));
     if (Math.abs(position2 - position1) > 1) {
       // change 1 to actual restraint
       return true;
@@ -247,13 +245,13 @@ public class IntakeExtendMechanism {
     if (!disabledForDebugging) {
       pid.setReference(position, ControlType.kPosition);
     }
-    SmartDashboard.putNumber("position motor1", position);
+    SmartDashboard.putNumber(name + ".pidSetPoint", position);
   }
 
   void setPIDReference2(double position) {
     if (!disabledForDebugging) {
       pid2.setReference(position, ControlType.kPosition);
     }
-    SmartDashboard.putNumber("position motor2", position);
+    SmartDashboard.putNumber(name + "2.pidSetPoint ", position);
   }
 }
