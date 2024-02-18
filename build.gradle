@@ -20,6 +20,15 @@ java {
 compileJava.options.encoding = 'UTF-8' 
 compileTestJava.options.encoding = 'UTF-8'
 javadoc.options.encoding = 'UTF-8'
+tasks.register('frc3620_swervelib_sync', Sync) {
+    from layout.projectDirectory.dir("YAGSL-Example/src/main/java/swervelib")
+    into layout.projectDirectory.dir("src/main/java/swervelib")
+}
+
+compileJava {
+    dependsOn frc3620_swervelib_sync
+}
+
 // ****************************************************************************
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"

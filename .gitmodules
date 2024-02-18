@@ -1,0 +1,3 @@
+[submodule "YAGSL-Example"]
+	path = YAGSL-Example
+	url = https://github.com/FRC3620/YAGSL-Example.git
