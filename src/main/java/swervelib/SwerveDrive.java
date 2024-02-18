@@ -455,6 +455,14 @@ public class SwerveDrive
       {
         lastHeadingRadians = getOdometryHeading().getRadians();
       }
+
+      if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH) {
+        SmartDashboard.putBoolean("SwerveDrive.headingCorrection", headingCorrection);
+        SmartDashboard.putNumber("SwerveDrive.commandedRadiansPerSecond", velocity.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("SwerveDrive.lastHeadingRadians", lastHeadingRadians);
+
+
+      }
     }
 
     // Display commanded speed for testing

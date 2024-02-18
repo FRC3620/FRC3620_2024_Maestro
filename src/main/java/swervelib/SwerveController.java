@@ -4,7 +4,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import swervelib.parser.SwerveControllerConfiguration;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 /**
  * Controller class used to convert raw inputs into robot speeds.
@@ -217,6 +221,19 @@ public class SwerveController
    */
   public double headingCalculate(double currentHeadingAngleRadians, double targetHeadingAngleRadians)
   {
+
+    // Display PID Inputs
+    if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH)
+    {
+      SmartDashboard.putNumber("SwerveController.kP", thetaController.getP());
+      SmartDashboard.putNumber("SwerveController.kI", thetaController.getI());
+      SmartDashboard.putNumber("SwerveController.kD", thetaController.getD());
+      SmartDashboard.putNumber("SwerveController.PositionError", thetaController.getPositionError());
+      SmartDashboard.putNumber("SwerveController.currentHeadingAngleRadians", currentHeadingAngleRadians);
+      SmartDashboard.putNumber("SwerveController.targetHeadingAngleRadians", targetHeadingAngleRadians);
+      SmartDashboard.putNumber("SwerveController.currentHeadingAngleDegrees", Units.radiansToDegrees(currentHeadingAngleRadians));
+      SmartDashboard.putNumber("SwerveController.targetHeadingAngleDegrees", Units.radiansToDegrees(targetHeadingAngleRadians));
+    }
     return thetaController.calculate(currentHeadingAngleRadians, targetHeadingAngleRadians) * config.maxAngularVelocity;
   }
 
