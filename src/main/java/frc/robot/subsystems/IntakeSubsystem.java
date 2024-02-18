@@ -8,7 +8,6 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;

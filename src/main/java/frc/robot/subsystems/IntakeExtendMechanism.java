@@ -20,7 +20,7 @@ public class IntakeExtendMechanism {
   final String name = "intake.extend";
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.8; //
+  final double kP = 0.2; //
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
@@ -50,6 +50,8 @@ public class IntakeExtendMechanism {
   Double requestedPositionWhileCalibrating = null;
 
   boolean disabledForDebugging = false;
+
+  public boolean oldWay = false;
 
   public IntakeExtendMechanism(CANSparkMaxSendable motor, CANSparkMaxSendable motor2) { // The constructor
     this.motor = motor;
@@ -142,29 +144,32 @@ public class IntakeExtendMechanism {
               }
             }
           } else {
-
             // we are calibrated. Do magic here
 
-            // tell motor2 to go to where motor1 currently is
-            if (pid2 != null) {
-              setPIDReference2(motorEncoder.getPosition());
-            }
-            // not
-            if (outOfWhack()) {
-              // figure out where motor1 is
-              temporaryPosition = motorEncoder.getPosition();
-              if (pid != null) {
-                // tell motor1 to stay where it is right now
-                setPIDReference(temporaryPosition);
+            if (oldWay) {
+              // tell motor2 to go to where motor1 currently is
+              if (pid2 != null) {
+                setPIDReference2(motorEncoder.getPosition());
               }
-            } else {
-              // we are in whack
-              if (pid != null) {
-                // tell motor1 to go to the position requested
-                 setPIDReference(requestedPosition);
+              // not
+              if (outOfWhack()) {
+                // figure out where motor1 is
+                temporaryPosition = motorEncoder.getPosition();
+                if (pid != null) {
+                  // tell motor1 to stay where it is right now
+                  setPIDReference(temporaryPosition);
+                }
+              } else {
+                // we are in whack
+                if (pid != null) {
+                  // tell motor1 to go to the position requested
+                  setPIDReference(requestedPosition);
+                }
               }
+            } else {  
+              setPIDReference(requestedPosition);
+              setPIDReference2(requestedPosition);
             }
-
           }
         }
       }
