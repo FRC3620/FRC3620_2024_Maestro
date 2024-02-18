@@ -49,6 +49,7 @@ public class RobotContainer {
   // need these
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
+  public static PowerDistribution powerDistribution;
 
   // subsystems here
   public static IntakeSubsystem intakeSubsystem;
@@ -62,8 +63,6 @@ public class RobotContainer {
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
-
-  public static PneumaticsModuleType pneumaticModuleType = null;
 
   // joysticks here....
   public static XboxController driverXbox;
@@ -80,6 +79,18 @@ public class RobotContainer {
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
+    }
+
+    if (canDeviceFinder.isPowerDistributionPresent() || true) {
+      logger.info ("We have a PowerDistributionPanel");
+      powerDistribution = new PowerDistribution();
+      if (powerDistribution == null) {
+        logger.error ("...but we couldn't make the object!");
+      } else {
+        logger.error ("...and got a WPILIB object for it: {} {}", powerDistribution.getClass(), powerDistribution.getType());
+      }
+    } else {
+			logger.error ("Missing power distribution panel");
     }
 
     /*
@@ -204,11 +215,13 @@ public class RobotContainer {
     SmartDashboard.putData("set shooter speed+wait", new SetShooterSpeedAndWaitCommand(shooterSubsystem, 15));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand(shooterSubsystem));
 
+    /*
     SmartDashboard.putData("GroundPosition", new SetIntakeLocationCommand(IntakeLocation.groundPosition));
     SmartDashboard.putData("HomePosition", new SetIntakeLocationCommand(IntakeLocation.homePosition));
     SmartDashboard.putData("AmpPosition", new SetIntakeLocationCommand(IntakeLocation.ampPosition));
     SmartDashboard.putData("TrapPosition", new SetIntakeLocationCommand(IntakeLocation.trapPosition));
     SmartDashboard.putData("PreclimbPosition", new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
+    */
     
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
@@ -224,6 +237,9 @@ public class RobotContainer {
     SmartDashboard.putData("Intake elevate-extend to 10-6",new SetIntakeLocationCommand(new IntakeLocation(10, 6, 0)));
     SmartDashboard.putData("Intake elevate-extend to 10-8",new SetIntakeLocationCommand(new IntakeLocation(10, 8, 0)));
 
+    // test rollers
+    SmartDashboard.putData("Intake rollers @ +0.4", new RunRollersCommand(0.4));
+    SmartDashboard.putData("Intake rollers @ -0.4", new RunRollersCommand(-0.4));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

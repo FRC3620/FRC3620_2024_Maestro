@@ -11,31 +11,25 @@ package frc.robot.subsystems;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 public class IntakeRollersMechanism {
-  /** Creates a new ClawMechanism. */
-  boolean encoderIsValid = false;
-  Timer calibrationTimer;
+  /** Creates a new IntakeRollersMechanism. */
   CANSparkMaxSendable motor;
   RelativeEncoder encoder;
-  SparkPIDController PID = null;
-  DigitalInput gamePieceObtained;
-
-  Double requestedPositionWhileCalibrating = null;
-  Double requestedPosition = null;
+  DigitalInput gamePieceDetector;
 
   final String name = "intake.rollers";
 
-  boolean disabledForDebugging = true;
+  boolean disabledForDebugging = false;
 
-  public IntakeRollersMechanism(CANSparkMaxSendable motor, DigitalInput gamePieceObtained) {
+  public IntakeRollersMechanism(CANSparkMaxSendable motor, DigitalInput gamePieceDetector) {
     this.motor = motor;
-    this.gamePieceObtained = gamePieceObtained;
+    this.gamePieceDetector = gamePieceDetector;
     if (motor != null) {
       this.encoder = motor.getEncoder();
       encoder.setPositionConversionFactor(1);
@@ -45,56 +39,18 @@ public class IntakeRollersMechanism {
 
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean(name + ".game_peice_detected", gamePieceDetected());
+    SmartDashboard.putBoolean(name + ".game_piece_detected", gamePieceDetected());
 
     if (motor != null) {
+      if (RobotContainer.powerDistribution != null) {
+        SmartDashboard.putNumber(name + ".motor_input_current", RobotContainer.powerDistribution.getCurrent(motor.getDeviceId()));
+      }
       SmartDashboard.putNumber(name + ".motor_current", motor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
-
-      if (encoder != null) {
-        double elevateSpeed = encoder.getVelocity();
-        SmartDashboard.putNumber(name + ".speed", elevateSpeed);
-        // SmartDashboard.putNumber(name + ".velocityConversionFactor",
-        // encoder.getVelocityConversionFactor());
-
-        /*
-         * if(Robot.getCurrentRobotMode() == RobotMode.TELEOP ||
-         * Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
-         * if (!encoderIsValid) {
-         * moveClawCannon(0.015);
-         * 
-         * if (calibrationTimer == null) {
-         * calibrationTimer = new Timer();
-         * calibrationTimer.reset();
-         * calibrationTimer.start();
-         * } else {
-         * if (calibrationTimer.get() > 0.75){
-         * if (Math.abs(elevateSpeed) < 15) {
-         * encoderIsValid = true;
-         * moveClawCannon(0.0);
-         * encoder.setPosition(65);
-         * 
-         * if (requestedPositionWhileCalibrating != null) {
-         * setPosition(requestedPositionWhileCalibrating);
-         * requestedPositionWhileCalibrating = null;
-         * }
-         * }
-         * }
-         * }
-         * }
-         * } else {
-         * calibrationTimer = null; // start over!
-         * }
-         */
-      }
+      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
+      SmartDashboard.putNumber(name + ".speed", encoder.getVelocity());
     }
   }
-
-  /**
-   * Sets the cannon to extend the arm to 'length' inches. Increasing
-   * length is a longer arm.
-   * "Extend" motor.
-   */
 
   public void setPower(double speed) {
     if (motor != null) {
@@ -105,7 +61,7 @@ public class IntakeRollersMechanism {
   }
 
   public boolean gamePieceDetected() {
-    if (gamePieceObtained.get()) {
+    if (gamePieceDetector.get()) {
       return false;
     } else {
       return true;
