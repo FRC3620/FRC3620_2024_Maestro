@@ -14,7 +14,6 @@ import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
@@ -22,7 +21,7 @@ public class IntakeWristMechanism {
   final String name = "intake.wrist";
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.4; //
+  final double kP = 0.05; //
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
@@ -31,7 +30,7 @@ public class IntakeWristMechanism {
   final double positionConverionFactor = 1.0;
   final double velocityConverionFactor = 1.0;
 
-  boolean disabledForDebugging = true;
+  boolean disabledForDebugging = false;
 
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMaxSendable motor;
@@ -96,7 +95,8 @@ public class IntakeWristMechanism {
               // we have a timer, has the motor had power long enough to spin up
               if (calibrationTimer.get() > 0.5) {
                 // motor should be moving if not against the stop
-                if (Math.abs(velocity) < 2) {
+                //if (Math.abs(velocity) < 2) {
+                if (true) { // assume calibrated
                   // the motor is not moving, stop the motor, set encoder position to 0, and set calibration to true
                   encoderCalibrated = true;
                   setPower(0.0);
@@ -121,7 +121,6 @@ public class IntakeWristMechanism {
    * @param position units are ???, referenced from position 0 == ?????
    */
   public void setPosition(double position) {
-    position = MathUtil.clamp(position, -45, 200);
     SmartDashboard.putNumber(name + ".requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {

@@ -214,7 +214,7 @@ public class IntakeSubsystem extends SubsystemBase {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_WRIST, "Wrist")
         || shouldMakeAllCANDevices) {
       wrist = new CANSparkMaxSendable(MOTORID_INTAKE_WRIST, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(10).setCoast(false);
       motorSetup.apply(wrist);
       addChild("wrist", wrist);
     }
