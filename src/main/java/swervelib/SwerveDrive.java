@@ -460,8 +460,9 @@ public class SwerveDrive
         SmartDashboard.putBoolean("SwerveDrive.headingCorrection", headingCorrection);
         SmartDashboard.putNumber("SwerveDrive.commandedRadiansPerSecond", velocity.omegaRadiansPerSecond);
         SmartDashboard.putNumber("SwerveDrive.lastHeadingRadians", lastHeadingRadians);
-
-
+        SmartDashboard.putNumber("SwerveDrive.lastHeadingDegrees", Units.radiansToDegrees(lastHeadingRadians));
+        SmartDashboard.putNumber("SwerveDrive.odometryHeadingDegrees", getOdometryHeading().getDegrees());
+        SmartDashboard.putNumber("SwerveDrive.imuHeading", getYaw().getDegrees());
       }
     }
 
