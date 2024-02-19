@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.usfirst.frc3620.misc.Utilities;
+
 import swervelib.encoders.CANCoderSwerve;
 import swervelib.imu.Pigeon2Swerve;
 import swervelib.imu.SwerveIMU;
@@ -462,7 +465,7 @@ public class SwerveDrive
         SmartDashboard.putNumber("SwerveDrive.lastHeadingRadians", lastHeadingRadians);
         SmartDashboard.putNumber("SwerveDrive.lastHeadingDegrees", Units.radiansToDegrees(lastHeadingRadians));
         SmartDashboard.putNumber("SwerveDrive.odometryHeadingDegrees", getOdometryHeading().getDegrees());
-        SmartDashboard.putNumber("SwerveDrive.imuHeading", getYaw().getDegrees());
+        SmartDashboard.putNumber("SwerveDrive.imuHeading", Utilities.normalizeAngle(getYaw().getDegrees()));
       }
     }
 
