@@ -189,7 +189,7 @@ public class ShooterSubsystem extends SubsystemBase {
           if (!encoderCalibrated) {
             // If the robot is running, and the encoder is "not calibrated," run motor very
             // slowly towards the switch
-            setElevationPower(0.03);
+            setElevationPower(0.08);
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
               calibrationTimer = new Timer();
