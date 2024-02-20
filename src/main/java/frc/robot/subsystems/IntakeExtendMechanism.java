@@ -21,13 +21,13 @@ public class IntakeExtendMechanism implements HasTelemetry {
   final String name = "intake.extend";
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.2; //
+  final double kP = 0.1; //
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
   final double outputLimit = 0.6; // the limit that the power cannot exceed
 
-  final double positionConverionFactor = 2 * 3.14159 * 0.75 / 9;  // 3/4" radius, moves one circumference for every motor revolution, 1:9
+  final double positionConverionFactor = 3.14159 * 1.625 / 9;  // 1 5/8" diameter, moves one circumference for every motor revolution, 1:9
   final double velocityConverionFactor = 1.0;
 
   // Ingredients: Motor, Encoder, PID, and Timer

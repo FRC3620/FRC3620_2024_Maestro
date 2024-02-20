@@ -34,7 +34,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   final double kFF = 0; // define FF
   final double outputLimit = 0.2; // the limit that the power cannot exceed
 
-  final double positionConverionFactor = 1.0;
+  final double positionConverionFactor = 1.0 * 0.11962;
   final double velocityConverionFactor = 60.0;
 
   // Ingredients: Motor, Encoder, PID, and Timer
@@ -62,11 +62,12 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 17, "Climber") || shouldMakeAllCANDevices) {
       this.motor = new CANSparkMaxSendable(17, MotorType.kBrushless);
+      addChild("motor", this.motor);
     }
     this.limitSwitch = new DigitalInput(8);
     
     if (motor != null) {
-      MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(10);
+      MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(80);
       motorSetup.apply(motor);
       motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
