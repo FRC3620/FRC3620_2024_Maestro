@@ -236,7 +236,8 @@ public class RobotContainer {
     SmartDashboard.putData("Intake elevate-extend to 10-2",new SetIntakeLocationCommand(new IntakeLocation(10, 2, 0)));
     SmartDashboard.putData("Intake elevate-extend to 10-6",new SetIntakeLocationCommand(new IntakeLocation(10, 6, 0)));
     SmartDashboard.putData("Intake elevate-extend to 10-8",new SetIntakeLocationCommand(new IntakeLocation(10, 8, 0)));
-
+    SmartDashboard.putData("Intake elevate-extend to 10-14",new SetIntakeLocationCommand(new IntakeLocation(10, 14, 0)));
+    SmartDashboard.putData("Intake elevate-extend to 75-0",new SetIntakeLocationCommand(new IntakeLocation(75, 0, 0)));
     // test rollers
     SmartDashboard.putData("Intake rollers @ +0.4", new RunRollersCommand(0.4));
     SmartDashboard.putData("Intake rollers @ -0.4", new RunRollersCommand(-0.4));
