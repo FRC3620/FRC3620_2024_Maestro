@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
@@ -102,6 +103,8 @@ private SolidPattern solidPattern;
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    updateTelemetry();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -223,6 +226,14 @@ private SolidPattern solidPattern;
           logger.warn ("Missing devices: " + missingDevices);
         }
         hasCANBusBeenLogged = true;
+      }
+    }
+  }
+
+  void updateTelemetry() {
+    for (var subsystem : RobotContainer.allSubsystems) {
+      if (subsystem instanceof HasTelemetry) {
+        ((HasTelemetry) subsystem).updateTelemetry();
       }
     }
   }

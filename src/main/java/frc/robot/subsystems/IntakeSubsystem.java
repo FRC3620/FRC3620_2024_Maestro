@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -15,7 +16,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   public IntakeExtendMechanism intakeExtendMechanism;
@@ -238,6 +239,15 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeShoulderMechanism.setPosition(intakeLocation.getShoulder());
     intakeExtendMechanism.setPosition(intakeLocation.getExtend());
     intakeWristMechanism.setPosition(intakeLocation.getWrist());
+  }
+
+  @Override
+  public void updateTelemetry() {
+    intakeExtendMechanism.updateTelemetry();
+    intakeShoulderMechanism.updateTelemetry();
+    intakeWristMechanism.updateTelemetry();
+    intakeRollerMechanism.updateTelemetry();
+
   }
 }
 

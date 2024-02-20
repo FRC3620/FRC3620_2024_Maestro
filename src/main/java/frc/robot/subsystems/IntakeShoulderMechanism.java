@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.misc.RobotMode;
 
 import com.revrobotics.CANSparkMax;
@@ -19,7 +20,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class IntakeShoulderMechanism {
+public class IntakeShoulderMechanism implements HasTelemetry {
   final String name = "intake.shoulder";
   Logger logger = EventLogging.getLogger(getClass());
 
@@ -66,33 +67,18 @@ public class IntakeShoulderMechanism {
 
       this.motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
-      motorEncoder.setVelocityConversionFactor(1);
+      motorEncoder.setVelocityConversionFactor(60);
     }
   }
 
   public void periodic() {
-    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
-
-    SmartDashboard.putNumber(name + ".positionAbsolute", getActualPosition());
-    SmartDashboard.putBoolean(name + ".absoluteEncoderPresent", absoluteEncoder.isConnected());
-
     // only do something if we actually have a motor
     if (motor != null) { 
-      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-
-      if (motorEncoder != null) { // and there is an encoder, display these
-        double velocity = motorEncoder.getVelocity();
-        double position = motorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".velocity", velocity);
-        SmartDashboard.putNumber(name + ".position", position);
-
+      if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
             // If the robot is running, and the encoder is "not calibrated," run motor very slowly towards the stop
             setPower(0.03);
-
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
               calibrationTimer = new Timer();
@@ -102,6 +88,7 @@ public class IntakeShoulderMechanism {
               // we have a timer, has the motor had power long enough to spin up
               if (calibrationTimer.get() > 0.5) {
                 // motor should be moving if not against the stop
+                double velocity = motorEncoder.getVelocity();
                 if (Math.abs(velocity) < 2) {
                   // the motor is not moving, stop the motor, set encoder position to 0, and set calibration to true
                   encoderCalibrated = true;
@@ -162,6 +149,27 @@ public class IntakeShoulderMechanism {
     if (motor != null) {
       if (!disabledForDebugging) {
         motor.set(power);
+      }
+    }
+  }
+
+  @Override
+  public void updateTelemetry() {
+    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+
+    SmartDashboard.putNumber(name + ".positionAbsolute", getActualPosition());
+    SmartDashboard.putBoolean(name + ".absoluteEncoderPresent", absoluteEncoder.isConnected());
+
+    if (motor != null) { 
+      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
+
+      if (motorEncoder != null) { // and there is an encoder, display these
+        double velocity = motorEncoder.getVelocity();
+        double position = motorEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".velocity", velocity);
+        SmartDashboard.putNumber(name + ".position", position);
       }
     }
   }

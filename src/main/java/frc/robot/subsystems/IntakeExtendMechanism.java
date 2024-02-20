@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.RobotMode;
 
@@ -16,7 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class IntakeExtendMechanism {
+public class IntakeExtendMechanism implements HasTelemetry {
   final String name = "intake.extend";
 
   // PID parameters and encoder conversion factors
@@ -85,31 +86,9 @@ public class IntakeExtendMechanism {
   }
 
   public void periodic() {
-    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
-
     // only do something if we actually have a motor
     if (motor != null && motor2 != null) {
-      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-      SmartDashboard.putNumber(name + "2.current", motor2.getOutputCurrent());
-      SmartDashboard.putNumber(name + "2.power", motor2.getAppliedOutput());
-      SmartDashboard.putNumber(name + "2.temperature", motor2.getMotorTemperature());
-
-      SmartDashboard.putBoolean(name + ".inWhack", ! outOfWhack());
-
-      if (motorEncoder != null) { // and there is an encoder, display these
-        double velocity = motorEncoder.getVelocity();
-        double position = motorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".velocity", velocity);
-        SmartDashboard.putNumber(name + ".position", position);
-
-        if (motor2Encoder != null) { // and there is an encoder, display these
-          double velocity2 = motor2Encoder.getVelocity();
-          double position2 = motor2Encoder.getPosition();
-          SmartDashboard.putNumber(name + "2.velocity", velocity2);
-          SmartDashboard.putNumber(name + "2.position", position2);
-        }
+      if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) {
             // If the robot is running, and the encoder is "not calibrated," run motor very
@@ -126,6 +105,7 @@ public class IntakeExtendMechanism {
               // we have a timer, has the motor had power long enough to spin up
               if (calibrationTimer.get() > 0.5) {
                 // motor should be moving if not against the stop
+                double velocity = motorEncoder.getVelocity();
                 if (Math.abs(velocity) < 2) {
                   // the motor is not moving, stop the motor, set encoder position to 0, and set
                   // calibration to true
@@ -258,5 +238,33 @@ public class IntakeExtendMechanism {
       pid2.setReference(position, ControlType.kPosition);
     }
     SmartDashboard.putNumber(name + "2.pidSetPoint ", position);
+  }
+
+  @Override
+  public void updateTelemetry() {
+    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+    if (motor != null) {
+      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
+      if (motorEncoder != null) { // and there is an encoder, display these
+        double velocity = motorEncoder.getVelocity();
+        double position = motorEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".velocity", velocity);
+        SmartDashboard.putNumber(name + ".position", position);
+      }
+    }
+    if (motor2 != null) {
+      SmartDashboard.putNumber(name + "2.current", motor2.getOutputCurrent());
+      SmartDashboard.putNumber(name + "2.power", motor2.getAppliedOutput());
+      SmartDashboard.putNumber(name + "2.temperature", motor2.getMotorTemperature());
+      if (motor2Encoder != null) { // and there is an encoder, display these
+        double velocity2 = motor2Encoder.getVelocity();
+        double position2 = motor2Encoder.getPosition();
+        SmartDashboard.putNumber(name + "2.velocity", velocity2);
+        SmartDashboard.putNumber(name + "2.position", position2);
+      }
+    }
+    SmartDashboard.putBoolean(name + ".inWhack", ! outOfWhack());
   }
 }

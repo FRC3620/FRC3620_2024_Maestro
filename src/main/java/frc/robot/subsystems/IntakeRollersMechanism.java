@@ -8,16 +8,16 @@
 
 package frc.robot.subsystems;
 
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
-public class IntakeRollersMechanism {
+public class IntakeRollersMechanism implements HasTelemetry {
   /** Creates a new IntakeRollersMechanism. */
   CANSparkMaxSendable motor;
   RelativeEncoder encoder;
@@ -33,23 +33,12 @@ public class IntakeRollersMechanism {
     if (motor != null) {
       this.encoder = motor.getEncoder();
       encoder.setPositionConversionFactor(1);
-      encoder.setVelocityConversionFactor(1);
+      encoder.setVelocityConversionFactor(60);
     }
   }
 
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean(name + ".game_piece_detected", gamePieceDetected());
-
-    if (motor != null) {
-      if (RobotContainer.powerDistribution != null) {
-        SmartDashboard.putNumber(name + ".motor_input_current", RobotContainer.powerDistribution.getCurrent(motor.getDeviceId()));
-      }
-      SmartDashboard.putNumber(name + ".motor_current", motor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-      SmartDashboard.putNumber(name + ".speed", encoder.getVelocity());
-    }
   }
 
   public void setPower(double speed) {
@@ -73,4 +62,19 @@ public class IntakeRollersMechanism {
       return 0;
     return encoder.getVelocity();
   }
+
+  @Override
+  public void updateTelemetry() {
+    SmartDashboard.putBoolean(name + ".game_piece_detected", gamePieceDetected());
+    if (motor != null) {
+      if (RobotContainer.powerDistribution != null) {
+        SmartDashboard.putNumber(name + ".motor_input_current", RobotContainer.powerDistribution.getCurrent(motor.getDeviceId()));
+      }
+      SmartDashboard.putNumber(name + ".motor_current", motor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
+      SmartDashboard.putNumber(name + ".speed", encoder.getVelocity());
+    }
+  }
+  
 }

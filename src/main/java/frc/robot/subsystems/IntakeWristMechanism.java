@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.RobotMode;
 
@@ -17,7 +18,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class IntakeWristMechanism {
+public class IntakeWristMechanism implements HasTelemetry {
   final String name = "intake.wrist";
 
   // PID parameters and encoder conversion factors
@@ -28,7 +29,7 @@ public class IntakeWristMechanism {
   final double outputLimit = 0.2; // the limit that the power cannot exceed
 
   final double positionConverionFactor = 1.0;
-  final double velocityConverionFactor = 1.0;
+  final double velocityConverionFactor = 60.0;
 
   boolean disabledForDebugging = false;
 
@@ -67,20 +68,9 @@ public class IntakeWristMechanism {
   }
 
   public void periodic() {
-    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
-
     // only do something if we actually have a motor
     if (motor != null) { 
-      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-
       if (motorEncoder != null) { // and there is an encoder, display these
-        double velocity = motorEncoder.getVelocity();
-        double position = motorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".velocity", velocity);
-        SmartDashboard.putNumber(name + ".position", position);
-
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
             // If the robot is running, and the encoder is "not calibrated," run motor very slowly towards the stop
@@ -163,6 +153,24 @@ public class IntakeWristMechanism {
 
   public boolean isHomeSwitchDepressed() {
     return homeSwitch.get();
+  }
+
+  @Override
+  public void updateTelemetry() {
+    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+
+    if (motor != null) { 
+      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
+
+      if (motorEncoder != null) { // and there is an encoder, display these
+        double velocity = motorEncoder.getVelocity();
+        double position = motorEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".velocity", velocity);
+        SmartDashboard.putNumber(name + ".position", position);
+      }
+    }
   }
 
 }

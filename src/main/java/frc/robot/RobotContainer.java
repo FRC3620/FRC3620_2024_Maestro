@@ -4,16 +4,13 @@ import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.util.sendable.Sendable;
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.File;
-import java.util.Set;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -24,12 +21,11 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
-import org.usfirst.frc3620.misc.FakeMotor;
 import org.usfirst.frc3620.misc.JoystickAnalogButton;
 import org.usfirst.frc3620.misc.DPad;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
@@ -58,6 +54,8 @@ public class RobotContainer {
   public static BlinkySubsystem blinkySubsystem;
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
+
+  public static List<Subsystem> allSubsystems = new ArrayList<>();
 
   private SuperSwerveController superSwerveController;
 
@@ -158,19 +156,31 @@ public class RobotContainer {
 
   private void makeSubsystems() {
     intakeSubsystem = new IntakeSubsystem();
+    addSubsystem(intakeSubsystem);
+
     climbElevationSubsystem = new ClimbElevationSubsystem();
+    addSubsystem(climbElevationSubsystem);
+
     shooterSubsystem = new ShooterSubsystem();
+    addSubsystem(shooterSubsystem);
+
     blinkySubsystem = new BlinkySubsystem();
+    addSubsystem(blinkySubsystem);
+
     Robot.printMemoryStatus("making drivebase");
 
     String swerveFolder = robotParameters.getSwerveDirectoryName();
     if (swerveFolder == null) swerveFolder = "compbot";
     SmartDashboard.putString("swerveFolder", swerveFolder);
     drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
+    addSubsystem(drivebase);
 
     Robot.printMemoryStatus("making superSwerveController");
+
     superSwerveController = new SuperSwerveController(drivebase);
+
     Robot.printMemoryStatus("making subsystems");
+
   }
 
   /**
@@ -317,6 +327,10 @@ public class RobotContainer {
     }
 
     return false;
+  }
+
+  void addSubsystem(Subsystem subsystem) {
+    allSubsystems.add(subsystem);
   }
 
 }
