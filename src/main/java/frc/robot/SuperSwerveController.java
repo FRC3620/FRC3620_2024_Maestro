@@ -18,7 +18,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 /** Add your docs here. */
 public class SuperSwerveController {
     PIDController headingPID;
-    private double kSpinP = 0.03; 
+    private double kSpinP = 0.035; 
     private double kSpinI = 0.00;
     private double kSpinD = 0.00; //0.01
     SwerveSubsystem drivebase;
@@ -33,6 +33,7 @@ public class SuperSwerveController {
     }
 
     Timer turnTimer = new Timer();
+    //SmartDashboard.putNumber("turnTimer", turnTimer);
 
     public void doTeleop(SwerveSubsystem swerve, double rX, double rY, double rOmega) {
 
@@ -41,7 +42,7 @@ public class SuperSwerveController {
             if (Math.abs(rOmega) < 0.1) { // TODO: Change minimum Omega value to CONSTANT
                 // There is not enough rotational input -- Keep the previous heading value
                 // get heading  
-                if (turnTimer.get() > 0.5) {
+                if (turnTimer.get() < 0.05) {
                     //headingSetpoint = drivebase.getHeading().getDegrees();
                     targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), headingSetpoint);
                 } else {
@@ -60,7 +61,7 @@ public class SuperSwerveController {
             swerve.drive(new Translation2d(
                             Math.pow(rX, 3) * swerve.getMaximumVelocity(), 
                             Math.pow(rY, 3) * swerve.getMaximumVelocity()), 
-                            Math.pow(targetOmega, 3) * swerve.getMaximumAngularVelocity(), 
+                            Math.pow(targetOmega, 3) * swerve.getMaximumAngularVelocity()                                                                               , 
                             true);
             SmartDashboard.putNumber("SuperSwerve.targetOmega", targetOmega);
             SmartDashboard.putNumber("SuperSwerve.rOmega", rOmega);
@@ -89,3 +90,6 @@ public class SuperSwerveController {
 
     }
 }
+
+
+//:)
