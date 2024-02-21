@@ -238,8 +238,9 @@ public class RobotContainer {
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData("set shooter speed", new
     // SetShooterSpeedAndAngleCommand(10, shooterSubsystem));
-    SmartDashboard.putData("set shooter speed+wait", new SetShooterSpeedAndWaitCommand(shooterSubsystem, 15));
-    SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand(shooterSubsystem));
+    SmartDashboard.putData("set shooter #1", new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter1));
+    SmartDashboard.putData("set shooter #2", new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
+    SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand());
 
     /*
      * SmartDashboard.putData("GroundPosition", new

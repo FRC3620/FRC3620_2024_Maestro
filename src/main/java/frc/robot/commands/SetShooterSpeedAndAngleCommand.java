@@ -24,7 +24,6 @@ public class SetShooterSpeedAndAngleCommand extends Command {
   @Override
   public void initialize() {
     shooterSubsystem.setSpeedAndAngle(speedAndAngle);
-    // this.isFinished();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

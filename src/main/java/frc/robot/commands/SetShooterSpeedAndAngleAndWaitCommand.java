@@ -6,12 +6,12 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ShooterSpeedAndAngle;
 
-public class SetShooterSpeedAndWaitCommand extends SetShooterSpeedAndAngleCommand {
+public class SetShooterSpeedAndAngleAndWaitCommand extends SetShooterSpeedAndAngleCommand {
 
   private double buffer = 2.5;
 
   /** Creates a new keepMotorVeiocityCommand. */
-  public SetShooterSpeedAndWaitCommand(ShooterSpeedAndAngle speedAndAngle) {
+  public SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle speedAndAngle) {
     super(speedAndAngle);
   }
 

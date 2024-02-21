@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -30,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   CANDeviceFinder deviceFinder = RobotContainer.canDeviceFinder;
@@ -154,42 +155,20 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  void putMotorInformationToDashboard(String motorName, TalonFX motor) {
-    if (motor != null) {
-      double currentVelocity = motor.getVelocity().getValueAsDouble();
-      SmartDashboard.putNumber("shooter." + motorName + ".velocity", currentVelocity);
-      double getClosedLoopOutput = motor.getClosedLoopOutput().getValueAsDouble();
-      SmartDashboard.putNumber("shooter." + motorName + ".closedLoopOutput", getClosedLoopOutput);
-      double getTorqueCurrent = motor.getTorqueCurrent().getValueAsDouble();
-      SmartDashboard.putNumber("shooter." + motorName + ".torqueCurrent", getTorqueCurrent);
-    }
-  }
-
   @Override
   public void periodic() {
     if (topMotor != null) {
-      putMotorInformationToDashboard("top", topMotor);
       topMotor.setControl(m_voltageVelocity.withVelocity(speed));
     }
 
     if (bottomMotor != null) {
-      putMotorInformationToDashboard("bottom", bottomMotor);
       bottomMotor.setControl(m_voltageVelocity.withVelocity(speed));
     }
-    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
 
     // only do something if we actually have a motor
     if (elevationMotor != null) {
-      SmartDashboard.putNumber(name + ".elevation.current", elevationMotor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".elevation.power", elevationMotor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".elevation.temperature", elevationMotor.getMotorTemperature());
 
       if (elevationMotorEncoder != null) { // if there is an encoder, display these
-        double velocity = elevationMotorEncoder.getVelocity();
-        double position = elevationMotorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".elevation.velocity", velocity);
-        SmartDashboard.putNumber(name + ".elevation.position", position);
-
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) {
             // If the robot is running, and the encoder is "not calibrated," run motor very
@@ -203,10 +182,8 @@ public class ShooterSubsystem extends SubsystemBase {
             } else {
               // we have a timer, has the motor had power long enough to spin up
               if (calibrationTimer.get() > 0.5) {
-                // motor should be moving if limit switch not pressed
                 if (Math.abs(elevationMotorEncoder.getVelocity()) < 1) {
-                  // limit switch pressed, stop the motor, set encoder position to 0, and set
-                  // calibration to true
+                  // motor is not moving, hopefully it's against the stop
                   encoderCalibrated = true;
                   setElevationPower(0.0);
                   elevationMotorEncoder.setPosition(63.7);
@@ -228,7 +205,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setElevationPosition(double position) {
-    position = MathUtil.clamp(position, -45, 200);
+    position = MathUtil.clamp(position, 29,  62.7);  // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
@@ -251,4 +228,35 @@ public class ShooterSubsystem extends SubsystemBase {
     setSpeed(speed);
     setElevationPosition(requestedPosition);
   }
+
+  @Override
+  public void updateTelemetry() {
+    putMotorInformationToDashboard("top", topMotor);
+    putMotorInformationToDashboard("bottom", bottomMotor);
+    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+    if (elevationMotor != null) {
+      SmartDashboard.putNumber(name + ".elevation.current", elevationMotor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".elevation.power", elevationMotor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".elevation.temperature", elevationMotor.getMotorTemperature());
+
+      if (elevationMotorEncoder != null) { // if there is an encoder, display these
+        double velocity = elevationMotorEncoder.getVelocity();
+        double position = elevationMotorEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".elevation.velocity", velocity);
+        SmartDashboard.putNumber(name + ".elevation.position", position);
+      }
+    }
+  }
+
+  void putMotorInformationToDashboard(String motorName, TalonFX motor) {
+    if (motor != null) {
+      double currentVelocity = motor.getVelocity().getValueAsDouble();
+      SmartDashboard.putNumber("shooter." + motorName + ".velocity", currentVelocity);
+      double getClosedLoopOutput = motor.getClosedLoopOutput().getValueAsDouble();
+      SmartDashboard.putNumber("shooter." + motorName + ".closedLoopOutput", getClosedLoopOutput);
+      double getTorqueCurrent = motor.getTorqueCurrent().getValueAsDouble();
+      SmartDashboard.putNumber("shooter." + motorName + ".torqueCurrent", getTorqueCurrent);
+    }
+  }
+
 }
