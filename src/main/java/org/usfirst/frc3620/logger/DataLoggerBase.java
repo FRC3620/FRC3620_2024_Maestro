@@ -11,6 +11,9 @@ abstract public class DataLoggerBase implements IDataLogger {
 
 	List<NamedDataProvider> namedDataProviders = new ArrayList<>();
 
+	List<DataLoggerPrelude> preludes = new ArrayList<>();
+	List<DataLoggerPostlude> postludes = new ArrayList<>();
+
 	File loggingDirectory = LoggingMaster.getLoggingDirectory();
 	String filename = null;
 	Date filenameTimestamp = null;
@@ -35,6 +38,24 @@ abstract public class DataLoggerBase implements IDataLogger {
 			namedDataProviders.add(new NamedDataProvider(_name, _iDataLoggerDataProvider));
 		} else {
 			logger.error("Cannot addDataProvider(...) after start()");
+		}
+	}
+
+	@Override
+	public void addPrelude(DataLoggerPrelude prelude) {
+		if (!started) {
+			preludes.add(prelude);
+		} else {
+			logger.error("Cannot addPrelude(...) after start()");
+		}
+	}
+
+	@Override
+	public void addPostlude(DataLoggerPostlude postlude) {
+		if (!started) {
+			postludes.add(postlude);
+		} else {
+			logger.error("Cannot addPostlude(...) after start()");
 		}
 	}
 

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.RobotController;
 
 public class RobotDataLogger {
 	PowerDistribution powerDistribution = null;
+	Runtime runtime = null;
 
 	public RobotDataLogger (DataLogger dataLogger, CANDeviceFinder canDeviceFinder) {
 
@@ -23,5 +24,11 @@ public class RobotDataLogger {
 			dataLogger.addDataProvider("pdp.totalPower", () -> DataLogger.f2(powerDistribution.getTotalPower()));
 			dataLogger.addDataProvider("pdp.totalEnergy", () -> DataLogger.f2(powerDistribution.getTotalEnergy()));
 		}
+
+		runtime = Runtime.getRuntime();
+
+		dataLogger.addDataProvider ("mem.free", () -> runtime.freeMemory());
+		dataLogger.addDataProvider ("mem.total", () -> runtime.totalMemory());
+		dataLogger.addDataProvider ("mem.max", () -> runtime.maxMemory());
 	}
 }
