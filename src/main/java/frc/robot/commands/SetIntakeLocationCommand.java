@@ -17,6 +17,7 @@ public class SetIntakeLocationCommand extends Command {
   public SetIntakeLocationCommand(IntakeLocation location) {
     this.location = location;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.

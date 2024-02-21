@@ -4,26 +4,29 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSpeedAndAngle;
 
 public class SetShooterSpeedAndWaitCommand extends SetShooterSpeedAndAngleCommand {
-  
+
   private double buffer = 2.5;
 
   /** Creates a new keepMotorVeiocityCommand. */
-  public SetShooterSpeedAndWaitCommand(ShooterSubsystem _ShooterSubsystem, double _rSpeed) {
-    super(_rSpeed, _ShooterSubsystem);
-    }
+  public SetShooterSpeedAndWaitCommand(ShooterSpeedAndAngle speedAndAngle) {
+    super(speedAndAngle);
+  }
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (shooterSubsystem.getMotorVelocity(shooterSubsystem.topMotor) < speed + buffer
-        && shooterSubsystem.getMotorVelocity(shooterSubsystem.topMotor) >speed - buffer
-        && shooterSubsystem.getMotorVelocity(shooterSubsystem.bottomMotor) < speed + buffer
-        && shooterSubsystem.getMotorVelocity(shooterSubsystem.bottomMotor) > speed - buffer) {
-          return true;
-    }else{
-    return false;
+    double requestedSpeed = speedAndAngle.getSpeed();
+    double topCurrentSpeed = shooterSubsystem.getMotorVelocity(shooterSubsystem.topMotor);
+    double bottomCurrentSpeed = shooterSubsystem.getMotorVelocity(shooterSubsystem.bottomMotor);
+
+    if (Math.abs(topCurrentSpeed - requestedSpeed) < buffer
+        && Math.abs(bottomCurrentSpeed - requestedSpeed) < buffer) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

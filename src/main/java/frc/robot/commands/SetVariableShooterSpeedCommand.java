@@ -6,24 +6,24 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class SetVariableShooterSpeedCommand extends Command {
-  ShooterSubsystem shooterSubsystem;
+  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
 
   /** Creates a new setShooterSpeedCommand. */
-  public SetVariableShooterSpeedCommand(ShooterSubsystem shooterSubsystemP) {
+  public SetVariableShooterSpeedCommand() {
     SmartDashboard.putNumber("shooter.speed", 0);
-    shooterSubsystem = shooterSubsystemP;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterSubsystemP);
+    addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putNumber("shooter.speed", 0);
+    // SmartDashboard.putNumber("shooter.speed", 0);
     // this.isFinished();
   }
 

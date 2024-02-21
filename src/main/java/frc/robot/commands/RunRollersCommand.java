@@ -16,6 +16,7 @@ public class RunRollersCommand extends Command {
   public RunRollersCommand(double power) {
     this.power = power;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -43,7 +44,7 @@ public class RunRollersCommand extends Command {
 
   @Override
   public String toString() {
-    return "RunRollersCommand [power=" + power + "]";
+    return super.toString() + "[power=" + power + "]";
   }
 
 }

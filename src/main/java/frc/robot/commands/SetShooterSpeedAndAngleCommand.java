@@ -1,20 +1,23 @@
- // Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
 import frc.robot.subsystems.ShooterSubsystem;
- 
+
 public class SetShooterSpeedAndAngleCommand extends Command {
-   ShooterSubsystem shooterSubsystem;
-   ShooterSpeedAndAngle speedAndAngle;
+  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
+  ShooterSpeedAndAngle speedAndAngle;
+
   /** Creates a new setShooterSpeedCommand. */
   public SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle speedAndAngle) {
-  this.speedAndAngle = speedAndAngle;
+    this.speedAndAngle = speedAndAngle;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -26,15 +29,17 @@ public class SetShooterSpeedAndAngleCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

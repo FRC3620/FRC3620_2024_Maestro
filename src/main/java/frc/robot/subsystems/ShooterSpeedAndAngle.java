@@ -23,7 +23,7 @@ public class ShooterSpeedAndAngle extends SubsystemBase {
     return position;
   }
 
-  public double getVelocity() {
+  public double getSpeed() {
     return speed;
   }
 
