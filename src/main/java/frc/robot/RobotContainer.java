@@ -110,6 +110,7 @@ public class RobotContainer {
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
+    
 
     SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase, 
                                                     superSwerveController,
@@ -211,15 +212,15 @@ public class RobotContainer {
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
   }
 
+  
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
     chooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto mode", chooser);
 
-    //chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
-    //chooser.addOption("PathPlannerAuto", getAutonomousCommand());
-    //chooser.addOption("Auto Command", drivebase.driveToPose(new Pose2d(new Translation2d(1.5, 0), new Rotation2d(0))));
+    chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
+    //chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
   }
 
   /**
