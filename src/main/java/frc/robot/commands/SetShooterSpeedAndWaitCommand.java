@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class SetShooterSpeedAndWaitCommand extends SetShooterSpeedCommand {
+public class SetShooterSpeedAndWaitCommand extends SetShooterSpeedAndAngleCommand {
   
   private double buffer = 2.5;
 

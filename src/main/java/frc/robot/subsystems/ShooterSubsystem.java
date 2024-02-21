@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
@@ -28,6 +31,8 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class ShooterSubsystem extends SubsystemBase {
+    Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
   CANDeviceFinder deviceFinder = RobotContainer.canDeviceFinder;
   TalonFXConfiguration configs = new TalonFXConfiguration();
   private static final String canBusName = "";
@@ -85,7 +90,7 @@ public class ShooterSubsystem extends SubsystemBase {
     final double kFF = 0; // define FF
     final double outputLimit = 0.2; // the limit that the power cannot exceed
 
-    final double positionConverionFactor = 1.0*9.44;
+    final double positionConverionFactor = 1.0 * 9.44;
     final double velocityConverionFactor = 1.0;
 
     if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_BOTTOM, "Bottom Shooter")
@@ -108,7 +113,7 @@ public class ShooterSubsystem extends SubsystemBase {
       MotorSetup setup = new MotorSetup().setCurrentLimit(10).setCoast(false);
       setup.apply(elevationMotor);
       addChild("elevationMotor", elevationMotor);
-    
+
       MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(80);
       motorSetup.apply(elevationMotor);
       elevationMotorEncoder = elevationMotor.getEncoder();
@@ -239,5 +244,11 @@ public class ShooterSubsystem extends SubsystemBase {
     if (!disabledForDebugging) {
       elevationMotor.set(power);
     }
+  }
+
+  public void setSpeedAndAngle(ShooterSpeedAndAngle speedAndAngle) {
+    logger.info("Setting intake to {}", speedAndAngle);
+    setSpeed(speed);
+    setElevationPosition(requestedPosition);
   }
 }
