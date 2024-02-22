@@ -161,7 +161,15 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     this.speed = speed / 60; // convert RPM to RPS
   }
 
-  public double getMotorVelocity(TalonFX motor) {
+  public double getTopMotorVelocity() {
+    return getMotorVelocity(topMotor);
+  }
+
+  public double getBottomMotorVelocity() {
+    return getMotorVelocity(bottomMotor);
+  }
+
+  double getMotorVelocity(TalonFX motor) {
     if (motor != null) {
       return motor.getVelocity().getValueAsDouble();
     } else {

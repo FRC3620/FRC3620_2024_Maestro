@@ -19,8 +19,8 @@ public class SetShooterSpeedAndAngleAndWaitCommand extends SetShooterSpeedAndAng
   @Override
   public boolean isFinished() {
     double requestedSpeed = speedAndAngle.getSpeed();
-    double topCurrentSpeed = shooterSubsystem.getMotorVelocity(shooterSubsystem.topMotor);
-    double bottomCurrentSpeed = shooterSubsystem.getMotorVelocity(shooterSubsystem.bottomMotor);
+    double topCurrentSpeed = shooterSubsystem.getTopMotorVelocity();
+    double bottomCurrentSpeed = shooterSubsystem.getBottomMotorVelocity();
 
     if (Math.abs(topCurrentSpeed - requestedSpeed) < buffer
         && Math.abs(bottomCurrentSpeed - requestedSpeed) < buffer) {

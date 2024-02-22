@@ -67,15 +67,24 @@ public class Utilities {
 
     int maxSize;
 
-    int size = 0;
+    int size;
 
-    double mean = 0.0;
-    double stdDev = 0.0;
+    double mean;
+    double stdDev;
 
-    int flyers = 0;
+    int flyers;
 
     public SlidingWindowStats(int maxSize) {
       this.maxSize = maxSize;
+      clear();
+    }
+
+    public void clear() {
+      values.clear();
+      size = 0;
+      mean = 0.0;
+      stdDev = 0.0;
+      flyers = 0;
     }
 
     public void addValue(double v) {
