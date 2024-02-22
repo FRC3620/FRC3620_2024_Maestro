@@ -1,12 +1,9 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.ShooterSpeedAndAngle;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class SetVariableShooterSpeedCommand extends Command {
@@ -14,7 +11,8 @@ public class SetVariableShooterSpeedCommand extends Command {
 
   /** Creates a new setShooterSpeedCommand. */
   public SetVariableShooterSpeedCommand() {
-    SmartDashboard.putNumber("shooter.speed", 0);
+    SmartDashboard.putNumber("shooter.manual.speed", 0);
+    SmartDashboard.putNumber("shooter.manual.angle", 90);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooterSubsystem);
@@ -23,15 +21,15 @@ public class SetVariableShooterSpeedCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // SmartDashboard.putNumber("shooter.speed", 0);
-    // this.isFinished();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = SmartDashboard.getNumber("shooter.speed", 0);
-    shooterSubsystem.setSpeed(speed);
+    double speed = SmartDashboard.getNumber("shooter.manual.speed", 0);
+    double position= SmartDashboard.getNumber("shooter.manual.angle", 90);
+    ShooterSpeedAndAngle shooterSpeedAndAngle= new ShooterSpeedAndAngle(speed, position);
+    shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle);
   }
 
   // Called once the command ends or is interrupted.

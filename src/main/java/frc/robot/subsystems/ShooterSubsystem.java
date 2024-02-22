@@ -85,7 +85,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // PID parameters and encoder conversion factors
-    final double kP = 0.4; //
+    final double kP = 0.0125; //
     final double kI = 0;
     final double kD = 0;
     final double kFF = 0; // define FF
@@ -144,7 +144,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   }
 
   public void setSpeed(double speed) {
-    this.speed = speed;
+    SmartDashboard.putNumber (name + ".wheels.requested_velocity", speed);
+    this.speed = speed / 60; // convert RPM to RPS
   }
 
   public double getMotorVelocity(TalonFX motor) {
@@ -158,7 +159,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   @Override
   public void periodic() {
     if (topMotor != null) {
-      topMotor.setControl(m_voltageVelocity.withVelocity(speed));
+      topMotor.setControl(m_voltageVelocity.withVelocity(speed));  // RPS
     }
 
     if (bottomMotor != null) {
@@ -167,7 +168,6 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
     // only do something if we actually have a motor
     if (elevationMotor != null) {
-
       if (elevationMotorEncoder != null) { // if there is an encoder, display these
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) {
@@ -225,8 +225,9 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   public void setSpeedAndAngle(ShooterSpeedAndAngle speedAndAngle) {
     logger.info("Setting intake to {}", speedAndAngle);
-    setSpeed(speed);
-    setElevationPosition(requestedPosition);
+    setSpeed(speedAndAngle.speed);
+    setElevationPosition(speedAndAngle.position);
+    requestedPosition=speedAndAngle.position;
   }
 
   @Override
@@ -250,12 +251,12 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   void putMotorInformationToDashboard(String motorName, TalonFX motor) {
     if (motor != null) {
-      double currentVelocity = motor.getVelocity().getValueAsDouble();
-      SmartDashboard.putNumber("shooter." + motorName + ".velocity", currentVelocity);
+      double currentVelocity = motor.getVelocity().getValueAsDouble() * 60; // convert RPS to RPM
+      SmartDashboard.putNumber(name + "." + motorName + ".velocity", currentVelocity);
       double getClosedLoopOutput = motor.getClosedLoopOutput().getValueAsDouble();
-      SmartDashboard.putNumber("shooter." + motorName + ".closedLoopOutput", getClosedLoopOutput);
+      SmartDashboard.putNumber(name + "." + motorName + ".closedLoopOutput", getClosedLoopOutput);
       double getTorqueCurrent = motor.getTorqueCurrent().getValueAsDouble();
-      SmartDashboard.putNumber("shooter." + motorName + ".torqueCurrent", getTorqueCurrent);
+      SmartDashboard.putNumber(name + "." + motorName + ".torqueCurrent", getTorqueCurrent);
     }
   }
 
