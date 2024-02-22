@@ -37,6 +37,8 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   final double positionConverionFactor = 1.0 * 0.11962;
   final double velocityConverionFactor = 60.0;
 
+  //public static ClimbElevationSubsystem climbPosition = setPosition();
+
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMaxSendable motor;
   RelativeEncoder motorEncoder;
@@ -55,6 +57,8 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   Double requestedPositionWhileCalibrating = null;
 
   boolean disabledForDebugging = true;
+
+
 
   public ClimbElevationSubsystem() { //The constructor
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;

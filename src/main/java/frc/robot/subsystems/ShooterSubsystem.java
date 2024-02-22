@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.HasTelemetry;
+import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
@@ -27,9 +31,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
+    Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
   CANDeviceFinder deviceFinder = RobotContainer.canDeviceFinder;
-  TalonFXConfiguration configs = new TalonFXConfiguration();
+  TalonFXConfiguration topConfig = new TalonFXConfiguration();
+    TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
   private static final String canBusName = "";
   public TalonFX topMotor, bottomMotor;
   CANSparkMaxSendable elevationMotor;
@@ -60,45 +67,57 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-    configs.Voltage.PeakForwardVoltage = 8;
-    configs.Voltage.PeakReverseVoltage = -8;
+    topConfig.Voltage.PeakForwardVoltage = 12;
+    topConfig.Voltage.PeakReverseVoltage = -12;
+    bottomConfig.Voltage.PeakForwardVoltage=12;
+    bottomConfig.Voltage.PeakReverseVoltage=-12;
     /*
      * Voltage-based velocity requires a feed forward to account for the back-emf of
      * the motor
      */
-    configs.Slot0.kP = 0.11; // An error of 1 rotation per second results in 2V output
-    configs.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
-    configs.Slot0.kD = 0.0;// A change of 1 rotation per second squared results in 0.01 volts output
-    configs.Slot0.kV = 0.0; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
+    topConfig.Slot0.kP = 0.22; // An error of 1 rotation per second results in 2V output
+    topConfig.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
+    topConfig.Slot0.kD = 0.0;// A change of 1 rotation per second squared results in 0.01 volts output
+    topConfig.Slot0.kV = 0.135; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
                             // volts / Rotation per second
+    
+    bottomConfig.Slot0.kP = 0.22; // An error of 1 rotation per second results in 2V output
+    bottomConfig.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
+    bottomConfig.Slot0.kD = 0.0;// A change of 1 rotation per second squared results in 0.01 volts output
+    bottomConfig.Slot0.kV = 0.15; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
+                            // volts / Rotation per second
+    // Peak output of 10 amps
+    topConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
+    topConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+
+    topConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // Peak output of 10 amps
-    configs.TorqueCurrent.PeakForwardTorqueCurrent = 10;
-    configs.TorqueCurrent.PeakReverseTorqueCurrent = -10;
+    bottomConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
+    bottomConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
 
-    configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-
+    bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     // PID parameters and encoder conversion factors
-    final double kP = 0.4; //
+    final double kP = 0.0125; //
     final double kI = 0;
     final double kD = 0;
     final double kFF = 0; // define FF
     final double outputLimit = 0.2; // the limit that the power cannot exceed
 
-    final double positionConverionFactor = 1.0*9.44;
+    final double positionConverionFactor = 1.0 * 9.44;
     final double velocityConverionFactor = 1.0;
 
     if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_BOTTOM, "Bottom Shooter")
         || RobotContainer.shouldMakeAllCANDevices()) {
       bottomMotor = new TalonFX(MOTORID_SHOOTER_BOTTOM, canBusName);
-      configMotor("bottom shooter", bottomMotor);
+      configMotor("bottom shooter", bottomMotor,bottomConfig);
       addChild("bottom", bottomMotor);
     }
 
     if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_TOP, "Top Shooter")
         || RobotContainer.shouldMakeAllCANDevices()) {
       topMotor = new TalonFX(MOTORID_SHOOTER_TOP, canBusName);
-      configMotor("top shooter", topMotor);
+      configMotor("top shooter", topMotor,topConfig);
       addChild("top", topMotor);
     }
 
@@ -108,7 +127,7 @@ public class ShooterSubsystem extends SubsystemBase {
       MotorSetup setup = new MotorSetup().setCurrentLimit(10).setCoast(false);
       setup.apply(elevationMotor);
       addChild("elevationMotor", elevationMotor);
-    
+
       MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(80);
       motorSetup.apply(elevationMotor);
       elevationMotorEncoder = elevationMotor.getEncoder();
@@ -124,10 +143,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  void configMotor(String motorName, TalonFX motor) {
+  void configMotor(String motorName, TalonFX motor,TalonFXConfiguration configuration) {
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; i++) {
-      status = motor.getConfigurator().apply(configs);
+      status = motor.getConfigurator().apply(configuration);
       if (status.isOK())
         break;
     }
@@ -138,7 +157,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setSpeed(double speed) {
-    this.speed = speed;
+    SmartDashboard.putNumber (name + ".wheels.requested_velocity", speed);
+    this.speed = speed / 60; // convert RPM to RPS
   }
 
   public double getMotorVelocity(TalonFX motor) {
@@ -149,47 +169,38 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  void putMotorInformationToDashboard(String motorName, TalonFX motor) {
-    if (motor != null) {
-      double currentVelocity = motor.getVelocity().getValueAsDouble();
-      SmartDashboard.putNumber("shooter." + motorName + ".velocity", currentVelocity);
-      double getClosedLoopOutput = motor.getClosedLoopOutput().getValueAsDouble();
-      SmartDashboard.putNumber("shooter." + motorName + ".closedLoopOutput", getClosedLoopOutput);
-      double getTorqueCurrent = motor.getTorqueCurrent().getValueAsDouble();
-      SmartDashboard.putNumber("shooter." + motorName + ".torqueCurrent", getTorqueCurrent);
-    }
+  Double manuallySetPower = null;
+
+  public void setWheelPower(Double p) {
+    manuallySetPower = p;
   }
 
   @Override
   public void periodic() {
     if (topMotor != null) {
-      putMotorInformationToDashboard("top", topMotor);
-      topMotor.setControl(m_voltageVelocity.withVelocity(speed));
+      if (manuallySetPower != null) {
+        topMotor.set(manuallySetPower);
+      } else {
+        topMotor.setControl(m_voltageVelocity.withVelocity(speed));  // RPS
+      }
     }
 
     if (bottomMotor != null) {
-      putMotorInformationToDashboard("bottom", bottomMotor);
-      bottomMotor.setControl(m_voltageVelocity.withVelocity(speed));
+      if (manuallySetPower != null) {
+        bottomMotor.set(manuallySetPower);
+      } else {
+        bottomMotor.setControl(m_voltageVelocity.withVelocity(speed));
+      }
     }
-    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
 
     // only do something if we actually have a motor
     if (elevationMotor != null) {
-      SmartDashboard.putNumber(name + ".elevation.current", elevationMotor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".elevation.power", elevationMotor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".elevation.temperature", elevationMotor.getMotorTemperature());
-
       if (elevationMotorEncoder != null) { // if there is an encoder, display these
-        double velocity = elevationMotorEncoder.getVelocity();
-        double position = elevationMotorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".elevation.velocity", velocity);
-        SmartDashboard.putNumber(name + ".elevation.position", position);
-
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) {
             // If the robot is running, and the encoder is "not calibrated," run motor very
             // slowly towards the switch
-            setElevationPower(0.03);
+            setElevationPower(0.08);
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
               calibrationTimer = new Timer();
@@ -198,10 +209,8 @@ public class ShooterSubsystem extends SubsystemBase {
             } else {
               // we have a timer, has the motor had power long enough to spin up
               if (calibrationTimer.get() > 0.5) {
-                // motor should be moving if limit switch not pressed
                 if (Math.abs(elevationMotorEncoder.getVelocity()) < 1) {
-                  // limit switch pressed, stop the motor, set encoder position to 0, and set
-                  // calibration to true
+                  // motor is not moving, hopefully it's against the stop
                   encoderCalibrated = true;
                   setElevationPower(0.0);
                   elevationMotorEncoder.setPosition(63.7);
@@ -223,7 +232,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setElevationPosition(double position) {
-    position = MathUtil.clamp(position, -45, 200);
+    position = MathUtil.clamp(position, 29,  62.7);  // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
@@ -240,4 +249,44 @@ public class ShooterSubsystem extends SubsystemBase {
       elevationMotor.set(power);
     }
   }
+
+  public void setSpeedAndAngle(ShooterSpeedAndAngle speedAndAngle) {
+    // SPAM SPAM SPAM SPAM WONDERFUL SPAM
+    // logger.info("Setting intake to {}", speedAndAngle);
+    setSpeed(speedAndAngle.speed);
+    setElevationPosition(speedAndAngle.position);
+    requestedPosition=speedAndAngle.position;
+  }
+
+  @Override
+  public void updateTelemetry() {
+    putMotorInformationToDashboard("top", topMotor);
+    putMotorInformationToDashboard("bottom", bottomMotor);
+    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+    if (elevationMotor != null) {
+      SmartDashboard.putNumber(name + ".elevation.current", elevationMotor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".elevation.power", elevationMotor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".elevation.temperature", elevationMotor.getMotorTemperature());
+
+      if (elevationMotorEncoder != null) { // if there is an encoder, display these
+        double velocity = elevationMotorEncoder.getVelocity();
+        double position = elevationMotorEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".elevation.velocity", velocity);
+        SmartDashboard.putNumber(name + ".elevation.position", position);
+      }
+    }
+  }
+
+  void putMotorInformationToDashboard(String motorName, TalonFX motor) {
+    if (motor != null) {
+      double currentVelocity = motor.getVelocity().getValueAsDouble() * 60; // convert RPS to RPM
+      SmartDashboard.putNumber(name + "." + motorName + ".velocity", currentVelocity);
+      double getClosedLoopOutput = motor.getClosedLoopOutput().getValueAsDouble();
+      SmartDashboard.putNumber(name + "." + motorName + ".closedLoopOutput", getClosedLoopOutput);
+      double getTorqueCurrent = motor.getTorqueCurrent().getValueAsDouble();
+      SmartDashboard.putNumber(name + "." + motorName + ".torqueCurrent", getTorqueCurrent);
+      SmartDashboard.putNumber(name + "." + motorName + ".appliedPower", motor.get());
+    }
+  }
+
 }

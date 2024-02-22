@@ -68,7 +68,7 @@ public class IntakeRollersMechanism implements HasTelemetry {
     SmartDashboard.putBoolean(name + ".game_piece_detected", gamePieceDetected());
     if (motor != null) {
       if (RobotContainer.powerDistribution != null) {
-        SmartDashboard.putNumber(name + ".motor_input_current", RobotContainer.powerDistribution.getCurrent(motor.getDeviceId()));
+        //SmartDashboard.putNumber(name + ".motor_input_current", RobotContainer.powerDistribution.getCurrent(motor.getDeviceId()));
       }
       SmartDashboard.putNumber(name + ".motor_current", motor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());

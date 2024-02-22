@@ -4,33 +4,15 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class RunRollersUntilDetected extends Command {
+public class RunRollersUntilDetected extends RunRollersCommand {
   /** Creates a new RunRollersUntilDetected. */
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
 
-  public RunRollersUntilDetected() {
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    intakeSubsystem.setRollerPower(.2);
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    intakeSubsystem.setRollerPower(0);
+  public RunRollersUntilDetected(double power) {
+    super(power);
   }
 
   // Returns true when the command should end.
