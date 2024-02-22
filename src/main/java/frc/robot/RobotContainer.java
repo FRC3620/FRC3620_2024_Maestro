@@ -219,14 +219,12 @@ public class RobotContainer {
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition));
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
-   // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
-     //   .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition));
-   // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
-     //   .onTrue(new SetClimberPositionCommand(ClimbElevationSubsystem.p));
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.trapPosition));
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER)
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
+        .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
+        .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
 
     driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
     driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
@@ -238,8 +236,10 @@ public class RobotContainer {
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData("set shooter speed", new
     // SetShooterSpeedAndAngleCommand(10, shooterSubsystem));
-    SmartDashboard.putData("set shooter #1", new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter1));
-    SmartDashboard.putData("set shooter #2", new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
+    SmartDashboard.putData("set shooter #1",
+        new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter1));
+    SmartDashboard.putData("set shooter #2",
+        new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand());
     SmartDashboard.putData("set shooter wheels power", new ShooterWheelPowerCommand());
 
