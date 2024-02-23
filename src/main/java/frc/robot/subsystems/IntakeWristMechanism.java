@@ -45,7 +45,7 @@ public class IntakeWristMechanism implements HasTelemetry {
   boolean encoderCalibrated = false;
 
   // saves the requested position
-  double requestedPosition = 0;
+  Double requestedPosition = null;
 
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
@@ -87,16 +87,6 @@ public class IntakeWristMechanism implements HasTelemetry {
                 // motor should be moving if not against the stop
                 //if (Math.abs(velocity) < 2) {
                 if (true) { // assume calibrated
-                  // the motor is not moving, stop the motor, set encoder position to 0, and set calibration to true
-                  encoderCalibrated = true;
-                  setPower(0.0);
-                  motorEncoder.setPosition(0.0);
-
-                  //If there was a requested position while we were calibrating, go there
-                  if (requestedPositionWhileCalibrating != null) {
-                    setPosition(requestedPositionWhileCalibrating);
-                    requestedPositionWhileCalibrating = null;
-                  }
                 }
               }
             }
@@ -106,16 +96,37 @@ public class IntakeWristMechanism implements HasTelemetry {
     }
   }
 
+  public void markCalibrated() {
+    // stop the motor, set encoder position to 0, and set calibration to true
+    encoderCalibrated = true;
+    setPower(0.0);
+    motorEncoder.setPosition(0.0);
+
+    //If there was a requested position while we were calibrating, go there
+    if (requestedPositionWhileCalibrating != null) {
+      setPosition(requestedPositionWhileCalibrating);
+      requestedPositionWhileCalibrating = null;
+    }
+  }
+
+  public boolean isCalibrated() {
+    return encoderCalibrated;
+  }
+
   /**
    * Set the target position
    * @param position units are ???, referenced from position 0 == ?????
    */
-  public void setPosition(double position) {
-    SmartDashboard.putNumber(name + ".requestedPosition", position);
+  public void setPosition(Double position) {
+    SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
     requestedPosition = position;
     if (encoderCalibrated) {
       if (!disabledForDebugging) {
-        pid.setReference(position, ControlType.kPosition);
+        if (position != null) {
+          pid.setReference(position, ControlType.kPosition);
+        } else {
+          motor.stopMotor();
+        }
       }
     } else {
       requestedPositionWhileCalibrating = position;
@@ -126,7 +137,7 @@ public class IntakeWristMechanism implements HasTelemetry {
    * return the last requested position
    * @return the last requested position, units as in setPosition()
    */
-  public double getRequestedPosition() {
+  public Double getRequestedPosition() {
     return requestedPosition;
   }
 

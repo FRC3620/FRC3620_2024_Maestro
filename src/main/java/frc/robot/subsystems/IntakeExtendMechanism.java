@@ -44,7 +44,7 @@ public class IntakeExtendMechanism implements HasTelemetry {
   boolean encoderCalibrated = false;
 
   // saves the requested position
-  double requestedPosition = 0;
+  Double requestedPosition = null;
   double temporaryPosition = 0;
 
   // to save a requested position if encoder is not calibrated
@@ -107,19 +107,7 @@ public class IntakeExtendMechanism implements HasTelemetry {
                 // motor should be moving if not against the stop
                 double velocity = motorEncoder.getVelocity();
                 if (Math.abs(velocity) < 2) {
-                  // the motor is not moving, stop the motor, set encoder position to 0, and set
-                  // calibration to true
-                  encoderCalibrated = true;
-                  setPower(0.0);
-                  setPower2(0.0);
-                  motorEncoder.setPosition(0.0);
-                  motor2Encoder.setPosition(0.0);
-
-                  // If there was a requested position while we were calibrating, go there
-                  if (requestedPositionWhileCalibrating != null) {
-                    setPosition(requestedPositionWhileCalibrating);
-                    requestedPositionWhileCalibrating = null;
-                  }
+                  markCalibrated();
                 }
               }
             }
@@ -147,13 +135,37 @@ public class IntakeExtendMechanism implements HasTelemetry {
                 }
               }
             } else {  
-              setPIDReference(requestedPosition);
-              setPIDReference2(requestedPosition);
+              if (requestedPosition != null) {
+                setPIDReference(requestedPosition);
+                setPIDReference2(requestedPosition);
+              } else {
+                motor.stopMotor();
+                motor2.stopMotor();
+              }
             }
           }
         }
       }
     }
+  }
+
+  public void markCalibrated() {
+    // stop the motor, set encoder position to 0, and set calibration to true
+    encoderCalibrated = true;
+    setPower(0.0);
+    setPower2(0.0);
+    motorEncoder.setPosition(0.0);
+    motor2Encoder.setPosition(0.0);
+
+    // If there was a requested position while we were calibrating, go there
+    if (requestedPositionWhileCalibrating != null) {
+      setPosition(requestedPositionWhileCalibrating);
+      requestedPositionWhileCalibrating = null;
+    }
+  }
+
+  public boolean isCalibrated() {
+    return encoderCalibrated;
   }
 
   // this will return "out of wack" if motor 2 gets too behind motor 1
@@ -176,8 +188,8 @@ public class IntakeExtendMechanism implements HasTelemetry {
    * 
    * @param position units are ???, referenced from position 0 == ?????
    */
-  public void setPosition(double position) {
-    SmartDashboard.putNumber(name + ".requestedPosition", position);
+  public void setPosition(Double position) {
+    SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
     requestedPosition = position;
     if (encoderCalibrated) {
       // setPIDReference(position);

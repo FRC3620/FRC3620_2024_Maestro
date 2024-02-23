@@ -101,28 +101,16 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     }
   }
 
-  public void setExtendPosition(double length) {
+  public void setExtendPosition(Double length) {
     intakeExtendMechanism.setPosition(length);
   }
 
-  public void setExtendPower(double power) {
-    intakeExtendMechanism.setPower(power);
-  }
-
-  public void setShoulderPosition(double angle) {
+  public void setShoulderPosition(Double angle) {
     intakeShoulderMechanism.setPosition(angle);
   }
 
-  public void setIntakePower(double power) {
-    intakeShoulderMechanism.setPower(power);
-  }
-
-  public void setWristPosition(double pitch) {
+  public void setWristPosition(Double pitch) {
     intakeWristMechanism.setPosition(pitch);
-  }
-
-  public void setWristPower(double power) {
-    intakeWristMechanism.setPower(power);
   }
 
   public double getRequestedWristPosition() {
@@ -133,7 +121,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     return intakeWristMechanism.getActualPosition();
   }
 
-  public double getRequestedShoulderPosition() {
+  public Double getRequestedShoulderPosition() {
     return intakeShoulderMechanism.getRequestedPosition();
   }
 
@@ -141,7 +129,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     return intakeShoulderMechanism.getActualPosition();
   }
 
-  public double getRequestedExtendPosition() {
+  public Double getRequestedExtendPosition() {
     return intakeExtendMechanism.getRequestedPosition();
   }
 
@@ -191,7 +179,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_WRIST, "Wrist")
         || shouldMakeAllCANDevices) {
       wrist = new CANSparkMaxSendable(MOTORID_INTAKE_WRIST, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(10).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(10).setCoast(true);
       motorSetup.apply(wrist);
       addChild("wrist", wrist);
     }
