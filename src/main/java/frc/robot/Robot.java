@@ -14,8 +14,6 @@ import org.usfirst.frc3620.misc.RobotMode;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.SwerveMotorTestSubsystem;
@@ -30,10 +28,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  LightSegment lightSegment;
-  LightSegment Blink;
-private BlinkPattern blinkPattern;
-private SolidPattern solidPattern;
   private Logger logger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
@@ -49,8 +43,9 @@ private SolidPattern solidPattern;
     logger.info ("I'm alive! {}", GitNess.gitDescription());
     printMemoryStatus("logger is up");
 
-    PortForwarder.add (10080, "wpilibpi.local", 80);
-    PortForwarder.add (10022, "wpilibpi.local", 22);
+    PortForwarder.add (10080, "photonvision.local", 80);
+    PortForwarder.add (15800, "photonvision.local", 5800);
+    PortForwarder.add (5801, "photonvision.local", 5801);
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
