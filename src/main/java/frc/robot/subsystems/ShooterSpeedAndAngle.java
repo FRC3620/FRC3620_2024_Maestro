@@ -12,7 +12,9 @@ public class ShooterSpeedAndAngle extends SubsystemBase {
 
   public static ShooterSpeedAndAngle testshooter1 = new ShooterSpeedAndAngle(10, 40);
   public static ShooterSpeedAndAngle testshooter2 = new ShooterSpeedAndAngle(20, 60);
-  
+  public static ShooterSpeedAndAngle shootingPosition = new ShooterSpeedAndAngle(20, 60);
+  public static ShooterSpeedAndAngle subWoofShot = new ShooterSpeedAndAngle(20, 60);
+
   /** Creates a new ShooterSpeedAndAngle. */
   public ShooterSpeedAndAngle(double speed, double position) {
     this.speed = speed;
