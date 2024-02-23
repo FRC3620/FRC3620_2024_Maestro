@@ -240,7 +240,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   }
 
   public void setElevationPosition(double position) {
-    position = MathUtil.clamp(position, 29,  62.7);  // high end is a little short of the stop
+    position = MathUtil.clamp(position, 17,  62.7);  // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {

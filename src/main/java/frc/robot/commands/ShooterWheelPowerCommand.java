@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import javax.swing.plaf.SliderUI;
-
 import org.usfirst.frc3620.misc.Utilities.SlidingWindowStats;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
