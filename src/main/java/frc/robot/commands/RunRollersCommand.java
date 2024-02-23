@@ -7,16 +7,16 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RollersSubsystem;
 
 public class RunRollersCommand extends Command {
   /** Creates a new RunRollersUntilDetected. */
-  IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
+  RollersSubsystem subsystem = RobotContainer.rollersSubsystem;
 
   public RunRollersCommand() {
     SmartDashboard.putNumber("rollers.manual.power", 0);
     // Use addRequirements() here to declare subsystem dependencies.
-    //addRequirements(intakeSubsystem);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -28,13 +28,13 @@ public class RunRollersCommand extends Command {
   @Override
   public void execute() {
     double power = SmartDashboard.getNumber("rollers.manual.power", 0);
-    intakeSubsystem.setRollerPower(power);
+    subsystem.setRollerPower(power);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.setRollerPower(0);
+    subsystem.setRollerPower(0);
   }
 
   // Returns true when the command should end.

@@ -22,7 +22,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
   public IntakeExtendMechanism intakeExtendMechanism;
   public IntakeShoulderMechanism intakeShoulderMechanism;
   public IntakeWristMechanism intakeWristMechanism;
-  public IntakeRollersMechanism intakeRollerMechanism;
 
   public CANSparkMaxSendable shoulder;
   public DutyCycleEncoder shoulderEncoder;
@@ -35,18 +34,13 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
   public CANSparkMaxSendable wrist;
   public DigitalInput wristHomeSwitch;
 
-  public CANSparkMaxSendable rollers;
-  public DigitalInput gamePieceObtained;
-
   double temporaryPosition;
 
-  /** Creates a new ArmSubsystem. */
   public IntakeSubsystem() {
     setupMotors();
     intakeExtendMechanism = new IntakeExtendMechanism(extend, extend2);
     intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder, shoulderEncoder);
     intakeWristMechanism = new IntakeWristMechanism(wrist, wristHomeSwitch);
-    intakeRollerMechanism = new IntakeRollersMechanism(rollers, gamePieceObtained);
   }
 
   @Override
@@ -55,7 +49,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     intakeExtendMechanism.periodic();
     intakeShoulderMechanism.periodic();
     intakeWristMechanism.periodic();
-    intakeRollerMechanism.periodic();
 
     /*
     if (cantElevate()) {
@@ -132,18 +125,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     intakeWristMechanism.setPower(power);
   }
 
-  public void setRollerPower(double rollerSpeed) {
-    intakeRollerMechanism.setPower(rollerSpeed);
-  }
-
-  public double getRollerVelocity() {
-    return intakeRollerMechanism.getVelocity();
-  }
-
-  public boolean gamePieceDetected() {
-    return intakeRollerMechanism.gamePieceDetected();
-  }
-
   public double getRequestedWristPosition() {
     return intakeWristMechanism.getRequestedPosition();
   }
@@ -168,11 +149,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     return intakeExtendMechanism.getActualPosition();
   }
 
-  public void recalibrataePitch(boolean forward) {
-    recalibrataePitch(forward);
-  }
-
-  public final static int MOTORID_INTAKE_ROLLERS = 9;
   public final static int MOTORID_INTAKE_EXTEND = 10;
   public final static int MOTORID_INTAKE_EXTEND2 = 11;
   public final static int MOTORID_INTAKE_WRIST = 12;
@@ -222,20 +198,10 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
 
     wristHomeSwitch = new DigitalInput(6);
     addChild("wristHomeSwitch", wristHomeSwitch);
-
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ROLLERS, "Rollers")
-        || shouldMakeAllCANDevices) {
-      rollers = new CANSparkMaxSendable(MOTORID_INTAKE_ROLLERS, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(true);
-      motorSetup.apply(rollers);
-      addChild("roller", rollers);
-    }
-
-    gamePieceObtained = new DigitalInput(9);
   }
 
   public void setLocation(IntakeLocation intakeLocation) {
-    logger.info ("Setting intake to {}", intakeLocation);
+    // logger.info ("Setting intake to {}", intakeLocation);
     intakeShoulderMechanism.setPosition(intakeLocation.getShoulder());
     intakeExtendMechanism.setPosition(intakeLocation.getExtend());
     intakeWristMechanism.setPosition(intakeLocation.getWrist());
@@ -246,9 +212,5 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     intakeExtendMechanism.updateTelemetry();
     intakeShoulderMechanism.updateTelemetry();
     intakeWristMechanism.updateTelemetry();
-    intakeRollerMechanism.updateTelemetry();
-
   }
 }
-
-// :D

@@ -53,6 +53,7 @@ public class RobotContainer {
 
   // subsystems here
   public static IntakeSubsystem intakeSubsystem;
+  public static RollersSubsystem rollersSubsystem;
   public static ClimbElevationSubsystem climbElevationSubsystem;
   public static ShooterSubsystem shooterSubsystem;
   public static BlinkySubsystem blinkySubsystem;
@@ -165,6 +166,9 @@ public class RobotContainer {
   private void makeSubsystems() {
     intakeSubsystem = new IntakeSubsystem();
     addSubsystem(intakeSubsystem);
+
+    rollersSubsystem = new RollersSubsystem();
+    addSubsystem(rollersSubsystem);
 
     climbElevationSubsystem = new ClimbElevationSubsystem();
     addSubsystem(climbElevationSubsystem);
