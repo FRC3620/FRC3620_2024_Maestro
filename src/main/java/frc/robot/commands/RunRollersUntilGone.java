@@ -7,16 +7,13 @@ package frc.robot.commands;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class RunRollersUntilDetected extends RunRollersCommand {
+public class RunRollersUntilGone extends RunRollersCommand {
   /** Creates a new RunRollersUntilDetected. */
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (intakeSubsystem.gamePieceDetected() == true) {
-      return true;
-    }
-    return false;
+    return ! intakeSubsystem.gamePieceDetected();
   }
 }
