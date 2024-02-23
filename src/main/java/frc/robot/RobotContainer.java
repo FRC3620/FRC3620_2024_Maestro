@@ -218,13 +218,13 @@ public class RobotContainer {
 
     // Operator intake controls
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.groundPosition));
+        .onTrue(new PositionIntakeManuallyCommand(IntakeLocation.groundPosition));
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition));
+        .onTrue(new PositionIntakeManuallyCommand(IntakeLocation.homePosition));
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
+        .onTrue(new PositionIntakeManuallyCommand(IntakeLocation.ampPosition));
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
+        .onTrue(new PositionIntakeManuallyCommand(IntakeLocation.preclimbPosition));
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
@@ -263,21 +263,21 @@ public class RobotContainer {
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
 
-    SmartDashboard.putData("Intake elevate to 0", new SetIntakeLocationCommand(new IntakeLocation(0, 0, 0)));
-    SmartDashboard.putData("Intake elevate to 10", new SetIntakeLocationCommand(new IntakeLocation(10, 0, 0)));
-    SmartDashboard.putData("Intake elevate to 20", new SetIntakeLocationCommand(new IntakeLocation(20, 0, 0)));
-    SmartDashboard.putData("Intake elevate to 40", new SetIntakeLocationCommand(new IntakeLocation(40, 0, 0)));
+    SmartDashboard.putData("Intake elevate to 0", new PositionIntakeManuallyCommand(new IntakeLocation(0, 0, 0)));
+    SmartDashboard.putData("Intake elevate to 10", new PositionIntakeManuallyCommand(new IntakeLocation(10, 0, 0)));
+    SmartDashboard.putData("Intake elevate to 20", new PositionIntakeManuallyCommand(new IntakeLocation(20, 0, 0)));
+    SmartDashboard.putData("Intake elevate to 40", new PositionIntakeManuallyCommand(new IntakeLocation(40, 0, 0)));
 
     SmartDashboard.putData("Intake elevate-extend-wrist to 10-0-0",
-        new SetIntakeLocationCommand(new IntakeLocation(10, 0, 0)));
+        new PositionIntakeManuallyCommand(new IntakeLocation(10, 0, 0)));
     SmartDashboard.putData("Intake elevate-extend-wrist to 10-0-4",
-        new SetIntakeLocationCommand(new IntakeLocation(10, 0, 4)));
-    SmartDashboard.putData("Intake elevate-extend to 10-2", new SetIntakeLocationCommand(new IntakeLocation(10, 2, 0)));
-    SmartDashboard.putData("Intake elevate-extend to 10-6", new SetIntakeLocationCommand(new IntakeLocation(10, 6, 0)));
-    SmartDashboard.putData("Intake elevate-extend to 10-8", new SetIntakeLocationCommand(new IntakeLocation(10, 8, 0)));
+        new PositionIntakeManuallyCommand(new IntakeLocation(10, 0, 4)));
+    SmartDashboard.putData("Intake elevate-extend to 10-2", new PositionIntakeManuallyCommand(new IntakeLocation(10, 2, 0)));
+    SmartDashboard.putData("Intake elevate-extend to 10-6", new PositionIntakeManuallyCommand(new IntakeLocation(10, 6, 0)));
+    SmartDashboard.putData("Intake elevate-extend to 10-8", new PositionIntakeManuallyCommand(new IntakeLocation(10, 8, 0)));
     SmartDashboard.putData("Intake elevate-extend to 10-14",
-        new SetIntakeLocationCommand(new IntakeLocation(10, 14, 0)));
-    SmartDashboard.putData("Intake elevate-extend to 75-0", new SetIntakeLocationCommand(new IntakeLocation(75, 0, 0)));
+        new PositionIntakeManuallyCommand(new IntakeLocation(10, 14, 0)));
+    SmartDashboard.putData("Intake elevate-extend to 75-0", new PositionIntakeManuallyCommand(new IntakeLocation(75, 0, 0)));
 
     // test rollers
     SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected());

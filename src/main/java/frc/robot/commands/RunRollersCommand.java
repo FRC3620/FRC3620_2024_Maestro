@@ -13,8 +13,17 @@ public class RunRollersCommand extends Command {
   /** Creates a new RunRollersUntilDetected. */
   RollersSubsystem subsystem = RobotContainer.rollersSubsystem;
 
+  Double savedPower = null;
+
   public RunRollersCommand() {
-    SmartDashboard.putNumber("rollers.manual.power", 0);
+    this(null);
+  }
+
+  public RunRollersCommand(Double power) {
+    savedPower = power;
+    if (power == null) {
+      SmartDashboard.putNumber("rollers.manual.input", 0);
+    }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -27,7 +36,12 @@ public class RunRollersCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double power = SmartDashboard.getNumber("rollers.manual.power", 0);
+    double power = 0;
+    if (savedPower == null) {
+      power = SmartDashboard.getNumber("rollers.manual.power", 0);
+    } else {
+      power = savedPower;
+    }
     subsystem.setRollerPower(power);
   }
 
