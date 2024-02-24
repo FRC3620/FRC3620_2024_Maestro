@@ -58,6 +58,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public double maximumSpeed = 4; //1
   double targetHeading;
 
+  
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -458,5 +460,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Double getMaximumAngularVelocity() {
     return swerveDrive.getMaximumAngularVelocity();
+  }
+
+  public boolean AreWeAiming(boolean areweaiming){
+    return areweaiming;
   }
 }
