@@ -12,7 +12,10 @@ import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkLimitSwitch;
+import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
@@ -21,25 +24,76 @@ public class IntakeRollersMechanism implements HasTelemetry {
   /** Creates a new IntakeRollersMechanism. */
   CANSparkMaxSendable motor;
   RelativeEncoder encoder;
-  DigitalInput gamePieceDetector;
+  SparkLimitSwitch gamePieceDetector;
 
   final String name = "intake.rollers";
 
   boolean disabledForDebugging = false;
 
-  public IntakeRollersMechanism(CANSparkMaxSendable motor, DigitalInput gamePieceDetector) {
+  public IntakeRollersMechanism(CANSparkMaxSendable motor) {
     this.motor = motor;
-    this.gamePieceDetector = gamePieceDetector;
     if (motor != null) {
       this.encoder = motor.getEncoder();
       encoder.setPositionConversionFactor(1);
-      encoder.setVelocityConversionFactor(60);
+      encoder.setVelocityConversionFactor(1);
+
+      gamePieceDetector = motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
     }
   }
 
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean(name + "limit_switch_ispressed", gamePieceDetector.isPressed());
+    SmartDashboard.putBoolean(name + "game_peice_detected", gamePieceDetected());
+
+    if (motor != null) {
+      SmartDashboard.putNumber(name + ".motor_current", motor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
+
+      if (encoder != null) {
+        double elevateSpeed = encoder.getVelocity();
+        SmartDashboard.putNumber(name + ".speed", elevateSpeed);
+        // SmartDashboard.putNumber(name + ".velocityConversionFactor",
+        // encoder.getVelocityConversionFactor());
+
+        /*
+         * if(Robot.getCurrentRobotMode() == RobotMode.TELEOP ||
+         * Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
+         * if (!encoderIsValid) {
+         * moveClawCannon(0.015);
+         * 
+         * if (calibrationTimer == null) {
+         * calibrationTimer = new Timer();
+         * calibrationTimer.reset();
+         * calibrationTimer.start();
+         * } else {
+         * if (calibrationTimer.get() > 0.75){
+         * if (Math.abs(elevateSpeed) < 15) {
+         * encoderIsValid = true;
+         * moveClawCannon(0.0);
+         * encoder.setPosition(65);
+         * 
+         * if (requestedPositionWhileCalibrating != null) {
+         * setPosition(requestedPositionWhileCalibrating);
+         * requestedPositionWhileCalibrating = null;
+         * }
+         * }
+         * }
+         * }
+         * }
+         * } else {
+         * calibrationTimer = null; // start over!
+         * }
+         */
+      }
+    }
   }
+
+  /**
+   * Sets the cannon to extend the arm to 'length' inches. Increasing
+   * length is a longer arm.
+   * "Extend" motor.
+   */
 
   public void setPower(double speed) {
     if (motor != null) {
@@ -50,11 +104,14 @@ public class IntakeRollersMechanism implements HasTelemetry {
   }
 
   public boolean gamePieceDetected() {
-    if (gamePieceDetector.get()) {
-      return false;
-    } else {
-      return true;
+    if(gamePieceDetector != null){
+      if (gamePieceDetector.isPressed()) {
+        return true;
+      } else {
+        return false;
+      }
     }
+    return false;
   }
 
   public double getVelocity() {

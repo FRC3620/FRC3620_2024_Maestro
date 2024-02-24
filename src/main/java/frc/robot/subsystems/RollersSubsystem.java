@@ -9,6 +9,7 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -25,7 +26,7 @@ public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
 
   public RollersSubsystem() {
     setupMotors();
-    intakeRollerMechanism = new IntakeRollersMechanism(rollers, gamePieceObtained);
+    intakeRollerMechanism = new IntakeRollersMechanism(rollers);
   }
 
   @Override
@@ -44,6 +45,10 @@ public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
 
   public boolean gamePieceDetected() {
     return intakeRollerMechanism.gamePieceDetected();
+  }
+
+  public SparkLimitSwitch getLimitSwitch() {
+    return intakeRollerMechanism.gamePieceDetector;
   }
 
   public final static int MOTORID_INTAKE_ROLLERS = 9;
