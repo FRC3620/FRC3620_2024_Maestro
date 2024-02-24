@@ -104,7 +104,9 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     final double kFF = 0; // define FF
     final double outputLimit = 0.2; // the limit that the power cannot exceed
 
-    final double positionConverionFactor = 1.0 * 9.44;
+    // was 9.44 before we swapped out 3:1/5:1 for a 5:1/5:1
+    // final double positionConverionFactor = 1.0 * 9.44 * (15.0 / 25.0);
+    final double positionConverionFactor = (64 - 18.1) / (64 - 54.93);  //difference in angle divided by difference in motor rotation
     final double velocityConverionFactor = 1.0;
 
     if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_BOTTOM, "Bottom Shooter")
@@ -221,8 +223,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
                   // motor is not moving, hopefully it's against the stop
                   encoderCalibrated = true;
                   setElevationPower(0.0);
-                  elevationMotorEncoder.setPosition(63.7);
-                  setElevationPosition(63.7);
+                  elevationMotorEncoder.setPosition(64);
+                  setElevationPosition(64);
 
                   // If there was a requested position while we were calibrating, go there
                   if (requestedPositionWhileCalibrating != null) {
@@ -240,7 +242,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   }
 
   public void setElevationPosition(double position) {
-    position = MathUtil.clamp(position, 17,  62.7);  // high end is a little short of the stop
+    position = MathUtil.clamp(position, 17,  63);  // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
