@@ -112,6 +112,7 @@ public class RobotContainer {
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
+    
 
     SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase, 
                                                     superSwerveController,
@@ -137,7 +138,7 @@ public class RobotContainer {
         () -> false
     );
 
-    drivebase.setDefaultCommand(SuperFieldRel);
+    drivebase.setDefaultCommand(StandardYagslDrive);
 
     if (drivebase.getCurrentCommand() != null){
       SmartDashboard.putString("CurrentCommand", drivebase.getCurrentCommand().toString());
@@ -216,15 +217,15 @@ public class RobotContainer {
     SmartDashboard.putData("LockCamToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
   }
 
+  
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
     chooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto mode", chooser);
 
-    //chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
-    //chooser.addOption("PathPlannerAuto", getAutonomousCommand());
-    //chooser.addOption("Auto Command", drivebase.driveToPose(new Pose2d(new Translation2d(1.5, 0), new Rotation2d(0))));
+    chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
+    //chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
   }
 
   /**
