@@ -33,7 +33,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   //final double outputLimit = 0.5; // the limit that the power cannot exceed
 
   // convert rotations to degree, run through a 25:1 gearbox, chain drive is 64 / 24;
-  final double positionConverionFactor = 360 * ( 1 / 25.0) * (24.0 / 64.0); 
+  final double positionConverionFactor = 360 * ( 1 / 75.0) * (24.0 / 64.0); 
   final double velocityConverionFactor = positionConverionFactor;
 
   // Ingredients: Motor, Encoder, PID, and Timer
@@ -128,7 +128,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
     //logger.info ("Setting position to {}", position);
     SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
     if (position != null) {
-      position = MathUtil.clamp(position, -20, 70);
+      position = MathUtil.clamp(position, -40, 70);
     }
     requestedPosition = position;
     if (encoderCalibrated) {

@@ -26,7 +26,7 @@ public class IntakeExtendMechanism implements HasTelemetry {
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
-  final double outputLimit = 0.6; // the limit that the power cannot exceed
+  final double outputLimit = 0.9; // the limit that the power cannot exceed
 
   final double positionConverionFactor = 3.14159 * 1.625 / 9;  // 1 5/8" diameter, moves one circumference for every motor revolution, 1:9
   final double velocityConverionFactor = 1.0;
