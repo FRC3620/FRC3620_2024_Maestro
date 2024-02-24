@@ -11,6 +11,7 @@ import javax.naming.spi.DirStateFactory.Result;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.Vector;
 //import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
@@ -113,7 +114,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
-    public double camYawToSpeaker(){
+    public Double camYawToSpeaker(){
         vectorToSpeaker result = new vectorToSpeaker();
         //gets alliance color
 	    color = DriverStation.getAlliance();
@@ -122,34 +123,23 @@ public class VisionSubsystem extends SubsystemBase {
         var res = aprilTagCam.getLatestResult();
         
         if (res.hasTargets()) {
-            //gets best target
-            var bestTarget = res.getBestTarget();
             //if alliance is blue...
-            if(color.get() == Alliance.Blue){
-            //if its tag we looking for
-            if(bestTarget.getFiducialId() == 7){
-                //gets best target yaw
-                result.yaw = -bestTarget.getYaw();
-
-                return result.yaw;
-            }else{
-                return -999.999;
-            }   
-        }else{//if alliance is red...
-            if(bestTarget.getFiducialId() == 4){
-                
-                result.yaw = -bestTarget.getYaw();
-
-                return result.yaw;
-            }else{
-                return -999.999;
-            }   
+            int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
+            var desiredTarget = findTargetInResults(res, desiredTargetId);
+            if (desiredTarget == null) return null;
+            result.yaw = -desiredTarget.getYaw();
+            return result.yaw;
         }
-        
-    }else{
-            return -999.999;
-        }
+        return null;
+    }
 
+    PhotonTrackedTarget findTargetInResults (PhotonPipelineResult photonPipelineResult, int id) {
+        for (var target : photonPipelineResult.targets) {
+            if (target.getFiducialId() == id) {
+                return target;
+            }
+        }
+        return null;
     }
 
     

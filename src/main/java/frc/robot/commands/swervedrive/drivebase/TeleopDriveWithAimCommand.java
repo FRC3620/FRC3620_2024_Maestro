@@ -67,22 +67,22 @@ public class TeleopDriveWithAimCommand extends Command {
     // see the right target?"
     
     if(swerve.AreWeAiming(areweaiming) == true){
-      if (vision.doIHaveTarget() == true) {
-
       //grabs heading from vision subsystem
-      double headingToTag = vision.camYawToSpeaker();
-      //current heading
-      double currentPosRotation = swerve.getHeading().getDegrees();
-      //calculates angVelocity
-      double angularVelocity = controller.headingCalculate(currentPosRotation, headingToTag);
-      //Prints on dashboard
-      SmartDashboard.putString("doIHaveTarget", "Yes");
-      SmartDashboard.putNumber("AngVelocity", angularVelocity);
-      
-    }else{
-      SmartDashboard.putString("doIHaveTarget", "No");
-    }
-  } else {// else drive normally
+      Double headingToTag = vision.camYawToSpeaker();
+
+      if (headingToTag == null) {
+        SmartDashboard.putString("doIHaveTarget", "No");
+
+      } else {
+        //current heading
+        double currentPosRotation = swerve.getHeading().getDegrees();
+        //calculates angVelocity
+        double angularVelocity = controller.headingCalculate(currentPosRotation, headingToTag);
+        //Prints on dashboard
+        SmartDashboard.putString("doIHaveTarget", "Yes");
+        SmartDashboard.putNumber("AngVelocity", angularVelocity);
+      }
+    } else {// else drive normally
       // Drive using raw values.
       swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
           angVelocity * controller.config.maxAngularVelocity,
