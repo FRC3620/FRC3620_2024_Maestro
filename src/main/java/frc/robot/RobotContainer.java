@@ -212,6 +212,8 @@ public class RobotContainer {
     
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
+
+    SmartDashboard.putData("LockCamToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

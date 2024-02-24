@@ -78,13 +78,13 @@ public class VisionSubsystem extends SubsystemBase {
 
         aprilTagCam = new PhotonCamera("AprilTagCam");
 
-        SmartDashboard.putNumber("rotation",0);
+        SmartDashboard.putNumber("rotation", 0);
 
         noteDetectCam = new PhotonCamera("USB_2M_GS_camera(1)");
 
         aprilTagCam.setPipelineIndex(0);
 
-        //noteDetectCam.setPipelineIndex(0);
+        // noteDetectCam.setPipelineIndex(0);
 
         try {
             fieldLayout = AprilTagFieldLayout
@@ -97,62 +97,21 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        var res = aprilTagCam.getLatestResult();
-        if (res.hasTargets()) {
-            var bestTarget = res.getBestTarget();
-            
-            var bestTagPose = fieldLayout.getTagPose(bestTarget.getFiducialId());
 
-            if (bestTagPose.isPresent()) {
-            var bestTagPoseValue = bestTagPose.get();
-
-            double camToTargetDist = (bestTagPoseValue.getZ() - camHeight) / Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
-            double GD = Math.sqrt((camToTargetDist*camToTargetDist) - (camHeight*camHeight))*1.254248946;
-
-            double rotation = SmartDashboard.getNumber("rotation", 0);
-            Rotation2d robotRotation = new Rotation2d(Math.toRadians(rotation));
-            Transform2d robotTransToTarget = new Transform2d(Math.cos(Math.toRadians(rotation))*GD,Math.sin(Math.toRadians(rotation))*GD,robotRotation); 
-            
-            SmartDashboard.putNumber("GroundDist", GD);
-            SmartDashboard.putNumber("robot.X", bestTagPoseValue.getX()-robotTransToTarget.getX());
-            SmartDashboard.putNumber("robot.Y", bestTagPoseValue.getY()-robotTransToTarget.getY());
-            SmartDashboard.putNumber("robot.Rotation", rotation);
-            
-            
-            
-            }
-        }
-        /*var res = aprilTagCam.getLatestResult();
-        var bestTarget = res.getBestTarget();
-        vectorToSpeaker camDistanceToSpeaker = camDistanceToTargetSpeaker();
-        if (camDistanceToSpeaker != null) {
-
-            double speakerYaw = camDistanceToSpeaker.yaw;
-            
-            double GroundDist = camDistanceToSpeaker.GD;
-
-            SmartDashboard.putNumber("Speaker Ground Distance", GroundDist*1.254248946);
-            SmartDashboard.putNumber("Speaker yaw", speakerYaw);
-
-            double rotation = SmartDashboard.getNumber("rotation", 0);
-            Rotation2d robotRotation = new Rotation2d(Math.toRadians(rotation));
-            Transform2d robotTransToTarget = new Transform2d(Math.cos(rotation)*GroundDist,Math.sin(rotation)*GroundDist,robotRotation); 
-            
-
-            SmartDashboard.putNumber("Robot.X")
-
-        }
-*/
     }
-    /*]
-     * vectorToNote camDistanceToNote = new vectorToNote();
-     * double noteConfidence = camDistanceToNote.confidence;
-     * double noteYaw = camDistanceToNote.yaw;
-     * double noteDistance = camDistanceToNote.distance;
-     * SmartDashboard.putNumber("note Distance", noteDistance);
-     * SmartDashboard.putNumber("note yaw", noteYaw);
-     * SmartDashboard.putNumber("note confidence", noteConfidence);
-     */
+
+    public double camYawToTag(){
+         var res = aprilTagCam.getLatestResult();
+        if (res.hasTargets()) {
+
+            var bestTarget = res.getBestTarget();
+            vectorToSpeaker result = new vectorToSpeaker();
+            result.yaw = -bestTarget.getYaw();
+            return result.yaw;
+        }else{
+            return -999.999;
+        }
+    }
 
     public vectorToSpeaker camDistanceToTargetSpeaker() {
         var res = aprilTagCam.getLatestResult();
@@ -168,7 +127,7 @@ public class VisionSubsystem extends SubsystemBase {
                 double camToTargetDist = (1.45 - camHeight)
                         / Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
                 double distanceXFromTarget = camToTargetTransform.getX();
-                double GD = Math.sqrt((camToTargetDist*camToTargetDist) - (camHeight*camHeight));
+                double GD = Math.sqrt((camToTargetDist * camToTargetDist) - (camHeight * camHeight));
 
                 result.distance = camToTargetDist;
                 result.yaw = bestTarget.getYaw();
@@ -221,7 +180,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     }
 
-    public vectorToNote camDistanceToNote() {
+    public vectorToNote camYawToNote() {
         var res = noteDetectCam.getLatestResult();
         if (res != null) {
             var bestTarget = res.getBestTarget();
@@ -240,9 +199,9 @@ public class VisionSubsystem extends SubsystemBase {
             result.distance = camDistToCenterNote;
             result.yaw = bestTarget.getYaw();
             result.confidence = confidenceNote;
-            SmartDashboard.putNumber("note Distance", result.distance);
+            // SmartDashboard.putNumber("note Distance", result.distance);
             SmartDashboard.putNumber("note yaw", result.yaw);
-            SmartDashboard.putNumber("note confidence", result.confidence);
+            // SmartDashboard.putNumber("note confidence", result.confidence);
 
             return result;
         } else {
@@ -259,53 +218,29 @@ public class VisionSubsystem extends SubsystemBase {
     void aprilTagsPeriodic() {
         var res = aprilTagCam.getLatestResult();
         if (res.hasTargets()) {
-            var imageCaptureTime = res.getTimestampSeconds();
             var bestTarget = res.getBestTarget();
-            SmartDashboard.putNumber("target.id", bestTarget.getFiducialId());
 
-            var camToTargetTransform = bestTarget.getBestCameraToTarget();
-            SmartDashboard.putNumber("transform.x", camToTargetTransform.getX());
-            SmartDashboard.putNumber("transform.y", camToTargetTransform.getY());
-            SmartDashboard.putNumber("transform.z", camToTargetTransform.getZ());
-            Rotation3d rotation3d = camToTargetTransform.getRotation();
-            SmartDashboard.putNumber("rotation.x", rotation3d.getX());
-            SmartDashboard.putNumber("rotation.y", rotation3d.getY());
-            SmartDashboard.putNumber("rotation.z", rotation3d.getZ());
-            // var camPose =
-            // Constants.kFarTargetPose.transformBy(camToTargetTrans.inverse());
-
-            var bestTagPose = fieldLayout.getTagPose(bestTarget.getFiducialId()); // Position of best tag on
-                                                                                  // field
+            var bestTagPose = fieldLayout.getTagPose(bestTarget.getFiducialId());
 
             if (bestTagPose.isPresent()) {
+                var bestTagPoseValue = bestTagPose.get();
 
-                var bestTagPoseValue = bestTagPose.get();// Getting true value of bestTagPose
-                Transform3d targetToCamTransform = camToTargetTransform.inverse();
+                double camToTargetDist = (bestTagPoseValue.getZ() - camHeight)/ Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
+                double GD = Math.sqrt((camToTargetDist * camToTargetDist) - (camHeight * camHeight)) * 1.254248946;
 
-                var camPose = bestTagPoseValue.plus(targetToCamTransform);
+                double rotation = SmartDashboard.getNumber("rotation", 0);
+                Rotation2d robotRotation = new Rotation2d(Math.toRadians(rotation));
+                Transform2d robotTransToTarget = new Transform2d(Math.cos(Math.toRadians(rotation)) * GD,
+                        Math.sin(Math.toRadians(rotation)) * GD, robotRotation);
 
-                SmartDashboard.putNumber("tagPose.X", bestTagPoseValue.getX()); // X of Tag
-                SmartDashboard.putNumber("tagPose.Y", bestTagPoseValue.getY()); // Y of Tag
-                SmartDashboard.putNumber("tagPose.Z", bestTagPoseValue.getZ()); // Z of Tag
-
-                Rotation3d rotationCam = camPose.getRotation();
-
-                // Future: Incorperate with gyro on robot for angle and more accurate distance
-
-                // printing current camera pose and rotation
-                SmartDashboard.putNumber("robotPose.X", camPose.getX());
-                SmartDashboard.putNumber("robotPose.Y", camPose.getY());
-                SmartDashboard.putNumber("robotPose.Z", camPose.getZ());
-
-                SmartDashboard.putNumber("rotationOfRobot.x", rotationCam.getX()); // if robot
-                                                                                   // flips(andrew)
-                SmartDashboard.putNumber("rotationOfRobot.y", rotationCam.getY()); // up and down
-                SmartDashboard.putNumber("rotationOfRobot.z", rotationCam.getZ()); // left and right
+                SmartDashboard.putNumber("GroundDist", GD);
+                SmartDashboard.putNumber("robot.X", bestTagPoseValue.getX() - robotTransToTarget.getX());
+                SmartDashboard.putNumber("robot.Y", bestTagPoseValue.getY() - robotTransToTarget.getY());
+                SmartDashboard.putNumber("robot.Rotation", rotation);
 
             }
 
         }
 
     }
-
 }
