@@ -44,7 +44,7 @@ public class CameraLockToTargetTag extends Command {
   @Override
   public void execute() {
 
-    headingToTag = vision.camYawToTag();
+    headingToTag = vision.camYawToSpeaker();
 
     double headingError = headingToTag-swerve.getHeading().getDegrees();
     // putting current robot heading and target heading
