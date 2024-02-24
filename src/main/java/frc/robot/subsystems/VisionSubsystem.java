@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.naming.spi.DirStateFactory.Result;
 
@@ -23,6 +24,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -44,6 +47,8 @@ public class VisionSubsystem extends SubsystemBase {
     public PhotonCamera noteDetectCam;
 
     AprilTagFieldLayout fieldLayout;
+
+    Optional<Alliance> color;
 
     Double camHeight = 0.803275;// meters, change accordingly
     Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
@@ -99,19 +104,55 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
 
     }
-
-    public double camYawToTag(){
-         var res = aprilTagCam.getLatestResult();
-        if (res.hasTargets()) {
-
-            var bestTarget = res.getBestTarget();
-            vectorToSpeaker result = new vectorToSpeaker();
-            result.yaw = -bestTarget.getYaw();
-            return result.yaw;
+    public boolean doIHaveTarget(){
+        var res = aprilTagCam.getLatestResult();
+        if(res.hasTargets()){
+            return true;
         }else{
-            return -999.999;
+            return false;
         }
     }
+
+    public double camYawToSpeaker(){
+        vectorToSpeaker result = new vectorToSpeaker();
+        //gets alliance color
+	    color = DriverStation.getAlliance();
+
+        //takes latest results
+        var res = aprilTagCam.getLatestResult();
+        
+        if (res.hasTargets()) {
+            //gets best target
+            var bestTarget = res.getBestTarget();
+            //if alliance is blue...
+            if(color.get() == Alliance.Blue){
+            //if its tag we looking for
+            if(bestTarget.getFiducialId() == 7){
+                //gets best target yaw
+                result.yaw = -bestTarget.getYaw();
+
+                return result.yaw;
+            }else{
+                return -999.999;
+            }   
+        }else{//if alliance is red...
+            if(bestTarget.getFiducialId() == 4){
+                
+                result.yaw = -bestTarget.getYaw();
+
+                return result.yaw;
+            }else{
+                return -999.999;
+            }   
+        }
+        
+    }else{
+            return -999.999;
+        }
+
+    }
+
+    
 
     public vectorToSpeaker camDistanceToTargetSpeaker() {
         var res = aprilTagCam.getLatestResult();
