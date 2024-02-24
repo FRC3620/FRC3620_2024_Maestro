@@ -14,6 +14,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -63,7 +64,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
       pid.setI(kI); // 
       pid.setD(kD); // 
       pid.setFF(kFF); //
-      pid.setOutputRange(-0.1, 0.6);
+      pid.setOutputRange(-0.1, 0.9);
 
       this.motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
@@ -126,6 +127,9 @@ public class IntakeShoulderMechanism implements HasTelemetry {
     // new Exception("who is doing this?").printStackTrace();
     //logger.info ("Setting position to {}", position);
     SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
+    if (position != null) {
+      position = MathUtil.clamp(position, -20, 70);
+    }
     requestedPosition = position;
     if (encoderCalibrated) {
       if (!disabledForDebugging) {

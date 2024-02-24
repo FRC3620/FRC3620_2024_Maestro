@@ -4,14 +4,17 @@
 
 package frc.robot.commands;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.RollersSubsystem;
 
 public class RunRollersCommand extends Command {
-  /** Creates a new RunRollersUntilDetected. */
   RollersSubsystem subsystem = RobotContainer.rollersSubsystem;
+  Logger logger = EventLogging.getLogger(getClass());
 
   Double savedPower = null;
 
@@ -38,9 +41,11 @@ public class RunRollersCommand extends Command {
   public void execute() {
     double power = 0;
     if (savedPower == null) {
-      power = SmartDashboard.getNumber("rollers.manual.power", 0);
+      power = SmartDashboard.getNumber("rollers.manual.input", 0);
+      logger.info ("got power from slider: {}", power);
     } else {
       power = savedPower;
+      logger.info ("using savedPower: {}", power);
     }
     subsystem.setRollerPower(power);
   }

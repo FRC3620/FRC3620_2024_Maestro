@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -87,6 +88,7 @@ public class IntakeWristMechanism implements HasTelemetry {
                 // motor should be moving if not against the stop
                 //if (Math.abs(velocity) < 2) {
                 if (true) { // assume calibrated
+                  markCalibrated();
                 }
               }
             }
@@ -119,6 +121,9 @@ public class IntakeWristMechanism implements HasTelemetry {
    */
   public void setPosition(Double position) {
     SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
+    if (position != null) {
+      position = MathUtil.clamp(position, 0, 5);
+    }
     requestedPosition = position;
     if (encoderCalibrated) {
       if (!disabledForDebugging) {

@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -190,6 +191,9 @@ public class IntakeExtendMechanism implements HasTelemetry {
    */
   public void setPosition(Double position) {
     SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
+    if (position != null) {
+      position = MathUtil.clamp(position, 0, 14);
+    }
     requestedPosition = position;
     if (encoderCalibrated) {
       // setPIDReference(position);
