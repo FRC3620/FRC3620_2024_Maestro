@@ -22,6 +22,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
@@ -40,6 +41,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
   private static final String canBusName = "";
   public TalonFX topMotor, bottomMotor;
+
   public CANSparkMaxSendable elevationMotor;
   RelativeEncoder elevationMotorEncoder;
 
@@ -50,7 +52,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public final static int MOTORID_SHOOTER_TOP = 15;
   public final static int MOTORID_SHOOTER_ELEVATION = 16;
 
-  SparkPIDController pid = null;
+  SparkPIDController elevationPid = null;
 
   // Robot is set to "not calibrated" by default
   boolean encoderCalibrated = false;
@@ -105,10 +107,12 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // shooter angle PID parameters and encoder conversion factors
-    final double kP = 0.0125; //
-    final double kI = 0;
+    final double kP = 0.02;
+    final double kI = 0.00007;
     final double kD = 0;
-    final double kFF = 0; // define FF
+    final double kFF = 0;
+    final double kIMaxAccum = 0.04;
+    // TODO make this two limits, less down than the up
     final double outputLimit = 0.2; // the limit that the power cannot exceed
 
     // was 9.44 before we swapped out 3:1/5:1 for a 5:1/5:1
@@ -143,12 +147,16 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       elevationMotorEncoder.setPositionConversionFactor(positionConverionFactor);
       elevationMotorEncoder.setVelocityConversionFactor(velocityConverionFactor);
 
-      pid = elevationMotor.getPIDController();
-      pid.setP(kP); //
-      pid.setI(kI); //
-      pid.setD(kD); //
-      pid.setFF(kFF); //
-      pid.setOutputRange(-outputLimit, outputLimit);
+      elevationPid = elevationMotor.getPIDController();
+      elevationPid.setP(kP);
+      elevationPid.setI(kI);
+      elevationPid.setD(kD);
+      elevationPid.setFF(kFF);
+      var err = elevationPid.setIMaxAccum(kIMaxAccum, 0);
+      if (err != REVLibError.kOk) {
+        logger.error ("Could not set elevation kImaxAccum: {}", err);
+      }
+      elevationPid.setOutputRange(-outputLimit, outputLimit);
     }
 
     topSpeedStats = new SlidingWindowStats(100);
@@ -228,7 +236,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
           if (!encoderCalibrated) {
             // If the robot is running, and the encoder is "not calibrated," run motor very
             // slowly towards the switch
-            setElevationPower(0.08);
+            setElevationPower(0.0); // TODO THIS SHOULD BE 0.08
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
               calibrationTimer = new Timer();
@@ -262,10 +270,14 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public void setElevationPosition(double position) {
     position = MathUtil.clamp(position, 17,  63);  // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
+    double oldPosition = requestedPosition;
     requestedPosition = position;
     if (encoderCalibrated) {
       if (!disabledForDebugging) {
-        pid.setReference(position, ControlType.kPosition);
+        if (oldPosition < 45 && requestedPosition > 55) {
+          //elevationPid.setIAccum(0);
+        }
+        elevationPid.setReference(position, ControlType.kPosition);
       }
     } else {
       requestedPositionWhileCalibrating = position;
@@ -295,6 +307,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       SmartDashboard.putNumber(name + ".elevation.current", elevationMotor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".elevation.power", elevationMotor.getAppliedOutput());
       SmartDashboard.putNumber(name + ".elevation.temperature", elevationMotor.getMotorTemperature());
+      SmartDashboard.putNumber(name + ".elevation.IAccum", elevationPid.getIAccum());
 
       if (elevationMotorEncoder != null) { // if there is an encoder, display these
         double velocity = elevationMotorEncoder.getVelocity();
