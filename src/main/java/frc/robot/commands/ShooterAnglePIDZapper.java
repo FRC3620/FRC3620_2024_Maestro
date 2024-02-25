@@ -33,4 +33,9 @@ public class ShooterAnglePIDZapper extends InstantCommand {
     SmartDashboard.putNumber("test.shooter.angle.pid.actual.kI", pid.getI());
   }
 
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
+
 }

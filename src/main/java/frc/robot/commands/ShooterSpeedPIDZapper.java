@@ -2,9 +2,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -50,4 +48,8 @@ public class ShooterSpeedPIDZapper extends InstantCommand {
     SmartDashboard.putNumber(prefix + ".pid.actual.kV", config.kV);
   }
 
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }

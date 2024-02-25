@@ -13,6 +13,7 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 import org.usfirst.frc3620.misc.RobotMode;
+import org.usfirst.frc3620.misc.Utilities.SlidingWindowStats;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -65,12 +66,14 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   final String name = "shooter";
 
+  SlidingWindowStats topSpeedStats, bottomSpeedStats;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     topConfig.Voltage.PeakForwardVoltage = 12;
-    topConfig.Voltage.PeakReverseVoltage = -12;
-    bottomConfig.Voltage.PeakForwardVoltage=12;
-    bottomConfig.Voltage.PeakReverseVoltage=-12;
+    topConfig.Voltage.PeakReverseVoltage = 0;
+    bottomConfig.Voltage.PeakForwardVoltage = 12;
+    bottomConfig.Voltage.PeakReverseVoltage= 0;
     /*
      * Voltage-based velocity requires a feed forward to account for the back-emf of
      * the motor
@@ -89,12 +92,16 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     // Peak output
     topConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
     topConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+    topConfig.CurrentLimits.StatorCurrentLimit = 20;
+    topConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     topConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // Peak output
     bottomConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
     bottomConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+    bottomConfig.CurrentLimits.StatorCurrentLimit = 20;
+    bottomConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
@@ -144,6 +151,9 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       pid.setFF(kFF); //
       pid.setOutputRange(-outputLimit, outputLimit);
     }
+
+    topSpeedStats = new SlidingWindowStats(100);
+    bottomSpeedStats = new SlidingWindowStats(100);
   }
 
   void configMotor(String motorName, TalonFX motor,TalonFXConfiguration configuration) {
@@ -271,8 +281,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   @Override
   public void updateTelemetry() {
-    putMotorInformationToDashboard("top", topMotor);
-    putMotorInformationToDashboard("bottom", bottomMotor);
+    putMotorInformationToDashboard("top", topMotor, topSpeedStats);
+    putMotorInformationToDashboard("bottom", bottomMotor, bottomSpeedStats);
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
     if (elevationMotor != null) {
       SmartDashboard.putNumber(name + ".elevation.current", elevationMotor.getOutputCurrent());
@@ -288,7 +298,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     }
   }
 
-  void putMotorInformationToDashboard(String motorName, TalonFX motor) {
+  void putMotorInformationToDashboard(String motorName, TalonFX motor, SlidingWindowStats slidingWindowStats) {
     if (motor != null) {
       double currentVelocity = motor.getVelocity().getValueAsDouble() * 60; // convert RPS to RPM
       SmartDashboard.putNumber(name + "." + motorName + ".velocity", currentVelocity);
@@ -297,6 +307,11 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       double getTorqueCurrent = motor.getTorqueCurrent().getValueAsDouble();
       SmartDashboard.putNumber(name + "." + motorName + ".torqueCurrent", getTorqueCurrent);
       SmartDashboard.putNumber(name + "." + motorName + ".appliedPower", motor.get());
+
+      slidingWindowStats.addValue(currentVelocity);
+      SmartDashboard.putNumber(name + "." + motorName + ".sliding.mean", slidingWindowStats.getMean());
+      SmartDashboard.putNumber(name + "." + motorName + ".sliding.stdev", slidingWindowStats.getStdDev());
+      SmartDashboard.putNumber(name + "." + motorName + ".sliding.flyers", slidingWindowStats.getFlyers());
     }
   }
 
