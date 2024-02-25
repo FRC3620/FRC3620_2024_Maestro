@@ -32,14 +32,14 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
-    Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   CANDeviceFinder deviceFinder = RobotContainer.canDeviceFinder;
   TalonFXConfiguration topConfig = new TalonFXConfiguration();
-    TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
+  TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
   private static final String canBusName = "";
   public TalonFX topMotor, bottomMotor;
-  CANSparkMaxSendable elevationMotor;
+  public CANSparkMaxSendable elevationMotor;
   RelativeEncoder elevationMotorEncoder;
 
   public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
@@ -86,17 +86,18 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     bottomConfig.Slot0.kD = 0.0;// A change of 1 rotation per second squared results in 0.01 volts output
     bottomConfig.Slot0.kV = 0.15; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
                             // volts / Rotation per second
-    // Peak output of 10 amps
+    // Peak output
     topConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
     topConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
 
     topConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    // Peak output of 10 amps
+    // Peak output
     bottomConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
     bottomConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
 
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
     // PID parameters and encoder conversion factors
     final double kP = 0.0125; //
     final double kI = 0;

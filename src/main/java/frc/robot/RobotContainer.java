@@ -290,10 +290,27 @@ public class RobotContainer {
     SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone());
 
     // test Shooter
-    SmartDashboard.putData("Shooter speed-angle to 0-0",
-        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 0)));
-    SmartDashboard.putData("Shooter speed-angle to 0.3-30",
-        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(.3, 30)));
+    SmartDashboard.putData("Test Shooter angle to 60",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 60)));
+    SmartDashboard.putData("Test Shooter angle to 35",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 35)));
+    SmartDashboard.putData("Test Shooter angle to 30",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 30)));
+    SmartDashboard.putData("Test Shooter angle to 27.5",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 27.5)));
+    SmartDashboard.putData("Test Shooter angle to 25",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 25)));
+
+    SmartDashboard.putData("Test Shooter Angle PID zapper", new ShooterAnglePIDZapper());
+    SmartDashboard.putData("Test Shooter Top PID zapper", new ShooterSpeedPIDZapper(shooterSubsystem.topMotor, "test.shooter.top"));
+    SmartDashboard.putData("Test Shooter Bottom PID zapper", new ShooterSpeedPIDZapper(shooterSubsystem.bottomMotor, "test.shooter.bottom"));
+
+    SmartDashboard.putData("Test Shooter Speed to 0",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 60)));
+
+    SmartDashboard.putData("Test Shooter Speed to 5000",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 60)));
+
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
