@@ -307,7 +307,10 @@ public class RobotContainer {
 
     SmartDashboard.putData("Test Shooter Speed to 0",
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 60)));
-
+    SmartDashboard.putData("Test Shooter Speed to 500",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(500, 60)));
+    SmartDashboard.putData("Test Shooter Speed to 3000",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(3000, 60)));
     SmartDashboard.putData("Test Shooter Speed to 5000",
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 60)));
 

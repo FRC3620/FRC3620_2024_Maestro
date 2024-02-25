@@ -44,7 +44,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   RelativeEncoder elevationMotorEncoder;
 
   public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
-  private double speed = 0.6;
+  private double requestedWheelSpeed = 0;
 
   public final static int MOTORID_SHOOTER_BOTTOM = 14;
   public final static int MOTORID_SHOOTER_TOP = 15;
@@ -73,26 +73,25 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     topConfig.Voltage.PeakForwardVoltage = 12;
     topConfig.Voltage.PeakReverseVoltage = 0;
     bottomConfig.Voltage.PeakForwardVoltage = 12;
-    bottomConfig.Voltage.PeakReverseVoltage= 0;
+    bottomConfig.Voltage.PeakReverseVoltage = 0;
     /*
      * Voltage-based velocity requires a feed forward to account for the back-emf of
      * the motor
      */
-    topConfig.Slot0.kP = 0.22; // An error of 1 rotation per second results in 2V output
-    topConfig.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
-    topConfig.Slot0.kD = 0.0;// A change of 1 rotation per second squared results in 0.01 volts output
-    topConfig.Slot0.kV = 0.135; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
-                            // volts / Rotation per second
+    topConfig.Slot0.kP = 1;
+    topConfig.Slot0.kI = 0.0;
+    topConfig.Slot0.kD = 0.0;
+    topConfig.Slot0.kV = 0.12;
     
-    bottomConfig.Slot0.kP = 0.22; // An error of 1 rotation per second results in 2V output
-    bottomConfig.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
-    bottomConfig.Slot0.kD = 0.0;// A change of 1 rotation per second squared results in 0.01 volts output
-    bottomConfig.Slot0.kV = 0.15; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
-                            // volts / Rotation per second
+    bottomConfig.Slot0.kP = 0.22;
+    bottomConfig.Slot0.kI = 0.0;
+    bottomConfig.Slot0.kD = 0.0;
+    bottomConfig.Slot0.kV = 0.15;
+
     // Peak output
     topConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
     topConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
-    topConfig.CurrentLimits.StatorCurrentLimit = 20;
+    topConfig.CurrentLimits.StatorCurrentLimit = 40;
     topConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     topConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -105,7 +104,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    // PID parameters and encoder conversion factors
+    // shooter angle PID parameters and encoder conversion factors
     final double kP = 0.0125; //
     final double kI = 0;
     final double kD = 0;
@@ -169,9 +168,9 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     motor.setNeutralMode(NeutralModeValue.Coast);
   }
 
-  public void setSpeed(double speed) {
+  public void setRequestedWheelSpeed(double speed) {
     SmartDashboard.putNumber (name + ".wheels.requested_velocity", speed);
-    this.speed = speed / 60; // convert RPM to RPS
+    this.requestedWheelSpeed = speed / 60; // convert RPM to RPS
   }
 
   public double getTopMotorVelocity() {
@@ -202,7 +201,11 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       if (manuallySetPower != null) {
         topMotor.set(manuallySetPower);
       } else {
-        topMotor.setControl(m_voltageVelocity.withVelocity(speed));  // RPS
+        if (requestedWheelSpeed == 0) { // keep PID from kicking in when we want to stop
+          topMotor.stopMotor();
+        } else {
+          topMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed));  // RPS
+        }
       }
     }
 
@@ -210,7 +213,11 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       if (manuallySetPower != null) {
         bottomMotor.set(manuallySetPower);
       } else {
-        bottomMotor.setControl(m_voltageVelocity.withVelocity(speed));
+        if (requestedWheelSpeed == 0) {
+          bottomMotor.stopMotor();
+        } else {
+          bottomMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed));
+        }
       }
     }
 
@@ -274,7 +281,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public void setSpeedAndAngle(ShooterSpeedAndAngle speedAndAngle) {
     // SPAM SPAM SPAM SPAM WONDERFUL SPAM
     // logger.info("Setting intake to {}", speedAndAngle);
-    setSpeed(speedAndAngle.speed);
+    setRequestedWheelSpeed(speedAndAngle.speed);
     setElevationPosition(speedAndAngle.position);
     requestedPosition=speedAndAngle.position;
   }
@@ -300,13 +307,15 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   void putMotorInformationToDashboard(String motorName, TalonFX motor, SlidingWindowStats slidingWindowStats) {
     if (motor != null) {
+      String prefix = name + "." + motorName;
       double currentVelocity = motor.getVelocity().getValueAsDouble() * 60; // convert RPS to RPM
-      SmartDashboard.putNumber(name + "." + motorName + ".velocity", currentVelocity);
-      double getClosedLoopOutput = motor.getClosedLoopOutput().getValueAsDouble();
-      SmartDashboard.putNumber(name + "." + motorName + ".closedLoopOutput", getClosedLoopOutput);
-      double getTorqueCurrent = motor.getTorqueCurrent().getValueAsDouble();
-      SmartDashboard.putNumber(name + "." + motorName + ".torqueCurrent", getTorqueCurrent);
-      SmartDashboard.putNumber(name + "." + motorName + ".appliedPower", motor.get());
+      SmartDashboard.putNumber(prefix + ".velocity", currentVelocity);
+      SmartDashboard.putNumber(prefix + ".closedLoopOutput", motor.getClosedLoopOutput().getValueAsDouble());
+      SmartDashboard.putNumber(prefix + ".torqueCurrent", motor.getTorqueCurrent().getValueAsDouble());
+      SmartDashboard.putNumber(prefix + ".appliedPower", motor.get());
+      SmartDashboard.putNumber(prefix + ".supplyCurrent", motor.getSupplyCurrent().getValueAsDouble());
+      SmartDashboard.putNumber(prefix + ".statorCurrent", motor.getStatorCurrent().getValueAsDouble());
+      SmartDashboard.putNumber(prefix + ".temperature", motor.getDeviceTemp().getValueAsDouble());
 
       slidingWindowStats.addValue(currentVelocity);
       SmartDashboard.putNumber(name + "." + motorName + ".sliding.mean", slidingWindowStats.getMean());
