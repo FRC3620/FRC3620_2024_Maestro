@@ -112,8 +112,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     final double kD = 0;
     final double kFF = 0;
     final double kIMaxAccum = 0.04;
-    // TODO make this two limits, less down than the up
-    final double outputLimit = 0.2; // the limit that the power cannot exceed
+    final double negOutputLimit = -0.1;
+    final double posOutputLimit = 0.2;
 
     // was 9.44 before we swapped out 3:1/5:1 for a 5:1/5:1
     // final double positionConverionFactor = 1.0 * 9.44 * (15.0 / 25.0);
@@ -156,7 +156,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       if (err != REVLibError.kOk) {
         logger.error ("Could not set elevation kImaxAccum: {}", err);
       }
-      elevationPid.setOutputRange(-outputLimit, outputLimit);
+      elevationPid.setOutputRange(negOutputLimit, posOutputLimit);
     }
 
     topSpeedStats = new SlidingWindowStats(100);
