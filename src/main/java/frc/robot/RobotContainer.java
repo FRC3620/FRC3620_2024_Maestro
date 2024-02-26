@@ -260,7 +260,7 @@ public class RobotContainer {
      * SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
      */
      SmartDashboard.putData("GroundPosition", new
-     SetIntakeLocationCommand(IntakeLocation.groundPosition));
+     GroundPickupCommand());
 
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
