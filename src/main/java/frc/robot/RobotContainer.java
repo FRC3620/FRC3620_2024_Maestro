@@ -244,7 +244,7 @@ public class RobotContainer {
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ejectAllShooter));
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
-        .onTrue();
+        .onTrue(new SetClimberPowerPositionCommand(1));
 
 
     //  left Joystick(extend arm command)
@@ -284,7 +284,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Manually position intake", new PositionIntakeManuallyCommand());
 
-    SmartDashboard.putData("Intake limp", new SetIntakeLocationCommand(new IntakeLocation(null, null, null)));
+    //SmartDashboard.putData("Intake limp", new SetIntakeLocationCommand(new IntakeLocation(null, null, null)));
 
     SmartDashboard.putData("Intake elevate to 0", new SetIntakeLocationCommand(new IntakeLocation(0, 0, 0)));
     SmartDashboard.putData("Intake elevate to 10", new SetIntakeLocationCommand(new IntakeLocation(10, 0, 0)));
