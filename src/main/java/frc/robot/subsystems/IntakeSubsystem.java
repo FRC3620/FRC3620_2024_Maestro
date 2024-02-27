@@ -88,7 +88,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     double extendPosition;
     extendPosition = intakeExtendMechanism.getActualPosition();
     // change 1 to actual restraint
-    if (extendPosition > 1) {
+    if (extendPosition > 14) {
       return false;
     } else {
       return true;
@@ -174,7 +174,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND, "Extend")
         || shouldMakeAllCANDevices) {
       extend = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(20).setCoast(true);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(30).setCoast(true);
       motorSetup.apply(extend);
       addChild("extend1", extend);
     }
@@ -182,7 +182,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND2, "Extend2")
         || shouldMakeAllCANDevices) {
       extend2 = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND2, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(20).setCoast(true);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(30).setCoast(true);
       motorSetup.apply(extend2);
       addChild("extend2", extend2);
     }

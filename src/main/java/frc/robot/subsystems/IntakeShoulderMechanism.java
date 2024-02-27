@@ -26,10 +26,10 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   Logger logger = EventLogging.getLogger(getClass());
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.06; //
+  final double kP = 0.02; //
   final double kI = 0;
   final double kD = 0;
-  final double kFF = 0; // define FF
+  final double kFF = 0.0; // define FF
   //final double outputLimit = 0.5; // the limit that the power cannot exceed
 
   // convert rotations to degree, run through a 25:1 gearbox, chain drive is 64 / 24;
