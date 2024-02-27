@@ -165,7 +165,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
 
   // Remember that power and position are different things. this should probably only
   // be used by the calibration routine in periodic()
-  void setPower(double power) {
+  public void setPower(double power) {
     if (!disabledForDebugging) {
       motor.set(power);
     }

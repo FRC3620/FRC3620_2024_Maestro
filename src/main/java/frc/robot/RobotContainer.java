@@ -219,16 +219,35 @@ public class RobotContainer {
     // Operator intake controls
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.groundPosition));
+
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition));
+
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
+
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
+
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
+
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START)
+        .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition))
+        .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shooterHome));
+
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
+        .onTrue(new RunRollersUntilGone(-.9))
+        .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ejectAllShooter));
+
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
+        .onTrue();
+
+
+    //  left Joystick(extend arm command)
 
     driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
     driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
@@ -376,6 +395,10 @@ public class RobotContainer {
 
   void addSubsystem(Subsystem subsystem) {
     allSubsystems.add(subsystem);
+  }
+
+  public static double getClimberJoystickPosition() {
+return operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
   }
 
 }
