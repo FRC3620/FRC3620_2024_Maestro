@@ -313,6 +313,8 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(3000, 60)));
     SmartDashboard.putData("Test Shooter Speed to 5000",
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 60)));
+    SmartDashboard.putData("Test Shooter Speed to 4500",
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(4500, 60)));
 
     SmartDashboard.putData("Test Intake Angle PID Zapper", new IntakeAnglePIDZapper());
     SmartDashboard.putData("Test Intake Extension PID Zapper", new IntakeExtensionPIDZapper());

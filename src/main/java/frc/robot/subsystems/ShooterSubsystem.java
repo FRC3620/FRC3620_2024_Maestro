@@ -85,10 +85,10 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     topConfig.Slot0.kD = 0.0;
     topConfig.Slot0.kV = 0.12;
     
-    bottomConfig.Slot0.kP = 0.22;
+    bottomConfig.Slot0.kP = 0.30;
     bottomConfig.Slot0.kI = 0.0;
     bottomConfig.Slot0.kD = 0.0;
-    bottomConfig.Slot0.kV = 0.15;
+    bottomConfig.Slot0.kV = 0.13;
 
     // Peak output
     topConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
@@ -101,7 +101,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     // Peak output
     bottomConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
     bottomConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
-    bottomConfig.CurrentLimits.StatorCurrentLimit = 20;
+    bottomConfig.CurrentLimits.StatorCurrentLimit = 50;
     bottomConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -112,7 +112,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     final double kD = 0;
     final double kFF = 0;
     final double kIMaxAccum = 0.04;
-    final double negOutputLimit = -0.1;
+    final double negOutputLimit = -0.2;
     final double posOutputLimit = 0.2;
 
     // was 9.44 before we swapped out 3:1/5:1 for a 5:1/5:1
@@ -224,7 +224,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
         if (requestedWheelSpeed == 0) {
           bottomMotor.stopMotor();
         } else {
-          bottomMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed));
+          bottomMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed * 0.9));
         }
       }
     }
@@ -236,7 +236,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
           if (!encoderCalibrated) {
             // If the robot is running, and the encoder is "not calibrated," run motor very
             // slowly towards the switch
-            setElevationPower(0.0); // TODO THIS SHOULD BE 0.08
+            setElevationPower(0.08); // TODO THIS SHOULD BE 0.08
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
               calibrationTimer = new Timer();
