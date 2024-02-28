@@ -221,8 +221,8 @@ public class RobotContainer {
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.groundPosition));
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition));
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
+    //ew JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
+    //    .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
