@@ -2,6 +2,14 @@ package frc.robot.commands;
 
 public class RunRollersUntilGone extends RunRollersCommand {
 
+  public RunRollersUntilGone() {
+    super();
+  }
+
+  public RunRollersUntilGone(double power) {
+    super(power);
+  }
+
   @Override
   public void initialize() {
     super.initialize();
