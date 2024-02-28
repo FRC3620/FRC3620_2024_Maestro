@@ -15,18 +15,16 @@ import frc.robot.subsystems.IntakeSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class GroundToHomeCommand extends SequentialCommandGroup {
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
-  IntakeLocation intakeLocation;
   /** Creates a new GroundPickupCommand. */
   public GroundToHomeCommand() {
-    this.intakeLocation = intakeLocation;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetIntakeLocationCommand(intakeLocation.midGroundPosition),
-      new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 5),
-      new SetIntakeLocationCommand(intakeLocation.homePosition),
+      new SetIntakeLocationCommand(IntakeLocation.midGroundPosition),
+      new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 10),
+      new SetIntakeLocationCommand(IntakeLocation.homePosition),
       new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() < 1.5),
-      new SetIntakeLocationCommand(intakeLocation.parkPosition)
+      new SetIntakeLocationCommand(IntakeLocation.parkPosition)
     );
   }
 }

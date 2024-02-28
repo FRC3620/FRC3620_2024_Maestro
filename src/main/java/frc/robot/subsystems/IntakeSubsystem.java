@@ -27,7 +27,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
   public IntakeWristMechanism intakeWristMechanism;
 
   public CANSparkMaxSendable shoulder;
-  public DutyCycleEncoder shoulderEncoder;
 
   public CANSparkMaxSendable extend;
   public DigitalInput extendHomeSwitch;
@@ -44,7 +43,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
   public IntakeSubsystem() {
     setupMotors();
     intakeExtendMechanism = new IntakeExtendMechanism(extend, extend2);
-    intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder, shoulderEncoder);
+    intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder);
     intakeWristMechanism = new IntakeWristMechanism(wrist, wristHomeSwitch);
   }
 
@@ -168,9 +167,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
       addChild("elevation", shoulder);
     }
 
-    shoulderEncoder = new DutyCycleEncoder(7);
-    addChild("shoulderEncoder", shoulderEncoder);
-
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND, "Extend")
         || shouldMakeAllCANDevices) {
       extend = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND, MotorType.kBrushless);
@@ -216,3 +212,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     intakeWristMechanism.updateTelemetry();
   }
 }
+
+
+// :D

@@ -214,6 +214,7 @@ public class RobotContainer {
       new JoystickButton(driverXbox, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
       new JoystickButton(driverXbox, XBoxConstants.BUTTON_X)
           .onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+      new JoystickButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
     }
 
     // Operator intake controls
@@ -230,10 +231,10 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
 
-    driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
-    driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
-    driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
-    driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
+    //driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
+    //driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
+    //driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
+    //driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
 
   }
 
@@ -259,8 +260,9 @@ public class RobotContainer {
      * SmartDashboard.putData("PreclimbPosition", new
      * SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
      */
-     SmartDashboard.putData("GroundPosition", new
-     SetIntakeLocationCommand(IntakeLocation.groundPosition));
+     SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
+     SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
+
 
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
@@ -288,6 +290,7 @@ public class RobotContainer {
     // test rollers
     SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected());
     SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone());
+    SmartDashboard.putData("TakeAShot", new TakeAShotCommand());
 
     // test Shooter
     SmartDashboard.putData("Test Shooter angle to 60",
