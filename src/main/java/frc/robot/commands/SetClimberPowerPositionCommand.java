@@ -28,6 +28,8 @@ public class SetClimberPowerPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //checks if the left joystick is running up or down
+    //if joystick position is above 0 (running up), the joystick will run on positive power, and if its below 0, the joystick will run on negative power
     if (RobotContainer.getClimberJoystickPosition() > 0) {
       climbElevationSubsystem.setPower(power);
     }

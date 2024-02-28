@@ -240,7 +240,7 @@ public class RobotContainer {
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shooterHome));
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
-        .onTrue(new RunRollersUntilGone(-.9))
+        .onTrue(new RunRollersUntilGone(-.3))
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ejectAllShooter));
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
@@ -303,8 +303,8 @@ public class RobotContainer {
     SmartDashboard.putData("Intake elevate-extend to 75-0", new SetIntakeLocationCommand(new IntakeLocation(75, 0, 0)));
 
     // test rollers
-    SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected());
-    SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone());
+    SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected(.3));
+    SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone(.3));
 
     // test Shooter
     SmartDashboard.putData("Shooter speed-angle to 0-0",
