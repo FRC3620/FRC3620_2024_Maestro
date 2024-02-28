@@ -4,7 +4,9 @@
 
 package frc.robot.commands.swervedrive.drivebase;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.VisionSubsystem;
@@ -29,6 +31,11 @@ public class TeleopDriveWithAimCommand extends Command {
   private final VisionSubsystem vision;
   private boolean areweaiming;
 
+  //PIDController aimController;
+  //final double kSpinP = 0.035; 
+  //final double kSpinI = 0.00;
+  //final double kSpinD = 0.00; //0.01
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -45,6 +52,12 @@ public class TeleopDriveWithAimCommand extends Command {
     this.vision = vision;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve);
+
+    // Define aimController
+    //aimController = new PIDController(kSpinP, kSpinI, kSpinD);
+    //aimController.enableContinuousInput(-180.0, 180.0);
+    //aimController.setTolerance(1.0);
+
   }
 
   // Called when the command is initially scheduled.
@@ -66,27 +79,46 @@ public class TeleopDriveWithAimCommand extends Command {
     // TODO: Update new teleopDriveWithAim command to check "areweaiming" and "do I
     // see the right target?"
     
-    if(swerve.AreWeAiming(areweaiming) == true){
+    
+    if(swerve.AreWeAiming(true) == true){
       //grabs heading from vision subsystem
-      Double headingToTag = vision.camYawToSpeaker();
 
+      // Turn Off Heading Correction
+      //swerve.setHeadingCorrection(false);
+
+      Double headingToTag = vision.camYawToSpeaker();
+      //Note: headingToTag is a measurement of the yaw from the robot's perspective. 
+      //we need to turn this into field orientation later
+      
       if (headingToTag == null) {
-        SmartDashboard.putString("doIHaveTarget", "No");
+        SmartDashboard.putString("aimDrive.doIHaveTarget", "No");
 
       } else {
         //current heading
         double currentPosRotation = swerve.getHeading().getDegrees();
+        double targetHeading = currentPosRotation + headingToTag;
         //calculates angVelocity
-        double angularVelocity = controller.headingCalculate(currentPosRotation, headingToTag);
+        angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),
+                                                  Units.degreesToRadians(targetHeading));
+        
+        //angVelocity = aimController.calculate(currentPosRotation,targetHeading);
         //Prints on dashboard
-        SmartDashboard.putString("doIHaveTarget", "Yes");
-        SmartDashboard.putNumber("AngVelocity", angularVelocity);
+        SmartDashboard.putString("aimDrive.doIHaveTarget", "Yes");
+        SmartDashboard.putNumber("aimDrive.AngVelocity", angVelocity);
+        SmartDashboard.putNumber("aimDrive.currentRobotRotation", currentPosRotation);
+        SmartDashboard.putNumber("aimDrive.headingToTag", headingToTag);
+        SmartDashboard.putNumber("aimDrive.targetHeading", targetHeading);
+        SmartDashboard.putNumber("aimDrive.headingError", controller.thetaController.getPositionError());
       }
-    } else {// else drive normally
+    
+    
       // Drive using raw values.
       swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
           angVelocity * controller.config.maxAngularVelocity,
           driveMode.getAsBoolean());
+    
+    } else {
+      //swerve.setHeadingCorrection(true);
     }
 
   }

@@ -465,4 +465,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public boolean AreWeAiming(boolean areweaiming){
     return areweaiming;
   }
+
+  public void setHeadingCorrection(boolean correction) {
+    swerveDrive.setHeadingCorrection(correction);
+  }
 }

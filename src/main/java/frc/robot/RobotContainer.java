@@ -1,6 +1,7 @@
 package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
+import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
 import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -138,7 +139,15 @@ public class RobotContainer {
         () -> false
     );
 
-    drivebase.setDefaultCommand(StandardYagslDrive);
+    TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,  
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 
+                                                                                OperatorConstants.LEFT_Y_DEADBAND),
+                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
+                                                                                OperatorConstants.LEFT_X_DEADBAND),
+                                                    () -> -driverXbox.getRawAxis(4), () -> true, visionSubsystem);
+
+
+    drivebase.setDefaultCommand(aimDrive);
 
     if (drivebase.getCurrentCommand() != null){
       SmartDashboard.putString("CurrentCommand", drivebase.getCurrentCommand().toString());
