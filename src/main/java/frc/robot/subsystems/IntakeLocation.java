@@ -10,7 +10,7 @@ public class IntakeLocation {
     public static IntakeLocation groundPosition = new IntakeLocation(-17.6,12, 5);
     public static IntakeLocation midGroundPosition = new IntakeLocation(15,12, 0);
     public static IntakeLocation homePosition = new IntakeLocation(1.84, 0, 0);//0, 0, 5.71);
-    public static IntakeLocation ampPosition = new IntakeLocation(47.18, 6, 22.79);
+    public static IntakeLocation ampPosition = new IntakeLocation(57.899, 7.9, 22.79);
     public static IntakeLocation trapPosition = new IntakeLocation(0.8, 0.8, 0.8);
     public static IntakeLocation preclimbPosition = new IntakeLocation(1.0, 1.0, 1.0);
     public static IntakeLocation parkPosition = new IntakeLocation(null, null, null);

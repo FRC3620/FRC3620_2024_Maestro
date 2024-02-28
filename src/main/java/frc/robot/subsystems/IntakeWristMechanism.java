@@ -122,7 +122,7 @@ public class IntakeWristMechanism implements HasTelemetry {
   public void setPosition(Double position) {
     SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
     if (position != null) {
-      position = MathUtil.clamp(position, 0, 10);
+      position = MathUtil.clamp(position, 0, 30);
     }
     requestedPosition = position;
     if (encoderCalibrated) {

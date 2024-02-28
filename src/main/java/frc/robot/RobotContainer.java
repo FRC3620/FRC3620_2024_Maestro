@@ -262,6 +262,7 @@ public class RobotContainer {
      */
      SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
      SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
+     SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
 
 
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
