@@ -9,17 +9,21 @@ import frc.robot.subsystems.ShooterSpeedAndAngle;
 /** Add your docs here. */
 public class ShooterCalcutlaiter {
 
-    public static ShooterSpeedAndAngle CalculaiteAngle(Double distance){
+    public static ShooterSpeedAndAngle CalculaiteAngleFt(Double distanceFt){
         double rAngle=0;
-        if(distance<7){
-         rAngle=109.125+-19.5*distance+ 1.375  *Math.pow(distance, 2);
-        }else if(distance<11){
-            rAngle= 50.5+-1.5*distance+0*Math.pow(distance, 2);
+        if(distanceFt<7){
+         rAngle=109.125+-19.5*distanceFt+ 1.375  *Math.pow(distanceFt, 2);
+        }else if(distanceFt<11){
+            rAngle= 50.5+-1.5*distanceFt+0*Math.pow(distanceFt, 2);
         }else{
-            rAngle=42.25+-0.75*distance+0*Math.pow(distance, 2);
+            rAngle=42.25+-0.75*distanceFt+0*Math.pow(distanceFt, 2);
         }
     ShooterSpeedAndAngle shooterSpeedAndAngle= new ShooterSpeedAndAngle(0, rAngle);
 
         return shooterSpeedAndAngle;
+    }
+    public static ShooterSpeedAndAngle CalculaiteAngleM(double distanceM){
+        distanceM*=3.28;
+        return CalculaiteAngleFt(distanceM);
     }
 }
