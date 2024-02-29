@@ -6,24 +6,24 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.IntakeLocation;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSpeedAndAngle;
+import frc.robot.subsystems.ShooterSubsystem;
 
-public class SetIntakeLocationCommand extends Command {
-  IntakeLocation location;
-  IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
+public class SetShooterSpeedAndAngleCommand extends Command {
+  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
+  ShooterSpeedAndAngle speedAndAngle;
 
-  /** Creates a new SetIntakeLocationCommand. */
-  public SetIntakeLocationCommand(IntakeLocation location) {
-    this.location = location;
+  /** Creates a new setShooterSpeedCommand. */
+  public SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle speedAndAngle) {
+    this.speedAndAngle = speedAndAngle;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem);
+    addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.setLocation(location);
+    shooterSubsystem.setSpeedAndAngle(speedAndAngle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,7 +33,8 @@ public class SetIntakeLocationCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

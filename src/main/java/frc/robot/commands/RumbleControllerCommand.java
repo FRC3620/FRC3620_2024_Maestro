@@ -4,40 +4,44 @@
 
 package frc.robot.commands;
 
+import java.util.Timer;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.IntakeLocation;
-import frc.robot.subsystems.IntakeSubsystem;
 
-public class SetIntakeLocationCommand extends Command {
-  IntakeLocation location;
-  IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
-
-  /** Creates a new SetIntakeLocationCommand. */
-  public SetIntakeLocationCommand(IntakeLocation location) {
-    this.location = location;
+public class RumbleControllerCommand extends Command {
+  /** Creates a new RumbleControllerCommand. */
+  Joystick controller;
+  double rumbleAmount;
+  public RumbleControllerCommand(Joystick controller, double rumbleAmount) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem);
+    this.controller = controller;
+    this.rumbleAmount = rumbleAmount;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.setLocation(location);
+    controller.setRumble(RumbleType.kBothRumble, rumbleAmount);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    controller.setRumble(RumbleType.kBothRumble, 0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    new Timer();
+    return false;
   }
 }

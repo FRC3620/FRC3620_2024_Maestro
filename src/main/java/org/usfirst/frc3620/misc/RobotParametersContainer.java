@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotController;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,6 +111,8 @@ public class RobotParametersContainer {
 
     public static String identifyRoboRIO() {
         if (roboRIOMacAddress == null) {
+            String serialNumber = RobotController.getSerialNumber();
+            logger.info ("Serial number = '{}'", serialNumber);
             String rv = "(unknown)";
             if (Robot.isSimulation()) {
                 rv = "(simulation)";

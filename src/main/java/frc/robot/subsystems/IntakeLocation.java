@@ -7,14 +7,21 @@ package frc.robot.subsystems;
 
 /** Add your docs here. */
 public class IntakeLocation {
-    public static IntakeLocation groundPosition = new IntakeLocation(0.2, 0.2, 0.2);
-    public static IntakeLocation homePosition = new IntakeLocation(0.4, 0.4, 0.4);
-    public static IntakeLocation ampPosition = new IntakeLocation(0.6, 0.6, 0.6);
+    public static IntakeLocation groundPosition = new IntakeLocation(-17.6,12, 5);
+    public static IntakeLocation midGroundPosition = new IntakeLocation(15,12, 0);
+    public static IntakeLocation homePosition = new IntakeLocation(1.84, 0, 0);//0, 0, 5.71);
+    public static IntakeLocation ampPosition = new IntakeLocation(56.75, 11.2, 24.6);
     public static IntakeLocation trapPosition = new IntakeLocation(0.8, 0.8, 0.8);
-    public static IntakeLocation preclimbPosition = new IntakeLocation(1, 1, 1);
-    double shoulder;
-    double extend;
-    double wrist;
+    public static IntakeLocation preclimbPosition = new IntakeLocation(1.0, 1.0, 1.0);
+    public static IntakeLocation parkPosition = new IntakeLocation(null, null, null);
+
+    Double shoulder, extend, wrist;
+
+    public IntakeLocation(Double shoulder, Double extend, Double wrist) {
+        this.shoulder = shoulder;
+        this.extend = extend;
+        this.wrist = wrist;
+    }
 
     public IntakeLocation(double shoulder, double extend, double wrist) {
         this.shoulder = shoulder;
@@ -22,15 +29,21 @@ public class IntakeLocation {
         this.wrist = wrist;
     }
 
-    public double getShoulder() {
+    public Double getShoulder() {
         return shoulder;
     }
 
-    public double getWrist() {
+    public Double getWrist() {
         return wrist;
     }
 
-    public double getExtend() {
+    public Double getExtend() {
         return extend;
     }
+
+    @Override
+    public String toString() {
+        return "IntakeLocation [shoulder=" + shoulder + ", extend=" + extend + ", wrist=" + wrist + "]";
+    }
+
 }

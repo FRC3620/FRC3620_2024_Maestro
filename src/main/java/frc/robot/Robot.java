@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
@@ -12,9 +13,9 @@ import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.SwerveMotorTestSubsystem;
@@ -29,10 +30,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  LightSegment lightSegment;
-  LightSegment Blink;
-private BlinkPattern blinkPattern;
-private SolidPattern solidPattern;
   private Logger logger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
@@ -48,8 +45,9 @@ private SolidPattern solidPattern;
     logger.info ("I'm alive! {}", GitNess.gitDescription());
     printMemoryStatus("logger is up");
 
-    PortForwarder.add (10080, "wpilibpi.local", 80);
-    PortForwarder.add (10022, "wpilibpi.local", 22);
+    PortForwarder.add (10080, "photonvision.local", 80);
+    PortForwarder.add (15800, "photonvision.local", 5800);
+    PortForwarder.add (5801, "photonvision.local", 5801);
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
@@ -102,6 +100,8 @@ private SolidPattern solidPattern;
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    updateTelemetry();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -225,6 +225,15 @@ private SolidPattern solidPattern;
         hasCANBusBeenLogged = true;
       }
     }
+  }
+
+  void updateTelemetry() {
+    for (var subsystem : RobotContainer.allSubsystems) {
+      if (subsystem instanceof HasTelemetry) {
+        ((HasTelemetry) subsystem).updateTelemetry();
+      }
+    }
+    SmartDashboard.putNumber ("batteryVoltage", RobotController.getBatteryVoltage());
   }
 
   static public void printMemoryStatus (String label) {

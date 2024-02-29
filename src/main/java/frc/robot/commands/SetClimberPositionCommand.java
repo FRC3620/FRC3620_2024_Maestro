@@ -15,8 +15,9 @@ public class SetClimberPositionCommand extends Command {
   /** Creates a new SetClimberPositionCommand. */
   public SetClimberPositionCommand(double _position) {
     this.position=_position;
-    climbElevationSubsystem= RobotContainer.climbElevationSubsystem;
+    climbElevationSubsystem = RobotContainer.climbElevationSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(climbElevationSubsystem);
   }
 
   // Called when the command is initially scheduled.
