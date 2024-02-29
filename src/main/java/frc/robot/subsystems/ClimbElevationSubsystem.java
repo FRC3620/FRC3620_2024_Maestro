@@ -35,7 +35,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   final double kFF = 0; // define FF
   final double outputLimit = 0.75; // the limit that the power cannot exceed
 
-  final double positionConverionFactor = 1.0 * 0.11962; //inches probably?
+  final double positionConverionFactor = 0.11962 / 3; // was 0.11962, we just threw another 3:1 in
   final double velocityConverionFactor = 60.0;
 
   //public static ClimbElevationSubsystem climbPosition = setPosition();
@@ -109,12 +109,12 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
               // we have a timer, has the motor had power long enough to spin up
               if (calibrationTimer.get() > 0.5) {
                 // motor should be moving if limit switch not pressed
-                if (Math.abs(motorEncoder.getVelocity())< 2) {
+                if (Math.abs(motorEncoder.getVelocity()) < 2000) {
                  // if(false){
                   // limit switch pressed, stop the motor, set encoder position to 0, and set calibration to true
                   encoderCalibrated = true;
                   setPower(0.0);
-                  motorEncoder.setPosition(0.0);
+                  motorEncoder.setPosition(-0.5);  // leave a fudge factor
 
                   // If there was a requested position while we were calibrating, go there
                   if (requestedPositionWhileCalibrating != null) {
