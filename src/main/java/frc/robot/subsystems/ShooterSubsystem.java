@@ -13,6 +13,7 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 import org.usfirst.frc3620.misc.RobotMode;
+import org.usfirst.frc3620.misc.Utilities.SlidingWindowStats;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -21,6 +22,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
@@ -32,24 +34,25 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
-    Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   CANDeviceFinder deviceFinder = RobotContainer.canDeviceFinder;
   TalonFXConfiguration topConfig = new TalonFXConfiguration();
-    TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
+  TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
   private static final String canBusName = "";
   public TalonFX topMotor, bottomMotor;
-  CANSparkMaxSendable elevationMotor;
+
+  public CANSparkMaxSendable elevationMotor;
   RelativeEncoder elevationMotorEncoder;
 
   public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
-  private double speed = 0.6;
+  private double requestedWheelSpeed = 0;
 
   public final static int MOTORID_SHOOTER_BOTTOM = 14;
   public final static int MOTORID_SHOOTER_TOP = 15;
   public final static int MOTORID_SHOOTER_ELEVATION = 16;
 
-  SparkPIDController pid = null;
+  SparkPIDController elevationPid = null;
 
   // Robot is set to "not calibrated" by default
   boolean encoderCalibrated = false;
@@ -65,46 +68,56 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   final String name = "shooter";
 
+  SlidingWindowStats topSpeedStats, bottomSpeedStats;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     topConfig.Voltage.PeakForwardVoltage = 12;
-    topConfig.Voltage.PeakReverseVoltage = -12;
-    bottomConfig.Voltage.PeakForwardVoltage=12;
-    bottomConfig.Voltage.PeakReverseVoltage=-12;
+    topConfig.Voltage.PeakReverseVoltage = 0;
+    bottomConfig.Voltage.PeakForwardVoltage = 12;
+    bottomConfig.Voltage.PeakReverseVoltage = 0;
     /*
      * Voltage-based velocity requires a feed forward to account for the back-emf of
      * the motor
      */
-    topConfig.Slot0.kP = 0.22; // An error of 1 rotation per second results in 2V output
-    topConfig.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
-    topConfig.Slot0.kD = 0.0;// A change of 1 rotation per second squared results in 0.01 volts output
-    topConfig.Slot0.kV = 0.135; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
-                            // volts / Rotation per second
+    topConfig.Slot0.kP = 1;
+    topConfig.Slot0.kI = 0.0;
+    topConfig.Slot0.kD = 0.0;
+    topConfig.Slot0.kV = 0.12;
     
-    bottomConfig.Slot0.kP = 0.22; // An error of 1 rotation per second results in 2V output
-    bottomConfig.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
-    bottomConfig.Slot0.kD = 0.0;// A change of 1 rotation per second squared results in 0.01 volts output
-    bottomConfig.Slot0.kV = 0.15; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
-                            // volts / Rotation per second
-    // Peak output of 10 amps
+    bottomConfig.Slot0.kP = 0.30;
+    bottomConfig.Slot0.kI = 0.0;
+    bottomConfig.Slot0.kD = 0.0;
+    bottomConfig.Slot0.kV = 0.13;
+
+    // Peak output
     topConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
     topConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+    topConfig.CurrentLimits.StatorCurrentLimit = 40;
+    topConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     topConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    // Peak output of 10 amps
+    // Peak output
     bottomConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
     bottomConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+    bottomConfig.CurrentLimits.StatorCurrentLimit = 50;
+    bottomConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    // PID parameters and encoder conversion factors
-    final double kP = 0.0125; //
-    final double kI = 0;
-    final double kD = 0;
-    final double kFF = 0; // define FF
-    final double outputLimit = 0.2; // the limit that the power cannot exceed
 
-    final double positionConverionFactor = 1.0 * 9.44;
+    // shooter angle PID parameters and encoder conversion factors
+    final double kP = 0.02;
+    final double kI = 0.00007;
+    final double kD = 0;
+    final double kFF = 0;
+    final double kIMaxAccum = 0.04;
+    final double negOutputLimit = -0.2;
+    final double posOutputLimit = 0.2;
+
+    // was 9.44 before we swapped out 3:1/5:1 for a 5:1/5:1
+    // final double positionConverionFactor = 1.0 * 9.44 * (15.0 / 25.0);
+    final double positionConverionFactor = (64 - 18.1) / (64 - 54.93);  //difference in angle divided by difference in motor rotation
     final double velocityConverionFactor = 1.0;
 
     if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_BOTTOM, "Bottom Shooter")
@@ -134,13 +147,20 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       elevationMotorEncoder.setPositionConversionFactor(positionConverionFactor);
       elevationMotorEncoder.setVelocityConversionFactor(velocityConverionFactor);
 
-      pid = elevationMotor.getPIDController();
-      pid.setP(kP); //
-      pid.setI(kI); //
-      pid.setD(kD); //
-      pid.setFF(kFF); //
-      pid.setOutputRange(-outputLimit, outputLimit);
+      elevationPid = elevationMotor.getPIDController();
+      elevationPid.setP(kP);
+      elevationPid.setI(kI);
+      elevationPid.setD(kD);
+      elevationPid.setFF(kFF);
+      var err = elevationPid.setIMaxAccum(kIMaxAccum, 0);
+      if (err != REVLibError.kOk) {
+        logger.error ("Could not set elevation kImaxAccum: {}", err);
+      }
+      elevationPid.setOutputRange(negOutputLimit, posOutputLimit);
     }
+
+    topSpeedStats = new SlidingWindowStats(100);
+    bottomSpeedStats = new SlidingWindowStats(100);
   }
 
   void configMotor(String motorName, TalonFX motor,TalonFXConfiguration configuration) {
@@ -156,9 +176,9 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     motor.setNeutralMode(NeutralModeValue.Coast);
   }
 
-  public void setSpeed(double speed) {
+  public void setRequestedWheelSpeed(double speed) {
     SmartDashboard.putNumber (name + ".wheels.requested_velocity", speed);
-    this.speed = speed / 60; // convert RPM to RPS
+    this.requestedWheelSpeed = speed / 60; // convert RPM to RPS
   }
 
   public double getTopMotorVelocity() {
@@ -189,7 +209,11 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       if (manuallySetPower != null) {
         topMotor.set(manuallySetPower);
       } else {
-        topMotor.setControl(m_voltageVelocity.withVelocity(speed));  // RPS
+        if (requestedWheelSpeed == 0) { // keep PID from kicking in when we want to stop
+          topMotor.stopMotor();
+        } else {
+          topMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed));  // RPS
+        }
       }
     }
 
@@ -197,7 +221,11 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       if (manuallySetPower != null) {
         bottomMotor.set(manuallySetPower);
       } else {
-        bottomMotor.setControl(m_voltageVelocity.withVelocity(speed));
+        if (requestedWheelSpeed == 0) {
+          bottomMotor.stopMotor();
+        } else {
+          bottomMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed * 0.9));
+        }
       }
     }
 
@@ -208,7 +236,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
           if (!encoderCalibrated) {
             // If the robot is running, and the encoder is "not calibrated," run motor very
             // slowly towards the switch
-            setElevationPower(0.08);
+            setElevationPower(0.08); // TODO THIS SHOULD BE 0.08
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
               calibrationTimer = new Timer();
@@ -221,8 +249,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
                   // motor is not moving, hopefully it's against the stop
                   encoderCalibrated = true;
                   setElevationPower(0.0);
-                  elevationMotorEncoder.setPosition(63.7);
-                  setElevationPosition(63.7);
+                  elevationMotorEncoder.setPosition(64);
+                  setElevationPosition(64);
 
                   // If there was a requested position while we were calibrating, go there
                   if (requestedPositionWhileCalibrating != null) {
@@ -240,12 +268,16 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   }
 
   public void setElevationPosition(double position) {
-    position = MathUtil.clamp(position, 17,  62.7);  // high end is a little short of the stop
+    position = MathUtil.clamp(position, 17,  63);  // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
+    double oldPosition = requestedPosition;
     requestedPosition = position;
     if (encoderCalibrated) {
       if (!disabledForDebugging) {
-        pid.setReference(position, ControlType.kPosition);
+        if (oldPosition < 45 && requestedPosition > 55) {
+          //elevationPid.setIAccum(0);
+        }
+        elevationPid.setReference(position, ControlType.kPosition);
       }
     } else {
       requestedPositionWhileCalibrating = position;
@@ -261,20 +293,21 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public void setSpeedAndAngle(ShooterSpeedAndAngle speedAndAngle) {
     // SPAM SPAM SPAM SPAM WONDERFUL SPAM
     // logger.info("Setting intake to {}", speedAndAngle);
-    setSpeed(speedAndAngle.speed);
+    setRequestedWheelSpeed(speedAndAngle.speed);
     setElevationPosition(speedAndAngle.position);
     requestedPosition=speedAndAngle.position;
   }
 
   @Override
   public void updateTelemetry() {
-    putMotorInformationToDashboard("top", topMotor);
-    putMotorInformationToDashboard("bottom", bottomMotor);
+    putMotorInformationToDashboard("top", topMotor, topSpeedStats);
+    putMotorInformationToDashboard("bottom", bottomMotor, bottomSpeedStats);
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
     if (elevationMotor != null) {
       SmartDashboard.putNumber(name + ".elevation.current", elevationMotor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".elevation.power", elevationMotor.getAppliedOutput());
       SmartDashboard.putNumber(name + ".elevation.temperature", elevationMotor.getMotorTemperature());
+      SmartDashboard.putNumber(name + ".elevation.IAccum", elevationPid.getIAccum());
 
       if (elevationMotorEncoder != null) { // if there is an encoder, display these
         double velocity = elevationMotorEncoder.getVelocity();
@@ -285,15 +318,22 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     }
   }
 
-  void putMotorInformationToDashboard(String motorName, TalonFX motor) {
+  void putMotorInformationToDashboard(String motorName, TalonFX motor, SlidingWindowStats slidingWindowStats) {
     if (motor != null) {
+      String prefix = name + "." + motorName;
       double currentVelocity = motor.getVelocity().getValueAsDouble() * 60; // convert RPS to RPM
-      SmartDashboard.putNumber(name + "." + motorName + ".velocity", currentVelocity);
-      double getClosedLoopOutput = motor.getClosedLoopOutput().getValueAsDouble();
-      SmartDashboard.putNumber(name + "." + motorName + ".closedLoopOutput", getClosedLoopOutput);
-      double getTorqueCurrent = motor.getTorqueCurrent().getValueAsDouble();
-      SmartDashboard.putNumber(name + "." + motorName + ".torqueCurrent", getTorqueCurrent);
-      SmartDashboard.putNumber(name + "." + motorName + ".appliedPower", motor.get());
+      SmartDashboard.putNumber(prefix + ".velocity", currentVelocity);
+      SmartDashboard.putNumber(prefix + ".closedLoopOutput", motor.getClosedLoopOutput().getValueAsDouble());
+      SmartDashboard.putNumber(prefix + ".torqueCurrent", motor.getTorqueCurrent().getValueAsDouble());
+      SmartDashboard.putNumber(prefix + ".appliedPower", motor.get());
+      SmartDashboard.putNumber(prefix + ".supplyCurrent", motor.getSupplyCurrent().getValueAsDouble());
+      SmartDashboard.putNumber(prefix + ".statorCurrent", motor.getStatorCurrent().getValueAsDouble());
+      SmartDashboard.putNumber(prefix + ".temperature", motor.getDeviceTemp().getValueAsDouble());
+
+      slidingWindowStats.addValue(currentVelocity);
+      SmartDashboard.putNumber(name + "." + motorName + ".sliding.mean", slidingWindowStats.getMean());
+      SmartDashboard.putNumber(name + "." + motorName + ".sliding.stdev", slidingWindowStats.getStdDev());
+      SmartDashboard.putNumber(name + "." + motorName + ".sliding.flyers", slidingWindowStats.getFlyers());
     }
   }
 

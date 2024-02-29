@@ -26,7 +26,7 @@ public class IntakeExtendMechanism implements HasTelemetry {
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
-  final double outputLimit = 0.6; // the limit that the power cannot exceed
+  final double outputLimit = 1; // the limit that the power cannot exceed
 
   final double positionConverionFactor = 3.14159 * 1.625 / 9;  // 1 5/8" diameter, moves one circumference for every motor revolution, 1:9
   final double velocityConverionFactor = 1.0;
@@ -39,7 +39,6 @@ public class IntakeExtendMechanism implements HasTelemetry {
   Timer calibrationTimer;
 
   SparkPIDController pid = null;
-  SparkPIDController pid2 = null;
 
   // Robot is set to "not calibrated" by default
   boolean encoderCalibrated = false;
@@ -73,16 +72,12 @@ public class IntakeExtendMechanism implements HasTelemetry {
     }
 
     if (motor2 != null) {
+      if (motor != null) {
+        motor2.follow(motor, true); // TODO check sign!
+      }
       motor2Encoder = motor2.getEncoder();
       motor2Encoder.setPositionConversionFactor(positionConverionFactor);
       motor2Encoder.setVelocityConversionFactor(velocityConverionFactor);
-
-      pid2 = motor2.getPIDController();
-      pid2.setP(kP); //
-      pid2.setI(kI); //
-      pid2.setD(kD); //
-      pid2.setFF(kFF); //
-      pid2.setOutputRange(-outputLimit, outputLimit);
     }
   }
 
@@ -92,10 +87,8 @@ public class IntakeExtendMechanism implements HasTelemetry {
       if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) {
-            // If the robot is running, and the encoder is "not calibrated," run motor very
-            // slowly towards the stop
+            // If the robot is enabled, and we are "not calibrated," run motors very slowly towards the stop
             setPower(0.03);
-            setPower2(.03);
 
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
@@ -114,35 +107,10 @@ public class IntakeExtendMechanism implements HasTelemetry {
             }
           } else {
             // we are calibrated. Do magic here
-
-            if (oldWay) {
-              // tell motor2 to go to where motor1 currently is
-              if (pid2 != null) {
-                setPIDReference2(motorEncoder.getPosition());
-              }
-              // not
-              if (outOfWhack()) {
-                // figure out where motor1 is
-                temporaryPosition = motorEncoder.getPosition();
-                if (pid != null) {
-                  // tell motor1 to stay where it is right now
-                  setPIDReference(temporaryPosition);
-                }
-              } else {
-                // we are in whack
-                if (pid != null) {
-                  // tell motor1 to go to the position requested
-                  setPIDReference(requestedPosition);
-                }
-              }
-            } else {  
-              if (requestedPosition != null) {
-                setPIDReference(requestedPosition);
-                setPIDReference2(requestedPosition);
-              } else {
-                motor.stopMotor();
-                motor2.stopMotor();
-              }
+            if (requestedPosition != null) {
+              setPIDReference(requestedPosition);
+            } else {
+              motor.stopMotor();
             }
           }
         }
@@ -154,7 +122,6 @@ public class IntakeExtendMechanism implements HasTelemetry {
     // stop the motor, set encoder position to 0, and set calibration to true
     encoderCalibrated = true;
     setPower(0.0);
-    setPower2(0.0);
     motorEncoder.setPosition(0.0);
     motor2Encoder.setPosition(0.0);
 
@@ -234,26 +201,11 @@ public class IntakeExtendMechanism implements HasTelemetry {
     }
   }
 
-  void setPower2(double power) {
-    if (motor2 != null) {
-      if (!disabledForDebugging) {
-        motor2.set(power);
-      }
-    }
-  }
-
   void setPIDReference(double position) {
     if (!disabledForDebugging) {
       pid.setReference(position, ControlType.kPosition);
     }
     SmartDashboard.putNumber(name + ".pidSetPoint", position);
-  }
-
-  void setPIDReference2(double position) {
-    if (!disabledForDebugging) {
-      pid2.setReference(position, ControlType.kPosition);
-    }
-    SmartDashboard.putNumber(name + "2.pidSetPoint ", position);
   }
 
   @Override

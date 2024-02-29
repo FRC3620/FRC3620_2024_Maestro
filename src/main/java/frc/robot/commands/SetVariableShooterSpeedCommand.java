@@ -49,16 +49,16 @@ public class SetVariableShooterSpeedCommand extends Command {
   }
 
   void putStats(String s, SlidingWindowStats stats) {
-    SmartDashboard.putNumber("intake." + s + ".slide.mean", stats.getMean());
-    SmartDashboard.putNumber("intake." + s + ".slide.stdev", stats.getStdDev());
-    SmartDashboard.putNumber("intake." + s + ".slide.flyers", stats.getFlyers());
+    SmartDashboard.putNumber("shooter." + s + ".sliding.mean", stats.getMean());
+    SmartDashboard.putNumber("shooter." + s + ".sliding.stdev", stats.getStdDev());
+    SmartDashboard.putNumber("shooter." + s + ".sliding.flyers", stats.getFlyers());
   }
 
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setSpeed(0);
+    shooterSubsystem.setRequestedWheelSpeed(0);
   }
 
   // Returns true when the command should end.

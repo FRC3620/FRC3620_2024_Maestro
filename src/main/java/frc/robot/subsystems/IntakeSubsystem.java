@@ -9,8 +9,11 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkLimitSwitch.Type;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +27,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
   public IntakeWristMechanism intakeWristMechanism;
 
   public CANSparkMaxSendable shoulder;
-  public DutyCycleEncoder shoulderEncoder;
 
   public CANSparkMaxSendable extend;
   public DigitalInput extendHomeSwitch;
@@ -34,12 +36,14 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
   public CANSparkMaxSendable wrist;
   public DigitalInput wristHomeSwitch;
 
+  public CANSparkMaxSendable rollers;
+  public SparkLimitSwitch gamePieceObtained;
   double temporaryPosition;
 
   public IntakeSubsystem() {
     setupMotors();
     intakeExtendMechanism = new IntakeExtendMechanism(extend, extend2);
-    intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder, shoulderEncoder);
+    intakeShoulderMechanism = new IntakeShoulderMechanism(shoulder);
     intakeWristMechanism = new IntakeWristMechanism(wrist, wristHomeSwitch);
   }
 
@@ -83,7 +87,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     double extendPosition;
     extendPosition = intakeExtendMechanism.getActualPosition();
     // change 1 to actual restraint
-    if (extendPosition > 1) {
+    if (extendPosition > 14) {
       return false;
     } else {
       return true;
@@ -137,6 +141,15 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     return intakeExtendMechanism.getActualPosition();
   }
 
+  public void recalibrataePitch(boolean forward) {
+    recalibrataePitch(forward);
+  }
+
+  public SparkLimitSwitch getLimitSwitch() {
+    return gamePieceObtained;
+  }
+
+  public final static int MOTORID_INTAKE_ROLLERS = 9;
   public final static int MOTORID_INTAKE_EXTEND = 10;
   public final static int MOTORID_INTAKE_EXTEND2 = 11;
   public final static int MOTORID_INTAKE_WRIST = 12;
@@ -154,13 +167,10 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
       addChild("elevation", shoulder);
     }
 
-    shoulderEncoder = new DutyCycleEncoder(7);
-    addChild("shoulderEncoder", shoulderEncoder);
-
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND, "Extend")
         || shouldMakeAllCANDevices) {
       extend = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(10).setCoast(true);
+      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(30).setCoast(true);
       motorSetup.apply(extend);
       addChild("extend1", extend);
     }
@@ -168,7 +178,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_EXTEND2, "Extend2")
         || shouldMakeAllCANDevices) {
       extend2 = new CANSparkMaxSendable(MOTORID_INTAKE_EXTEND2, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(10).setCoast(true);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(30).setCoast(true);
       motorSetup.apply(extend2);
       addChild("extend2", extend2);
     }
@@ -202,3 +212,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     intakeWristMechanism.updateTelemetry();
   }
 }
+
+
+// :D

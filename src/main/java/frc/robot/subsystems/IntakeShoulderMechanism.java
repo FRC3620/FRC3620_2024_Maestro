@@ -26,20 +26,19 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   Logger logger = EventLogging.getLogger(getClass());
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.06; //
+  final double kP = 0.02; //
   final double kI = 0;
   final double kD = 0;
-  final double kFF = 0; // define FF
+  final double kFF = 0.0; // define FF
   //final double outputLimit = 0.5; // the limit that the power cannot exceed
 
-  // convert rotations to degree, run through a 25:1 gearbox, chain drive is 64 / 24;
+  // convert rotations to degree, run through a 75:1 gearbox, chain drive is 64 / 24;
   final double positionConverionFactor = 360 * ( 1 / 75.0) * (24.0 / 64.0); 
   final double velocityConverionFactor = positionConverionFactor;
 
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMax motor;
   RelativeEncoder motorEncoder;
-  DutyCycleEncoder absoluteEncoder;
   Timer calibrationTimer;
 
   SparkPIDController pid = null;
@@ -55,9 +54,8 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
   boolean disabledForDebugging = false;
 
-  public IntakeShoulderMechanism(CANSparkMax motor, DutyCycleEncoder absoluteEncoder) { //The constructor
+  public IntakeShoulderMechanism(CANSparkMax motor) { //The constructor
     this.motor = motor;
-    this.absoluteEncoder = absoluteEncoder;
     if (motor != null) {
       pid = motor.getPIDController();
       pid.setP(kP); // 
@@ -79,7 +77,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
             // If the robot is running, and the encoder is "not calibrated," run motor very slowly towards the stop
-            setPower(0.03);
+            setPower(0.0);
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
               calibrationTimer = new Timer();
@@ -128,7 +126,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
     //logger.info ("Setting position to {}", position);
     SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
     if (position != null) {
-      position = MathUtil.clamp(position, -20, 70);
+      position = MathUtil.clamp(position, -40, 70);
     }
     requestedPosition = position;
     if (encoderCalibrated) {
@@ -174,8 +172,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   public void updateTelemetry() {
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
 
-    SmartDashboard.putNumber(name + ".positionAbsolute", getActualPosition());
-    SmartDashboard.putBoolean(name + ".absoluteEncoderPresent", absoluteEncoder.isConnected());
+    SmartDashboard.putNumber(name + ".position", getActualPosition());
 
     if (motor != null) { 
       SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
