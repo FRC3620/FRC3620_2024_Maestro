@@ -8,16 +8,19 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 /** Add your docs here. */
 public class SuperSwerveController {
-    PIDController headingPID;
+    public PIDController headingPID;
     private double kSpinP = 0.035; 
     private double kSpinI = 0.00;
     private double kSpinD = 0.00; //0.01
@@ -89,6 +92,24 @@ public class SuperSwerveController {
         SmartDashboard.putNumber("drivebase.getHeading", drivebase.getHeading().getDegrees());
 
     }
+
+    public double headingCalculate(double currentHeadingAngleRadians, double targetHeadingAngleRadians)
+  {
+
+    // Display PID Inputs
+    if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH)
+    {
+      SmartDashboard.putNumber("SwerveController.kP", headingPID.getP());
+      SmartDashboard.putNumber("SwerveController.kI", headingPID.getI());
+      SmartDashboard.putNumber("SwerveController.kD", headingPID.getD());
+      SmartDashboard.putNumber("SwerveController.PositionError", headingPID.getPositionError());
+      SmartDashboard.putNumber("SwerveController.currentHeadingAngleRadians", currentHeadingAngleRadians);
+      SmartDashboard.putNumber("SwerveController.targetHeadingAngleRadians", targetHeadingAngleRadians);
+      SmartDashboard.putNumber("SwerveController.currentHeadingAngleDegrees", Units.radiansToDegrees(currentHeadingAngleRadians));
+      SmartDashboard.putNumber("SwerveController.targetHeadingAngleDegrees", Units.radiansToDegrees(targetHeadingAngleRadians));
+    }
+    return headingPID.calculate(currentHeadingAngleRadians, targetHeadingAngleRadians)                                                                                                                                                  * 50;
+  }
 }
 
 

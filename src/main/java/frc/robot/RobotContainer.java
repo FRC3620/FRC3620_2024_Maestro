@@ -165,7 +165,9 @@ public class RobotContainer {
                                                                                 OperatorConstants.LEFT_Y_DEADBAND),
                                                     () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
                                                                                 OperatorConstants.LEFT_X_DEADBAND),
-                                                    () -> -driverXbox.getRawAxis(4), () -> true, visionSubsystem);
+                                                    () -> -driverXbox.getRawAxis(4), () -> true, visionSubsystem, superSwerveController);
+
+    drivebase.setDefaultCommand(aimDrive);
 
     if (drivebase.getCurrentCommand() != null) {
       SmartDashboard.putString("CurrentCommand", drivebase.getCurrentCommand().toString());

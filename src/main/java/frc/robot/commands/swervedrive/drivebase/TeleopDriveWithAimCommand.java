@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.SuperSwerveController;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -26,7 +27,7 @@ public class TeleopDriveWithAimCommand extends Command {
   private final DoubleSupplier vY;
   private final DoubleSupplier omega;
   private final BooleanSupplier driveMode;
-  private final SwerveController controller;
+  private final SuperSwerveController controller;
 
   private final VisionSubsystem vision;
   private boolean areweaiming;
@@ -42,13 +43,13 @@ public class TeleopDriveWithAimCommand extends Command {
    * @param swerve The subsystem used by this command.
    */
   public TeleopDriveWithAimCommand(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier omega,
-      BooleanSupplier driveMode, VisionSubsystem vision) {
+      BooleanSupplier driveMode, VisionSubsystem vision, SuperSwerveController superDupSwerveController) {
     this.swerve = swerve;
     this.vX = vX;
     this.vY = vY;
     this.omega = omega;
     this.driveMode = driveMode;
-    this.controller = swerve.getSwerveController();
+    this.controller = superDupSwerveController;
     this.vision = vision;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve);
@@ -108,13 +109,13 @@ public class TeleopDriveWithAimCommand extends Command {
         SmartDashboard.putNumber("aimDrive.currentRobotRotation", currentPosRotation);
         SmartDashboard.putNumber("aimDrive.headingToTag", headingToTag);
         SmartDashboard.putNumber("aimDrive.targetHeading", targetHeading);
-        SmartDashboard.putNumber("aimDrive.headingError", controller.thetaController.getPositionError());
+        SmartDashboard.putNumber("aimDrive.headingError", controller.headingPID.getPositionError());
       }
     
     
       // Drive using raw values.
       swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
-          angVelocity * controller.config.maxAngularVelocity,
+          angVelocity                                                                                                                      * 5.1,
           driveMode.getAsBoolean());
     
     } else {
