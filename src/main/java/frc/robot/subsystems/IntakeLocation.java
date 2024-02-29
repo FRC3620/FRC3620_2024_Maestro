@@ -11,7 +11,7 @@ public class IntakeLocation {
     public static IntakeLocation homePosition = new IntakeLocation(0.4, 0.4, 0.4);
     public static IntakeLocation ampPosition = new IntakeLocation(0.6, 0.6, 0.6);
     public static IntakeLocation trapPosition = new IntakeLocation(0.8, 0.8, 0.8);
-    public static IntakeLocation preclimbPosition = new IntakeLocation(1.0, 1.0, 1.0);
+    public static IntakeLocation preclimbPosition = new IntakeLocation(70, 0, 0);
     public static IntakeLocation parkPosition = new IntakeLocation(null, null, null);
 
     Double shoulder, extend, wrist;

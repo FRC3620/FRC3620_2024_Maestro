@@ -33,7 +33,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   //final double outputLimit = 0.5; // the limit that the power cannot exceed
 
   // convert rotations to degree, run through a 25:1 gearbox, chain drive is 64 / 24;
-  final double positionConverionFactor = 360 * ( 1 / 25.0) * (24.0 / 64.0); 
+  final double positionConverionFactor = 360 * ( 1 / 75.0) * (24.0 / 64.0); 
   final double velocityConverionFactor = positionConverionFactor;
 
   // Ingredients: Motor, Encoder, PID, and Timer
@@ -157,7 +157,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
    * @return the current position
    */
   public double getActualPosition() {
-    return absoluteEncoder.getDistance();
+    return motorEncoder.getPosition();
   }
 
   // Remember that power and position are different things. this should probably only

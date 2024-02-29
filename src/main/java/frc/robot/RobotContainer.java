@@ -23,6 +23,7 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -227,8 +228,10 @@ public class RobotContainer {
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.parkPosition)) //TODO fix this
-        .onTrue(new ActivateClimberJoystickCommand());
+        .onTrue(
+          new SetIntakeLocationCommand(IntakeLocation.preclimbPosition)
+          .andThen(new WaitUntilCommand (() -> intakeSubsystem.getActualShoulderElevation() > 50))
+          .andThen(new ActivateClimberJoystickCommand()));
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
