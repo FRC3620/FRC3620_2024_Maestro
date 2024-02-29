@@ -34,6 +34,7 @@ import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -362,6 +363,15 @@ public class RobotContainer {
     // chooser.addOption("PathPlannerAuto", getAutonomousCommand());
     // chooser.addOption("Auto Command", drivebase.driveToPose(new Pose2d(new
     // Translation2d(1.5, 0), new Rotation2d(0))));
+
+    NamedCommands.registerCommand("FIRE OMEGA BEAM", new TakeAShotCommand());
+    NamedCommands.registerCommand("PICKUP INTAKE POSITION", new GroundPickupCommand());
+    NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8));
+    NamedCommands.registerCommand("HOME INTAKE POSITION", new GroundToHomeCommand());
+    NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+    NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+    NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
+
   }
 
   /**

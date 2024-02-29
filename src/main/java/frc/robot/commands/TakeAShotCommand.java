@@ -22,8 +22,7 @@ public class TakeAShotCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    new RunRollersCommand(.8);
-    new RunRollersUntilGone();
+    new RunRollersUntilGone(0.8);
     }
 
   // Called once the command ends or is interrupted.
