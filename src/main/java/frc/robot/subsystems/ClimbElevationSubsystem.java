@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
@@ -18,13 +19,12 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ClimbElevationSubsystem extends SubsystemBase {
+public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemetry {
   final String name = "climber";
 
   // PID parameters and encoder conversion factors
@@ -34,8 +34,10 @@ public class ClimbElevationSubsystem extends SubsystemBase {
   final double kFF = 0; // define FF
   final double outputLimit = 0.2; // the limit that the power cannot exceed
 
-  final double positionConverionFactor = 1.0;
-  final double velocityConverionFactor = 1.0;
+  final double positionConverionFactor = 1.0 * 0.11962;
+  final double velocityConverionFactor = 60.0;
+
+  //public static ClimbElevationSubsystem climbPosition = setPosition();
 
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMaxSendable motor;
@@ -54,17 +56,22 @@ public class ClimbElevationSubsystem extends SubsystemBase {
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
+  boolean disabledForDebugging = true;
+
+
+
   public ClimbElevationSubsystem() { //The constructor
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
     boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 17, "Climber") || shouldMakeAllCANDevices) {
       this.motor = new CANSparkMaxSendable(17, MotorType.kBrushless);
+      addChild("motor", this.motor);
     }
     this.limitSwitch = new DigitalInput(8);
     
     if (motor != null) {
-      MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(10);
+      MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(80);
       motorSetup.apply(motor);
       motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
@@ -81,21 +88,9 @@ public class ClimbElevationSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
-
     // only do something if we actually have a motor
     if (motor != null) { 
-      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-      SmartDashboard.putBoolean(name+".Limit status", isLimitSwitchPressed());
-
       if (motorEncoder != null) { // if there is an encoder, display these
-        double velocity = motorEncoder.getVelocity();
-        double position = motorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".velocity", velocity);
-        SmartDashboard.putNumber(name + ".position", position);
-
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
             // If the robot is running, and the encoder is "not calibrated," run motor very slowly towards the switch
@@ -114,9 +109,8 @@ public class ClimbElevationSubsystem extends SubsystemBase {
                   encoderCalibrated = true;
                   setPower(0.0);
                   motorEncoder.setPosition(0.0);
-                  
 
-                  //If there was a requested position while we were calibrating, go there
+                  // If there was a requested position while we were calibrating, go there
                   if (requestedPositionWhileCalibrating != null) {
                     setPosition(requestedPositionWhileCalibrating);
                     requestedPositionWhileCalibrating = null;
@@ -135,11 +129,12 @@ public class ClimbElevationSubsystem extends SubsystemBase {
    * @param position units are ???, referenced from position 0 == ?????
    */
   public void setPosition(double position) {
-    position = MathUtil.clamp(position, -45, 200);
     SmartDashboard.putNumber(name + ".requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
-      pid.setReference(position, ControlType.kPosition);
+      if (!disabledForDebugging) {
+        pid.setReference(position, ControlType.kPosition);
+      }
     } else {
       requestedPositionWhileCalibrating = position;
     }
@@ -171,7 +166,28 @@ public class ClimbElevationSubsystem extends SubsystemBase {
   // Remember that power and position are different things. this should probably only
   // be used by the calibration routine in periodic()
   void setPower(double power) {
-    motor.set(power);
+    if (!disabledForDebugging) {
+      motor.set(power);
+    }
+  }
+
+  @Override
+  public void updateTelemetry() {
+    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+    SmartDashboard.putBoolean(name + ".Limit status", isLimitSwitchPressed());
+
+    if (motor != null) { 
+      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
+
+      if (motorEncoder != null) { // if there is an encoder, display these
+        double velocity = motorEncoder.getVelocity();
+        double position = motorEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".velocity", velocity);
+        SmartDashboard.putNumber(name + ".position", position);
+      }
+    }
   }
 
 }

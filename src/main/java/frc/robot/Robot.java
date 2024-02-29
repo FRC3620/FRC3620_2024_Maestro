@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
@@ -12,7 +13,9 @@ import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.SwerveMotorTestSubsystem;
@@ -97,6 +100,8 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    updateTelemetry();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -220,6 +225,15 @@ public class Robot extends TimedRobot {
         hasCANBusBeenLogged = true;
       }
     }
+  }
+
+  void updateTelemetry() {
+    for (var subsystem : RobotContainer.allSubsystems) {
+      if (subsystem instanceof HasTelemetry) {
+        ((HasTelemetry) subsystem).updateTelemetry();
+      }
+    }
+    SmartDashboard.putNumber ("batteryVoltage", RobotController.getBatteryVoltage());
   }
 
   static public void printMemoryStatus (String label) {

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.RobotMode;
 
@@ -11,25 +12,27 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class IntakeWristMechanism {
+public class IntakeWristMechanism implements HasTelemetry {
   final String name = "intake.wrist";
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.4; //
+  final double kP = 0.05; //
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
   final double outputLimit = 0.2; // the limit that the power cannot exceed
 
   final double positionConverionFactor = 1.0;
-  final double velocityConverionFactor = 1.0;
+  final double velocityConverionFactor = 60.0;
+
+  boolean disabledForDebugging = false;
 
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMaxSendable motor;
@@ -43,7 +46,7 @@ public class IntakeWristMechanism {
   boolean encoderCalibrated = false;
 
   // saves the requested position
-  double requestedPosition = 0;
+  Double requestedPosition = null;
 
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
@@ -66,20 +69,9 @@ public class IntakeWristMechanism {
   }
 
   public void periodic() {
-    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
-
     // only do something if we actually have a motor
     if (motor != null) { 
-      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-
       if (motorEncoder != null) { // and there is an encoder, display these
-        double velocity = motorEncoder.getVelocity();
-        double position = motorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".velocity", velocity);
-        SmartDashboard.putNumber(name + ".position", position);
-
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
             // If the robot is running, and the encoder is "not calibrated," run motor very slowly towards the stop
@@ -94,17 +86,9 @@ public class IntakeWristMechanism {
               // we have a timer, has the motor had power long enough to spin up
               if (calibrationTimer.get() > 0.5) {
                 // motor should be moving if not against the stop
-                if (Math.abs(velocity) < 2) {
-                  // the motor is not moving, stop the motor, set encoder position to 0, and set calibration to true
-                  encoderCalibrated = true;
-                  setPower(0.0);
-                  motorEncoder.setPosition(0.0);
-
-                  //If there was a requested position while we were calibrating, go there
-                  if (requestedPositionWhileCalibrating != null) {
-                    setPosition(requestedPositionWhileCalibrating);
-                    requestedPositionWhileCalibrating = null;
-                  }
+                //if (Math.abs(velocity) < 2) {
+                if (true) { // assume calibrated
+                  markCalibrated();
                 }
               }
             }
@@ -114,16 +98,41 @@ public class IntakeWristMechanism {
     }
   }
 
+  public void markCalibrated() {
+    // stop the motor, set encoder position to 0, and set calibration to true
+    encoderCalibrated = true;
+    setPower(0.0);
+    motorEncoder.setPosition(0.0);
+
+    //If there was a requested position while we were calibrating, go there
+    if (requestedPositionWhileCalibrating != null) {
+      setPosition(requestedPositionWhileCalibrating);
+      requestedPositionWhileCalibrating = null;
+    }
+  }
+
+  public boolean isCalibrated() {
+    return encoderCalibrated;
+  }
+
   /**
    * Set the target position
    * @param position units are ???, referenced from position 0 == ?????
    */
-  public void setPosition(double position) {
-    position = MathUtil.clamp(position, -45, 200);
-    SmartDashboard.putNumber(name + ".requestedPosition", position);
+  public void setPosition(Double position) {
+    SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
+    if (position != null) {
+      position = MathUtil.clamp(position, 0, 10);
+    }
     requestedPosition = position;
     if (encoderCalibrated) {
-      pid.setReference(position, ControlType.kPosition);
+      if (!disabledForDebugging) {
+        if (position != null) {
+          pid.setReference(position, ControlType.kPosition);
+        } else {
+          motor.stopMotor();
+        }
+      }
     } else {
       requestedPositionWhileCalibrating = position;
     }
@@ -133,7 +142,7 @@ public class IntakeWristMechanism {
    * return the last requested position
    * @return the last requested position, units as in setPosition()
    */
-  public double getRequestedPosition() {
+  public Double getRequestedPosition() {
     return requestedPosition;
   }
 
@@ -152,12 +161,32 @@ public class IntakeWristMechanism {
   // be used by the calibration routine in periodic()
   void setPower(double power) {
     if (motor != null) {
-      motor.set(power);
+      if (!disabledForDebugging) {
+        motor.set(power);
+      }
     }
   }
 
   public boolean isHomeSwitchDepressed() {
     return homeSwitch.get();
+  }
+
+  @Override
+  public void updateTelemetry() {
+    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+
+    if (motor != null) { 
+      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
+
+      if (motorEncoder != null) { // and there is an encoder, display these
+        double velocity = motorEncoder.getVelocity();
+        double position = motorEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".velocity", velocity);
+        SmartDashboard.putNumber(name + ".position", position);
+      }
+    }
   }
 
 }

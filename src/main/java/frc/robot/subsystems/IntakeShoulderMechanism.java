@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.misc.RobotMode;
 
 import com.revrobotics.CANSparkMax;
@@ -11,25 +14,27 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class IntakeShoulderMechanism {
+public class IntakeShoulderMechanism implements HasTelemetry {
   final String name = "intake.shoulder";
+  Logger logger = EventLogging.getLogger(getClass());
 
   // PID parameters and encoder conversion factors
-  final double kP = 0.4; //
+  final double kP = 0.02; //
   final double kI = 0;
   final double kD = 0;
-  final double kFF = 0; // define FF
-  final double outputLimit = 0.2; // the limit that the power cannot exceed
+  final double kFF = 0.0; // define FF
+  //final double outputLimit = 0.5; // the limit that the power cannot exceed
 
-  final double positionConverionFactor = 1.0;
-  final double velocityConverionFactor = 1.0;
+  // convert rotations to degree, run through a 25:1 gearbox, chain drive is 64 / 24;
+  final double positionConverionFactor = 360 * ( 1 / 75.0) * (24.0 / 64.0); 
+  final double velocityConverionFactor = positionConverionFactor;
 
   // Ingredients: Motor, Encoder, PID, and Timer
   CANSparkMax motor;
@@ -43,10 +48,12 @@ public class IntakeShoulderMechanism {
   boolean encoderCalibrated = false;
 
   // saves the requested position
-  double requestedPosition = 0;
+  Double requestedPosition = null;
 
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
+
+  boolean disabledForDebugging = false;
 
   public IntakeShoulderMechanism(CANSparkMax motor, DutyCycleEncoder absoluteEncoder) { //The constructor
     this.motor = motor;
@@ -57,34 +64,22 @@ public class IntakeShoulderMechanism {
       pid.setI(kI); // 
       pid.setD(kD); // 
       pid.setFF(kFF); //
-      pid.setOutputRange(-outputLimit, outputLimit);
+      pid.setOutputRange(-0.1, 0.9);
 
       this.motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
-      motorEncoder.setVelocityConversionFactor(velocityConverionFactor);
+      motorEncoder.setVelocityConversionFactor(60);
     }
   }
 
   public void periodic() {
-    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
-
     // only do something if we actually have a motor
     if (motor != null) { 
-      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-
-      if (motorEncoder != null) { // and there is an encoder, display these
-        double velocity = motorEncoder.getVelocity();
-        double position = motorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".velocity", velocity);
-        SmartDashboard.putNumber(name + ".position", position);
-
+      if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
             // If the robot is running, and the encoder is "not calibrated," run motor very slowly towards the stop
             setPower(0.03);
-
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
               calibrationTimer = new Timer();
@@ -94,17 +89,9 @@ public class IntakeShoulderMechanism {
               // we have a timer, has the motor had power long enough to spin up
               if (calibrationTimer.get() > 0.5) {
                 // motor should be moving if not against the stop
+                double velocity = motorEncoder.getVelocity();
                 if (Math.abs(velocity) < 2) {
-                  // the motor is not moving, stop the motor, set encoder position to 0, and set calibration to true
-                  encoderCalibrated = true;
-                  setPower(0.0);
-                  motorEncoder.setPosition(0.0);
-
-                  //If there was a requested position while we were calibrating, go there
-                  if (requestedPositionWhileCalibrating != null) {
-                    setPosition(requestedPositionWhileCalibrating);
-                    requestedPositionWhileCalibrating = null;
-                  }
+                  markCalibrated();
                 }
               }
             }
@@ -114,16 +101,44 @@ public class IntakeShoulderMechanism {
     }
   }
 
+  public void markCalibrated() {
+    // the motor is not moving, stop the motor, set encoder position to 0, and set calibration to true
+    encoderCalibrated = true;
+    setPower(0.0);
+    motorEncoder.setPosition(0);
+    setPosition(null);
+
+    //If there was a requested position while we were calibrating, go there
+    if (requestedPositionWhileCalibrating != null) {
+      setPosition(requestedPositionWhileCalibrating);
+      requestedPositionWhileCalibrating = null;
+    }
+  }
+
+  public boolean isCalibrated() {
+    return encoderCalibrated;
+  }
+
   /**
    * Set the target position
    * @param position units are ???, referenced from position 0 == ?????
    */
-  public void setPosition(double position) {
-    position = MathUtil.clamp(position, -45, 200);
-    SmartDashboard.putNumber(name + ".requestedPosition", position);
+  public void setPosition(Double position) {
+    // new Exception("who is doing this?").printStackTrace();
+    //logger.info ("Setting position to {}", position);
+    SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
+    if (position != null) {
+      position = MathUtil.clamp(position, -40, 70);
+    }
     requestedPosition = position;
     if (encoderCalibrated) {
-      pid.setReference(position, ControlType.kPosition);
+      if (!disabledForDebugging) {
+        if (position != null) {
+          pid.setReference(position, ControlType.kPosition);
+        } else {
+          motor.stopMotor();
+        }
+      }
     } else {
       requestedPositionWhileCalibrating = position;
     }
@@ -133,7 +148,7 @@ public class IntakeShoulderMechanism {
    * return the last requested position
    * @return the last requested position, units as in setPosition()
    */
-  public double getRequestedPosition() {
+  public Double getRequestedPosition() {
     return requestedPosition;
   }
 
@@ -149,7 +164,30 @@ public class IntakeShoulderMechanism {
   // be used by the calibration routine in periodic()
   void setPower(double power) {
     if (motor != null) {
-      motor.set(power);
+      if (!disabledForDebugging) {
+        motor.set(power);
+      }
+    }
+  }
+
+  @Override
+  public void updateTelemetry() {
+    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
+
+    SmartDashboard.putNumber(name + ".positionAbsolute", getActualPosition());
+    SmartDashboard.putBoolean(name + ".absoluteEncoderPresent", absoluteEncoder.isConnected());
+
+    if (motor != null) { 
+      SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
+
+      if (motorEncoder != null) { // and there is an encoder, display these
+        double velocity = motorEncoder.getVelocity();
+        double position = motorEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".velocity", velocity);
+        SmartDashboard.putNumber(name + ".position", position);
+      }
     }
   }
 
