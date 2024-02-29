@@ -17,9 +17,6 @@ public class ShooterSpeedAndAngle extends SubsystemBase {
   public static ShooterSpeedAndAngle shooterHome = new ShooterSpeedAndAngle(0, 0);
   public static ShooterSpeedAndAngle ejectAllShooter = new ShooterSpeedAndAngle(20, 30);
 
-
-
-
   /** Creates a new ShooterSpeedAndAngle. */
   public ShooterSpeedAndAngle(double speed, double position) {
     this.speed = speed;
@@ -38,6 +35,4 @@ public class ShooterSpeedAndAngle extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
-
 }

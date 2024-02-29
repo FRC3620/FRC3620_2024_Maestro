@@ -315,7 +315,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Manually position intake", new PositionIntakeManuallyCommand());
 
-    //SmartDashboard.putData("Intake limp", new SetIntakeLocationCommand(new IntakeLocation(null, null, null)));
+    SmartDashboard.putData("Intake limp", new SetIntakeLocationCommand(new IntakeLocation(null, null, null)));
 
     SmartDashboard.putData("Intake elevate to 0", new SetIntakeLocationCommand(new IntakeLocation(0, 0, 0)));
     SmartDashboard.putData("Intake elevate to 10", new SetIntakeLocationCommand(new IntakeLocation(10, 0, 0)));
@@ -455,7 +455,7 @@ public class RobotContainer {
   }
 
   public static double getClimberJoystickPosition() {
-return operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
+    return operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
   }
 
 }

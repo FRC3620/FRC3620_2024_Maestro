@@ -98,7 +98,6 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
             // If the robot is running, and the encoder is "not calibrated," run motor very slowly towards the switch
-            //setPower(0.03);
             motor.set(-.1);
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
@@ -110,7 +109,6 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
               if (calibrationTimer.get() > 0.5) {
                 // motor should be moving if limit switch not pressed
                 if (Math.abs(motorEncoder.getVelocity()) < 2000) {
-                 // if(false){
                   // limit switch pressed, stop the motor, set encoder position to 0, and set calibration to true
                   encoderCalibrated = true;
                   setPower(0.0);
