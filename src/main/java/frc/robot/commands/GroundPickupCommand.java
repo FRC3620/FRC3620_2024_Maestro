@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
@@ -15,16 +17,15 @@ import frc.robot.subsystems.IntakeSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class GroundPickupCommand extends SequentialCommandGroup {
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
-  IntakeLocation intakeLocation;
   /** Creates a new GroundPickupCommand. */
   public GroundPickupCommand() {
-    this.intakeLocation = intakeLocation;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetIntakeLocationCommand(intakeLocation.midGroundPosition),
-      new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() > 11),
-      new SetIntakeLocationCommand(intakeLocation.groundPosition)
+      new SetIntakeLocationCommand(IntakeLocation.midGroundPosition),
+      new InstantCommand(() -> SmartDashboard.putString("SequentialGroupHappenings", "Waiting for extension goal")),
+      new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() > 10),
+      new SetIntakeLocationCommand(IntakeLocation.groundPosition)
     );
   }
 }
