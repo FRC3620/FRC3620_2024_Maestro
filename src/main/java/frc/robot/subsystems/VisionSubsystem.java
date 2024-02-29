@@ -51,7 +51,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     Optional<Alliance> color;
 
-    Double camHeight = 0.803275;// meters, change accordingly
+    Double camHeight = 0.489;// meters, change accordingly
     Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
     Double angCamToApriltags = 20.8;// degrees, facing up
 
