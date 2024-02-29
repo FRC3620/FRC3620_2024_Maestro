@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.26,
-        "y": 5.49
+        "x": 1.5578118905525558,
+        "y": 5.578111669043852
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8743091007308779,
-        "y": 5.40713419455008
+        "x": 2.5578118905525558,
+        "y": 5.578111669043852
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SubwoofShoot"
     },
     {
       "anchor": {
-        "x": 2.130825458232113,
-        "y": 6.969716047694203
+        "x": 2.68045071702679,
+        "y": 5.578111669043852
       },
       "prevControl": {
-        "x": 1.130825458232113,
-        "y": 6.969716047694203
+        "x": 2.7506156436814293,
+        "y": 5.578111669043852
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 1.1233027140753964,
     "velocity": 0
   },
   "useDefaultConstraints": true

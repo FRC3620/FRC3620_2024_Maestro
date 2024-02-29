@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.26,
-        "y": 5.49
+        "x": 0.5053379907329615,
+        "y": 7.308846526524962
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8743091007308779,
-        "y": 5.40713419455008
+        "x": 1.2888463383764373,
+        "y": 6.642279723305886
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AM"
     },
     {
       "anchor": {
-        "x": 2.130825458232113,
-        "y": 6.969716047694203
+        "x": 1.5578118905525558,
+        "y": 5.578111669043852
       },
       "prevControl": {
-        "x": 1.130825458232113,
-        "y": 6.969716047694203
+        "x": 1.5578118905525558,
+        "y": 7.028186819906405
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "1"
+      "linkedName": "SubwoofShoot"
     }
   ],
   "rotationTargets": [],
