@@ -16,6 +16,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -32,9 +33,9 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
-  final double outputLimit = 0.2; // the limit that the power cannot exceed
+  final double outputLimit = 0.75; // the limit that the power cannot exceed
 
-  final double positionConverionFactor = 1.0 * 0.11962;
+  final double positionConverionFactor = 1.0 * 0.11962; //inches probably?
   final double velocityConverionFactor = 60.0;
 
   //public static ClimbElevationSubsystem climbPosition = setPosition();
@@ -53,10 +54,13 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   // saves the requested position
   double requestedPosition = 0;
 
+  // saves the last requested power, if any
+  Double requestedPower = null;
+
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
-  boolean disabledForDebugging = true;
+  boolean disabledForDebugging = false;
 
 
 
@@ -118,6 +122,12 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
                 }
               }
             }
+          } else {
+            if (requestedPower != null) {
+              if (! disabledForDebugging) {
+                motor.set(requestedPower);
+              }
+            }
           }
         }
       }
@@ -129,8 +139,10 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
    * @param position units are ???, referenced from position 0 == ?????
    */
   public void setPosition(double position) {
+    position = MathUtil.clamp(position, 0, 11);
     SmartDashboard.putNumber(name + ".requestedPosition", position);
     requestedPosition = position;
+    requestedPower = null;
     if (encoderCalibrated) {
       if (!disabledForDebugging) {
         pid.setReference(position, ControlType.kPosition);
@@ -166,9 +178,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   // Remember that power and position are different things. this should probably only
   // be used by the calibration routine in periodic()
   public void setPower(double power) {
-    if (!disabledForDebugging) {
-      motor.set(power);
-    }
+    requestedPower = power;
   }
 
   @Override

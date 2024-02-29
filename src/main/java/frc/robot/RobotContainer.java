@@ -226,8 +226,9 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
+        .onTrue(new SetIntakeLocationCommand(IntakeLocation.parkPosition)) //TODO fix this
+        .onTrue(new ActivateClimberJoystickCommand());
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
@@ -244,7 +245,7 @@ public class RobotContainer {
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ejectAllShooter));
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
-        .onTrue(new SetClimberPowerPositionCommand(1));
+        .onTrue(new SetClimberPowerPositionCommand());
 
 
     //  left Joystick(extend arm command)
