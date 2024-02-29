@@ -65,7 +65,7 @@ public class ShooterAngleTest {
   }
 
   void testOneSet (double distance, double expectedAngle) {
-    ShooterSpeedAndAngle sa = ShooterCalcutlaiter.CalculaiteAngle(distance);
+    ShooterSpeedAndAngle sa = ShooterCalcutlaiter.CalculaiteAngleFt(distance);
     double calculatedAngle = sa.getPosition();
     assertEquals(expectedAngle, calculatedAngle, 0.1, "Calculated angle");
   }

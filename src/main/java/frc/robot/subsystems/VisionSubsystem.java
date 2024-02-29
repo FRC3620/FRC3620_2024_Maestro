@@ -105,35 +105,37 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
 
     }
-    public boolean doIHaveTarget(){
+
+    public boolean doIHaveTarget() {
         var res = aprilTagCam.getLatestResult();
-        if(res.hasTargets()){
+        if (res.hasTargets()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public Double camYawToSpeaker(){
+    public Double camYawToSpeaker() {
         vectorToSpeaker result = new vectorToSpeaker();
-        //gets alliance color
-	    color = DriverStation.getAlliance();
+        // gets alliance color
+        color = DriverStation.getAlliance();
 
-        //takes latest results
+        // takes latest results
         var res = aprilTagCam.getLatestResult();
-        
+
         if (res.hasTargets()) {
-            //if alliance is blue...
+            // if alliance is blue...
             int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
             var desiredTarget = findTargetInResults(res, desiredTargetId);
-            if (desiredTarget == null) return null;
+            if (desiredTarget == null)
+                return null;
             result.yaw = -desiredTarget.getYaw();
             return result.yaw;
         }
         return null;
     }
 
-    PhotonTrackedTarget findTargetInResults (PhotonPipelineResult photonPipelineResult, int id) {
+    PhotonTrackedTarget findTargetInResults(PhotonPipelineResult photonPipelineResult, int id) {
         for (var target : photonPipelineResult.targets) {
             if (target.getFiducialId() == id) {
                 return target;
@@ -142,7 +144,31 @@ public class VisionSubsystem extends SubsystemBase {
         return null;
     }
 
-    
+    public Double camDistToSpeakerTag() {
+        color = DriverStation.getAlliance();
+
+        var res = aprilTagCam.getLatestResult();
+        if (res.hasTargets()) {
+
+            int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
+
+            var bestTarget = res.getBestTarget();
+            if (bestTarget.getFiducialId() == desiredTargetId) {
+
+                vectorToSpeaker result = new vectorToSpeaker();
+
+                double camToTargetDist = (1.45 - camHeight)
+                        / Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
+
+                double GD = Math.sqrt((camToTargetDist * camToTargetDist) - (camHeight * camHeight));
+                result.distance = GD;
+
+                return result.distance;
+            }
+        }
+
+        return null;
+    }
 
     public vectorToSpeaker camDistanceToTargetSpeaker() {
         var res = aprilTagCam.getLatestResult();
@@ -256,7 +282,8 @@ public class VisionSubsystem extends SubsystemBase {
             if (bestTagPose.isPresent()) {
                 var bestTagPoseValue = bestTagPose.get();
 
-                double camToTargetDist = (bestTagPoseValue.getZ() - camHeight)/ Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
+                double camToTargetDist = (bestTagPoseValue.getZ() - camHeight)
+                        / Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
                 double GD = Math.sqrt((camToTargetDist * camToTargetDist) - (camHeight * camHeight)) * 1.254248946;
 
                 double rotation = SmartDashboard.getNumber("rotation", 0);
