@@ -154,7 +154,10 @@ public class VisionSubsystem extends SubsystemBase {
 
             var bestTarget = res.getBestTarget();
             if (bestTarget.getFiducialId() == desiredTargetId) {
-
+                SmartDashboard.putNumber("Target.pitch", bestTarget.getPitch());
+                SmartDashboard.putNumber("Target.yaw", bestTarget.getYaw());
+                SmartDashboard.putNumber("Target.skew", bestTarget.getSkew());
+            
                 vectorToSpeaker result = new vectorToSpeaker();
 
                 double camToTargetDist = (1.45 - camHeight)

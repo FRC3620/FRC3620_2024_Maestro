@@ -334,7 +334,6 @@ public class RobotContainer {
     // test rollers
     SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected(0.8));
     SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone(-0.8));
-    SmartDashboard.putData("TakeAShot", new TakeAShotCommand());
 
     // test Shooter
     SmartDashboard.putData("Test Shooter angle to 60",
