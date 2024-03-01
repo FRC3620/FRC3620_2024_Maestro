@@ -151,23 +151,25 @@ public class VisionSubsystem extends SubsystemBase {
         if (res.hasTargets()) {
 
             int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
+            var desiredTarget = findTargetInResults(res, desiredTargetId);
 
-            var bestTarget = res.getBestTarget();
-            if (bestTarget.getFiducialId() == desiredTargetId) {
-                SmartDashboard.putNumber("Target.pitch", bestTarget.getPitch());
-                SmartDashboard.putNumber("Target.yaw", bestTarget.getYaw());
-                SmartDashboard.putNumber("Target.skew", bestTarget.getSkew());
+            if (desiredTarget == null)
+                return null;
+
+            SmartDashboard.putNumber("Target.pitch", desiredTarget.getPitch());
+            SmartDashboard.putNumber("Target.yaw", desiredTarget.getYaw());
+            SmartDashboard.putNumber("Target.skew", desiredTarget.getSkew());
             
-                vectorToSpeaker result = new vectorToSpeaker();
+            vectorToSpeaker result = new vectorToSpeaker();
 
-                double camToTargetDist = (1.45 - camHeight)
-                        / Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
+            double camToTargetDist = (1.45 - camHeight)
+                        / Math.sin(Math.toRadians(angCamToApriltags + desiredTarget.getPitch()));
 
-                double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight) * (1.45-camHeight)));
+            double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight) * (1.45-camHeight)));
                 result.distance = (GD + APRILTAGCAM_FRONT_OFFSET)/1.87;//.52
 
-                return result.distance;
-            }
+            return result.distance;
+            
         }
 
         return null;
