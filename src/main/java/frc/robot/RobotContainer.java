@@ -167,7 +167,7 @@ public class RobotContainer {
                                                                                 OperatorConstants.LEFT_X_DEADBAND),
                                                     () -> -driverXbox.getRawAxis(4), () -> true, visionSubsystem, superSwerveController);
 
-    drivebase.setDefaultCommand(aimDrive);
+    drivebase.setDefaultCommand(SuperFieldRel);
 
     if (drivebase.getCurrentCommand() != null) {
       SmartDashboard.putString("CurrentCommand", drivebase.getCurrentCommand().toString());
@@ -232,11 +232,14 @@ public class RobotContainer {
 
     }
     //new JoystickButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
-    new JoystickAnalogButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1).whileTrue(new RunRollersCommand(-0.8));
+    new JoystickAnalogButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1).onTrue(new RunRollersUntilGone(0.8));
     new JoystickAnalogButton(driverXbox, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1).whileTrue(new RunRollersUntilDetected(0.8));
+    new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).whileTrue(new RunRollersCommand(-0.8));
+
     //new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).onTrue(new RunRollersCommand(0.0));
     
-    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileTrue(LockOnCommand);
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileTrue(new InstantCommand(() -> drivebase.setAreWeAiming(true)));
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileFalse(new InstantCommand(() -> drivebase.setAreWeAiming(false)));
     //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).onTrue(new RumbleControllerCommand(operatorJoystick, 1));
     //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).onTrue(new RumbleControllerCommand(operatorJoystick, 0));
 
@@ -252,10 +255,11 @@ public class RobotContainer {
       //  .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
 
     //Operator shooter controls
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
-        .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
-        .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
+        .toggleOnTrue(new SetShooterSpeedCommand(5000));
+
+   // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
+     //   .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
 
     //driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
     //driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));

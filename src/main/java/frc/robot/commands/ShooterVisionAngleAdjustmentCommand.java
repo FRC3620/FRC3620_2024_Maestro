@@ -38,6 +38,7 @@ public class ShooterVisionAngleAdjustmentCommand extends Command {
       SmartDashboard.putString("shooterVision.doIHaveTarget", "no");
     }else{
       ShooterSpeedAndAngle angle= ShooterCalcutlaiter.CalculaiteAngleM(distance);
+      shooter.setElevationPosition(angle.getPosition());
       SmartDashboard.putNumber("shooterVision.Angle", angle.getPosition());
       SmartDashboard.putString("shooterVision.doIHaveTarget", "yes");
       SmartDashboard.putNumber("shooterVision.Distance", distance);
