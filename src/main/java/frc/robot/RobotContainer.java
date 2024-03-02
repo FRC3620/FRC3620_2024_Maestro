@@ -148,6 +148,7 @@ public class RobotContainer {
         () -> -getDriveHorizontalJoystick(),
         () -> -getDriveSpinJoystick(),
         () -> true);
+        
     /*
      * TestDriveCommand StandardYagslDrive = new TestDriveCommand(drivebase,
      * () -> -getDriveVerticalJoystick(),
@@ -549,9 +550,6 @@ public class RobotContainer {
     if (Math.abs(axisValue) < deadzone) {
       return 0;
     }
-    if (axisValue < 0) {
-      return -(axisValue);
-    }
     return axisValue;
   }
 
@@ -564,9 +562,6 @@ public class RobotContainer {
     SmartDashboard.putNumber("driver.x.raw", axisValue);
     if (Math.abs(axisValue) < deadzone) {
       return 0;
-    }
-    if (axisValue < 0) {
-      return -(axisValue);
     }
     return axisValue;
   }
