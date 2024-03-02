@@ -101,15 +101,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
-     inkscape:zoom="0.86772068"
-     inkscape:cx="555.47829"
-     inkscape:cy="346.3096"
+     inkscape:zoom="1"
+     inkscape:cx="556.5"
+     inkscape:cy="348"
      inkscape:window-width="1592"
      inkscape:window-height="961"
-     inkscape:window-x="32"
+     inkscape:window-x="40"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="g2278">
+     inkscape:current-layer="g1322">
     <inkscape:page
        x="0"
        y="0"
@@ -1195,41 +1195,6 @@
          id="path1954" />
     </g>
     <g
-       id="g1960">
-      <path
-         d="m 438.56,538.08002 -0.95999,5.59997 9.11999,-11.35998 -13.76001,4.79999 z"
-         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-         id="path1962" />
-    </g>
-    <g
-       id="g1964">
-      <path
-         d="m 438.56,538.08002 -0.95999,5.59997 9.11999,-11.35998 -13.76001,4.79999 z"
-         style="fill:none;stroke:#000000;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path1966" />
-    </g>
-    <g
-       id="g1968">
-      <path
-         d="M 646.40002,545.91998 549.91998,680 H 620"
-         style="fill:none;stroke:#000000;stroke-width:0.96;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path1970" />
-    </g>
-    <g
-       id="g1972">
-      <path
-         d="m 640.47998,554.08002 0.96002,5.59997 4.96002,-13.76001 L 634.88,554.88 Z"
-         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-         id="path1974" />
-    </g>
-    <g
-       id="g1976">
-      <path
-         d="m 640.47998,554.08002 0.96002,5.59997 4.96002,-13.76001 L 634.88,554.88 Z"
-         style="fill:none;stroke:#000000;stroke-width:0.576;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path1978" />
-    </g>
-    <g
        id="g1980">
       <path
          d="M 738.23999,236 820,100"
@@ -1346,10 +1311,10 @@
          transform="translate(2.3048892,-6.9146673)"><tspan
            x="-37.726559"
            y="-15.181757"
-           id="tspan9856">Amp/Trap </tspan><tspan
+           id="tspan2855">Amp/Trap </tspan><tspan
            x="-37.726559"
            y="18.151617"
-           id="tspan9858">Position</tspan></text>
+           id="tspan2857">Position</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;inline-size:135.748;fill:#000000;stroke-width:2.016"
@@ -1359,10 +1324,10 @@
          transform="matrix(1.0455712,0,0,1,-0.79570028,-5.7622229)"><tspan
            x="-33.116756"
            y="126.56895"
-           id="tspan9860">Home </tspan><tspan
+           id="tspan2859">Home </tspan><tspan
            x="-33.116756"
            y="159.90232"
-           id="tspan9862">Arm</tspan></text>
+           id="tspan2861">Arm</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';fill:#000000;stroke-width:2.016"
@@ -1828,12 +1793,12 @@
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;shape-inside:url(#rect3047);fill:#000000;stroke-width:2.016"><tspan
          x="76.060547"
          y="356.16767"
-         id="tspan9864"> </tspan><tspan
+         id="tspan2863"> </tspan><tspan
          x="76.060547"
          y="390.73993"
-         id="tspan9868"><tspan
+         id="tspan2867"><tspan
            dx="0 14.826679 14.106667 9.6266823 15.039993 16.480026 16.400009 230.77357 16.853333 6.8800049 6.8799744 24.93338 230.77353 17.040039 11.013367 24.93335"
-           id="tspan9866">Extend Clim Arma</tspan></tspan></text>
+           id="tspan2865">Extend Clim Arma</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';fill:#000000;stroke-width:2.016"
@@ -1866,20 +1831,12 @@
        style="fill:#000000;stroke-width:2.016;font-size:26.66670036px;-inkscape-font-specification:'sans-serif, Normal';font-family:sans-serif;white-space:pre;shape-inside:url(#rect3125)" />
     <text
        xml:space="preserve"
-       transform="translate(-8.0671121,-4.6097987)"
-       id="text3129"
-       style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;shape-inside:url(#rect3131);fill:#000000;stroke-width:2.016"><tspan
-         x="633.84375"
-         y="694.98603"
-         id="tspan9870">Climb</tspan></text>
-    <text
-       xml:space="preserve"
        transform="translate(-77.213787,12.67687)"
        id="text3135"
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;shape-inside:url(#rect3137);fill:#000000;stroke-width:2.016"><tspan
          x="122.1582"
          y="161.40399"
-         id="tspan9872">Ground Pickup</tspan></text>
+         id="tspan2869">Ground Pickup</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;inline-size:233.097;fill:#000000;stroke-width:2.016"
@@ -1889,10 +1846,10 @@
        transform="translate(-36.878227,16.134224)"><tspan
          x="285.80627"
          y="91.043098"
-         id="tspan9874">Sub Woofer Shot </tspan><tspan
+         id="tspan2871">Sub Woofer Shot </tspan><tspan
          x="285.80627"
          y="124.37647"
-         id="tspan9876">(against speaker)</tspan></text>
+         id="tspan2873">(against speaker)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;inline-size:214.669;fill:#000000;stroke-width:2.016"
@@ -1902,10 +1859,10 @@
        transform="translate(-5.7622229,-40.33556)"><tspan
          x="798.6441"
          y="102.56755"
-         id="tspan9878">Safe Zone (stage </tspan><tspan
+         id="tspan2875">Safe Zone (stage </tspan><tspan
          x="798.6441"
          y="135.90093"
-         id="tspan9880">pillar) Shot</tspan></text>
+         id="tspan2877">pillar) Shot</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';fill:#000000;stroke-width:2.016"
@@ -1941,9 +1898,9 @@
        transform="translate(-11.524446,-23.048892)"><tspan
          x="928.8703"
          y="383.76401"
-         id="tspan9882">Climb </tspan><tspan
+         id="tspan2879">Climb </tspan><tspan
          x="928.8703"
          y="417.09738"
-         id="tspan9884">Position</tspan></text>
+         id="tspan2881">Position</tspan></text>
   </g>
 </svg>
