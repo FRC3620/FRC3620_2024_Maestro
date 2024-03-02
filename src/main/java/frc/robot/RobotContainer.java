@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.blinky.SolidPattern;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
 import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 
 import java.io.File;
 import java.util.*;
@@ -192,6 +194,7 @@ public class RobotContainer {
 
     blinkySubsystem = new BlinkySubsystem();
     addSubsystem(blinkySubsystem);
+    blinkySubsystem.lightSegment.setPattern(new SolidPattern().setColor(Color.kRed));
 
     Robot.printMemoryStatus("making drivebase");
 
