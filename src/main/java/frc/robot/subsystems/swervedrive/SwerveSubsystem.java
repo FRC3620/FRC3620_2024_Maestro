@@ -57,6 +57,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public double maximumSpeed = 4; //1
   double targetHeading;
+  boolean areweaiming = false;
 
   
 
@@ -462,8 +463,12 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive.getMaximumAngularVelocity();
   }
 
-  public boolean AreWeAiming(boolean areweaiming){
+  public boolean getAreWeAiming(){
     return areweaiming;
+  }
+
+  public void setAreWeAiming(boolean areweaiming){
+    this.areweaiming = areweaiming;
   }
 
   public void setHeadingCorrection(boolean correction) {

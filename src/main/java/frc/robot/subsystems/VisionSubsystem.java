@@ -51,11 +51,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     Optional<Alliance> color;
 
-    Double camHeight = 0.489;// meters, change accordingly
+    Double camHeight = 0.641;// meters, change accordingly
     Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
-    Double angCamToApriltags = 20.8;// degrees, facing up
+    Double angCamToApriltags = 22.0;// degrees, facing up
 
-    Double APRILTAGCAM_Y_OFFSET = 0.0;// change if neccessary, add to calculations
+    Double APRILTAGCAM_FRONT_OFFSET = .30734;// change if neccessary, add to calculations
     Double NOTEDETECTCAM_Y_OFFSET = 0.0;
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
@@ -151,20 +151,28 @@ public class VisionSubsystem extends SubsystemBase {
         if (res.hasTargets()) {
 
             int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
+            var desiredTarget = findTargetInResults(res, desiredTargetId);
 
-            var bestTarget = res.getBestTarget();
-            if (bestTarget.getFiducialId() == desiredTargetId) {
+            if (desiredTarget == null)
+                return null;
 
-                vectorToSpeaker result = new vectorToSpeaker();
+            SmartDashboard.putNumber("Target.pitch", desiredTarget.getPitch());
+            SmartDashboard.putNumber("Target.yaw", desiredTarget.getYaw());
+            SmartDashboard.putNumber("Target.skew", desiredTarget.getSkew());
+            
+            vectorToSpeaker result = new vectorToSpeaker();
 
-                double camToTargetDist = (1.45 - camHeight)
-                        / Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
+            double GroundTargetDist = (1.45 - camHeight)
+                        / Math.tan(Math.toRadians(angCamToApriltags + desiredTarget.getPitch()));
 
-                double GD = Math.sqrt((camToTargetDist * camToTargetDist) - (camHeight * camHeight));
-                result.distance = GD;
+            SmartDashboard.putNumber("Target.DistanceM", GroundTargetDist);
+            SmartDashboard.putNumber("Target.DistanceFt", Units.metersToFeet(GroundTargetDist));
 
-                return result.distance;
-            }
+            //double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight) * (1.45-camHeight)));
+                result.distance = (GroundTargetDist - APRILTAGCAM_FRONT_OFFSET)/1.11; //1.87//.52
+
+            return result.distance;
+            
         }
 
         return null;

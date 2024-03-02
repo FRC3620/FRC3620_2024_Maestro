@@ -81,7 +81,7 @@ public class TeleopDriveWithAimCommand extends Command {
     // see the right target?"
     
     
-    if(swerve.AreWeAiming(true) == true){
+    if(swerve.getAreWeAiming()){
       //grabs heading from vision subsystem
 
       // Turn Off Heading Correction

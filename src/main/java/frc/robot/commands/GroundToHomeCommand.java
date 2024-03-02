@@ -21,7 +21,7 @@ public class GroundToHomeCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetIntakeLocationCommand(IntakeLocation.midGroundPosition),
-      new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 10),
+      new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 12),
       new SetIntakeLocationCommand(IntakeLocation.homePosition),
       new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() < 1.5 && intakeSubsystem.getActualShoulderElevation() < 5),
       new SetIntakeLocationCommand(IntakeLocation.parkPosition)
