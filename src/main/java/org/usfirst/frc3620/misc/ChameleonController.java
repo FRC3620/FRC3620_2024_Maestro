@@ -12,6 +12,9 @@ public class ChameleonController {
 
     ControllerType currentControllerType = ControllerType.A;
 
+    public ChameleonController (){
+        
+    }
     public ChameleonController (Joystick joystick) {
         this.joystick = joystick;
     }

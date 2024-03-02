@@ -226,7 +226,8 @@ public class RobotContainer {
 
     if (drivebase != null) {
       // Driver controls
-     // new JoystickButton(rawDriverJoystick, FlySkyConstants.).onTrue(new InstantCommand(drivebase::zeroGyro));
+      // new JoystickButton(rawDriverJoystick, FlySkyConstants.).onTrue(new
+      // InstantCommand(drivebase::zeroGyro));
       new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_X)
           .onTrue(new InstantCommand(drivebase::addFakeVisionReading));
 
@@ -235,8 +236,8 @@ public class RobotContainer {
     // XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
     new JoystickAnalogButton(rawDriverJoystick, FlySkyConstants.BUTTON_SWA, 0.1)
         .whileTrue(new RunRollersCommand(-0.8));
-    new JoystickAnalogButton(rawDriverJoystick, FlySkyConstants.BUTTON_SWC, 0.1)
-        .whileTrue(new RunRollersUntilDetected(0.8));
+    //new JoystickAnalogButton(rawDriverJoystick, FlySkyConstants.BUTTON_SWC, 0.1)
+        //.whileTrue(new RunRollersUntilDetected(0.8));
     // new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).onTrue(new
     // RunRollersCommand(0.0));
 
@@ -289,6 +290,20 @@ public class RobotContainer {
 
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
         .whileTrue(new TakeAShotCommand());
+
+    driverJoystick.button(XBoxConstants.BUTTON_Y, FlySkyConstants.BUTTON_SWC)
+        .onTrue(new ZeroGyroCommand());
+
+    driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWD)
+        .toggleOnTrue(new XModeCommand());
+
+    if (drivebase.xModeIsOn = true) {
+      driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
+          .onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    } else {
+      driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
+          .whileTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    }
 
     // left Joystick(extend arm command)
 
@@ -506,6 +521,10 @@ public class RobotContainer {
     if (Math.abs(axisValue) < deadzone) {
       return 0;
     }
+    if (axisValue < 0) {
+      return -(axisValue);
+    }
+    return axisValue;
   }
 
   public static double getDriveHorizontalJoystick() {
@@ -519,9 +538,9 @@ public class RobotContainer {
       return 0;
     }
     if (axisValue < 0) {
-      return -(axisValue * axisValue);
+      return -(axisValue);
     }
-    return axisValue * axisValue;
+    return axisValue;
   }
 
   public static double getDriveSpinJoystick() {
@@ -537,7 +556,8 @@ public class RobotContainer {
       if (axisValue < 0) {
         rv = -rv;
       }
-    }
 
+    }
+    return axisValue;
   }
 }

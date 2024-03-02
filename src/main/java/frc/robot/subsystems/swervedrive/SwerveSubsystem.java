@@ -55,8 +55,9 @@ public class SwerveSubsystem extends SubsystemBase {
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public double maximumSpeed = 4; //1
+  public double maximumSpeed = 4; // 1
   double targetHeading;
+  public boolean xModeIsOn = false;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -74,7 +75,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // meters to get meters/second.
     // The gear ratio is 6.75 motor revolutions per wheel rotation.
     // The encoder resolution per motor revolution is 1 per motor revolution.
-    
+
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(3.0), 100.0, 1.0);
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
@@ -91,9 +92,9 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     FakeMotor fm = new FakeMotor(4098);
-    addChild ("fakeyfakey1", fm);
+    addChild("fakeyfakey1", fm);
 
-    logger.info ("{} making motors", this);
+    logger.info("{} making motors", this);
     addChild("cusscusscuss", new FakeMotor(999));
 
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via
@@ -112,7 +113,7 @@ public class SwerveSubsystem extends SubsystemBase {
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-        // Translation PID constants
+            // Translation PID constants
             new PIDConstants(1, 0.0, 0.0),
             // Rotation PID constants
             new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
@@ -121,7 +122,7 @@ public class SwerveSubsystem extends SubsystemBase {
             // Max module speed, in m/s
             4,
             swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
-              
+
             // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig()
         // Default path replanning config. See the API for the options here
@@ -146,18 +147,19 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
    */
   /*
-  public Command getAutonomousCommand(String pathName, boolean setOdomToStart) {
-    // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-
-    if (setOdomToStart) {
-      resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
-    }
-
-    // Create a path following command using AutoBuilder. This will also trigger
-    // event markers.
-    return AutoBuilder.followPath(path);
-  }
+   * public Command getAutonomousCommand(String pathName, boolean setOdomToStart)
+   * {
+   * // Load the path you want to follow using its name in the GUI
+   * PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+   * 
+   * if (setOdomToStart) {
+   * resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+   * }
+   * 
+   * // Create a path following command using AutoBuilder. This will also trigger
+   * // event markers.
+   * return AutoBuilder.followPath(path);
+   * }
    */
 
   /**
@@ -432,6 +434,14 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.lockPose();
   }
 
+  public void setXModeStatus(boolean status) {
+    this.xModeIsOn = status;
+  }
+
+  public boolean getXModeStatus() {
+    return this.xModeIsOn;
+  }
+
   /**
    * Gets the current pitch angle of the robot, as reported by the imu.
    *
@@ -459,4 +469,5 @@ public class SwerveSubsystem extends SubsystemBase {
   public Double getMaximumAngularVelocity() {
     return swerveDrive.getMaximumAngularVelocity();
   }
+
 }
