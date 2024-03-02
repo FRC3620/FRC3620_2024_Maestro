@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
@@ -23,10 +24,12 @@ public class GroundPickupCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetIntakeLocationCommand(IntakeLocation.midGroundPosition),
-      new RunRollersUntilDetected(),
       new InstantCommand(() -> SmartDashboard.putString("SequentialGroupHappenings", "Waiting for extension goal")),
       new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() > 10),
-      new SetIntakeLocationCommand(IntakeLocation.groundPosition)
+      new ParallelCommandGroup(
+        new RunRollersUntilDetected(0.8),
+        new SetIntakeLocationCommand(IntakeLocation.groundPosition)
+      )
     );
   }
 }
