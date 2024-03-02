@@ -247,7 +247,7 @@ public class RobotContainer {
     }
     //new JoystickButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
     new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1).onTrue(new RunRollersUntilGone(0.8));
-    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1).whileTrue(new RunRollersUntilDetected(0.8));
+    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1).whileTrue(new RunRollersCommand(0.2));
     new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_B).whileTrue(new RunRollersCommand(-0.8));
 
     //new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).onTrue(new RunRollersCommand(0.0));
@@ -275,8 +275,7 @@ public class RobotContainer {
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
-        .onTrue(
-            new SetIntakeLocationCommand(IntakeLocation.preclimbPosition)
+        .onTrue(new TrapShootCommand()
                 .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
                 .andThen(new ActivateClimberJoystickCommand()));
 
@@ -349,6 +348,7 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand());
     SmartDashboard.putData("set shooter wheels power", new ShooterWheelPowerCommand());
+    SmartDashboard.putData("goInSixInches", new goInSixInchesCommand());
 
     if ( intakeSubsystem.getRequestedShoulderPosition() != null && intakeSubsystem.getRequestedExtendPosition() != null) {
       SmartDashboard.putData("Intake.elevate +", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() + 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
