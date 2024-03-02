@@ -163,13 +163,14 @@ public class RobotContainer {
      * () -> false);
      */
 
+/* FIX THIS
     TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,  
-                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 
+                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getLeftY(), 
                                                                                 OperatorConstants.LEFT_Y_DEADBAND),
-                                                    () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
+                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getLeftX(),
                                                                                 OperatorConstants.LEFT_X_DEADBAND),
-                                                    () -> -driverXbox.getRawAxis(4), () -> true, visionSubsystem, superSwerveController);
-
+                                                    () -> -rawDriverJoystick.getRawAxis(4), () -> true, visionSubsystem, superSwerveController);
+*/
     drivebase.setDefaultCommand(SuperFieldRel);
 
     if (drivebase.getCurrentCommand() != null) {
@@ -245,9 +246,9 @@ public class RobotContainer {
 
     }
     //new JoystickButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
-    new JoystickAnalogButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1).onTrue(new RunRollersUntilGone(0.8));
-    new JoystickAnalogButton(driverXbox, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1).whileTrue(new RunRollersUntilDetected(0.8));
-    new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).whileTrue(new RunRollersCommand(-0.8));
+    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1).onTrue(new RunRollersUntilGone(0.8));
+    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1).whileTrue(new RunRollersUntilDetected(0.8));
+    new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_B).whileTrue(new RunRollersCommand(-0.8));
 
     //new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).onTrue(new RunRollersCommand(0.0));
     
@@ -307,7 +308,7 @@ public class RobotContainer {
         .whileTrue(new RunRollersCommand(.3));
 
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-        .whileTrue(new TakeAShotCommand());
+        .whileTrue(new RunRollersUntilGone(0.8));
 
     // left Joystick(extend arm command)
 
@@ -539,6 +540,7 @@ public class RobotContainer {
     if (Math.abs(axisValue) < deadzone) {
       return 0;
     }
+    return axisValue;
   }
 
   public static double getDriveHorizontalJoystick() {
@@ -571,6 +573,6 @@ public class RobotContainer {
         rv = -rv;
       }
     }
-
+    return axisValue;
   }
 }
