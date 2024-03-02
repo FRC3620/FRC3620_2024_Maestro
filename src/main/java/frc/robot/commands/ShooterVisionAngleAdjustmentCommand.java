@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ShooterCalcutlaiter;
@@ -42,6 +43,7 @@ public class ShooterVisionAngleAdjustmentCommand extends Command {
       SmartDashboard.putNumber("shooterVision.Angle", angle.getPosition());
       SmartDashboard.putString("shooterVision.doIHaveTarget", "yes");
       SmartDashboard.putNumber("shooterVision.Distance", distance);
+      SmartDashboard.putNumber("shooterVision.DistanceFt", Units.metersToFeet(distance));
     }
   }
 

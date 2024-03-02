@@ -162,11 +162,14 @@ public class VisionSubsystem extends SubsystemBase {
             
             vectorToSpeaker result = new vectorToSpeaker();
 
-            double camToTargetDist = (1.45 - camHeight)
-                        / Math.sin(Math.toRadians(angCamToApriltags + desiredTarget.getPitch()));
+            double GroundTargetDist = (1.45 - camHeight)
+                        / Math.tan(Math.toRadians(angCamToApriltags + desiredTarget.getPitch()));
 
-            double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight) * (1.45-camHeight)));
-                result.distance = (GD + APRILTAGCAM_FRONT_OFFSET)/1.87;//.52
+            SmartDashboard.putNumber("Target.DistanceM", GroundTargetDist);
+            SmartDashboard.putNumber("Target.DistanceFt", Units.metersToFeet(GroundTargetDist));
+
+            //double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight) * (1.45-camHeight)));
+                result.distance = (GroundTargetDist - APRILTAGCAM_FRONT_OFFSET)/1.11; //1.87//.52
 
             return result.distance;
             
