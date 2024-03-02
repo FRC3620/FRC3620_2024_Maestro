@@ -252,13 +252,10 @@ public class RobotContainer {
     //operatorDpad.up().onTrue(new RumbleControllerCommand(operatorJoystick, 1));
     //operatorDpad.down().onTrue(new RumbleControllerCommand(operatorJoystick, 0));
 
-    if ( intakeSubsystem.getRequestedShoulderPosition() != null && intakeSubsystem.getRequestedExtendPosition() != null) {
-      operatorDpad.up().onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() + 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
-      operatorDpad.down().onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() - 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
-      operatorDpad.right().onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() + 0.5, intakeSubsystem.getActualWristPosition())));
-      operatorDpad.left().onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() - 0.5, intakeSubsystem.getActualWristPosition())));
-
-    }
+    operatorDpad.up().whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
+    operatorDpad.down().whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, -4));
+    operatorDpad.left().whileTrue(new ExtendPowerCommand(intakeSubsystem, -1.5));
+    operatorDpad.right().whileTrue(new ExtendPowerCommand(intakeSubsystem, 1.5));
 
   }
 
