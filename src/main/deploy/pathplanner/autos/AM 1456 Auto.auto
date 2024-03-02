@@ -12,9 +12,53 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "FIRE OMEGA BEAM"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PICKUP INTAKE POSITION"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SLURPY IN"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "1 to 4"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PICKUP INTAKE POSITION"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SLURPY IN"
+                }
+              }
+            ]
           }
         },
         {
@@ -24,9 +68,40 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FIRE OMEGA BEAM"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Shoot to 5"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PICKUP INTAKE POSITION"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SLURPY IN"
+                }
+              }
+            ]
           }
         },
         {
@@ -36,15 +111,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Shoot to 6"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "6 to shoot"
+            "name": "FIRE OMEGA BEAM"
           }
         }
       ]

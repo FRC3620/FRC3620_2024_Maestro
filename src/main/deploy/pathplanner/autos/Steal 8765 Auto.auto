@@ -12,9 +12,34 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Steal 8765"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Steal 8765"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PICKUP INTAKE POSITION"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SLURPY IN"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FIRE OMEGA BEAM"
+                }
+              }
+            ]
           }
         }
       ]
