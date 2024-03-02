@@ -289,7 +289,7 @@ public class RobotContainer {
         .whileTrue(new RunRollersCommand(.3));
 
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-        .whileTrue(new TakeAShotCommand());
+        .whileTrue(new RunRollersUntilGone(.8));
 
     driverJoystick.button(XBoxConstants.BUTTON_Y, FlySkyConstants.BUTTON_SWC)
         .onTrue(new ZeroGyroCommand());
@@ -304,6 +304,10 @@ public class RobotContainer {
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
           .whileTrue(new InstantCommand(drivebase::addFakeVisionReading));
     }
+
+    //driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_Y, FlySkyConstants.AXIS_LEFT_Y)
+    //.whileTrue(new );
+
 
     // left Joystick(extend arm command)
 

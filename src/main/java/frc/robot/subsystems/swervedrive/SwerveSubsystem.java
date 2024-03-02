@@ -239,6 +239,7 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Swerve.pose.x", getPose().getX());
       SmartDashboard.putNumber("Swerve.pose.y", getPose().getY());
       SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
+      SmartDashboard.putBoolean("xModeIsOn", xModeIsOn);
     }
   }
 
@@ -469,5 +470,4 @@ public class SwerveSubsystem extends SubsystemBase {
   public Double getMaximumAngularVelocity() {
     return swerveDrive.getMaximumAngularVelocity();
   }
-
 }
