@@ -61,6 +61,20 @@ public class TestDriveCommand extends Command
     SmartDashboard.putNumber("vY", yVelocity);
     SmartDashboard.putNumber("omega", angVelocity);
 
+    // TODO: Create new TeleopDriveWithAim command
+    // TODO: Update SwerveSubsystem to include boolean "AreWeAiming"
+    // TODO: Update VisionSubsystem to specify Which target we're aiming towards
+    // TODO: Update new teleopDriveWithAim command to check "areweaiming" and "do I see the right target?"
+
+
+    // IF Vision.hasTarget Then
+      // substitute heading calculation for angVelocity
+    
+    
+      //controller.headingCalculate(yVelocity, angVelocity)
+
+    // else drive normally
+
     // Drive using raw values.
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
                  angVelocity * controller.config.maxAngularVelocity,

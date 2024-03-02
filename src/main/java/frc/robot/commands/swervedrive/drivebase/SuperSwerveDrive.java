@@ -61,8 +61,7 @@ public class SuperSwerveDrive extends Command {
     SmartDashboard.putNumber("pose.rotation", swerve.getPose().getRotation().getDegrees());
 
     // Drive using raw values.
-    superSwerveController.doTeleop(swerve, xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed,
-                 angVelocity * controller.config.maxAngularVelocity);
+    superSwerveController.doTeleop(swerve, xVelocity, yVelocity, angVelocity);
 
     
   }

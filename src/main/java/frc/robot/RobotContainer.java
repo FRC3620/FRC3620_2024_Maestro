@@ -2,6 +2,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
+import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
 import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -23,6 +24,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -64,6 +66,7 @@ public class RobotContainer {
   public static BlinkySubsystem blinkySubsystem;
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
+  private static VisionSubsystem visionSubsystem;
 
   public static List<Subsystem> allSubsystems = new ArrayList<>();
 
@@ -117,6 +120,7 @@ public class RobotContainer {
      */
 
     makeSubsystems();
+    
 
     canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "RF Drive");
 
@@ -136,6 +140,7 @@ public class RobotContainer {
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
+    
 
     SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase,
         superSwerveController,
@@ -158,6 +163,14 @@ public class RobotContainer {
      * () -> false);
      */
 
+/* FIX THIS
+    TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,  
+                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getLeftY(), 
+                                                                                OperatorConstants.LEFT_Y_DEADBAND),
+                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getLeftX(),
+                                                                                OperatorConstants.LEFT_X_DEADBAND),
+                                                    () -> -rawDriverJoystick.getRawAxis(4), () -> true, visionSubsystem, superSwerveController);
+*/
     drivebase.setDefaultCommand(SuperFieldRel);
 
     if (drivebase.getCurrentCommand() != null) {
@@ -166,8 +179,9 @@ public class RobotContainer {
       SmartDashboard.putString("CurrentCommand", "No Command");
     }
   }
-
+    
   private void makeSubsystems() {
+    visionSubsystem = new VisionSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     addSubsystem(intakeSubsystem);
 
@@ -240,6 +254,17 @@ public class RobotContainer {
         //.whileTrue(new RunRollersUntilDetected(0.8));
     // new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).onTrue(new
     // RunRollersCommand(0.0));
+    //new JoystickButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
+    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1).onTrue(new RunRollersUntilGone(0.8));
+    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1).whileTrue(new RunRollersUntilDetected(0.8));
+    //new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_B).whileTrue(new RunRollersCommand(-0.8));
+
+    //new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).onTrue(new RunRollersCommand(0.0));
+    
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileTrue(new InstantCommand(() -> drivebase.setAreWeAiming(true)));
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileFalse(new InstantCommand(() -> drivebase.setAreWeAiming(false)));
+    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).onTrue(new RumbleControllerCommand(operatorJoystick, 1));
+    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).onTrue(new RumbleControllerCommand(operatorJoystick, 0));
 
     // new JoystickButton(operatorJoystick,
     // XBoxConstants.BUTTON_X).whileTrue(LockOnCommand);
@@ -264,15 +289,19 @@ public class RobotContainer {
                 .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
                 .andThen(new ActivateClimberJoystickCommand()));
 
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
-        .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
-
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
-        .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
+        .toggleOnTrue(new SetShooterSpeedCommand(5000));
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition))
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shooterHome));
+   // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
+     //   .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
+
+    //driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
+    //driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
+    //driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
+    //driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
         .onTrue(new RunRollersUntilGone(-.3))
@@ -280,7 +309,6 @@ public class RobotContainer {
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
         .onTrue(new SetClimberPowerPositionCommand());
-
     // Driver controls
     // driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWD)
     // .whileTrue(new XmodeCommand(driverSubsyste));
@@ -289,25 +317,7 @@ public class RobotContainer {
         .whileTrue(new RunRollersCommand(.3));
 
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-        .whileTrue(new RunRollersUntilGone(.8));
-
-    driverJoystick.button(XBoxConstants.BUTTON_Y, FlySkyConstants.BUTTON_SWC)
-        .onTrue(new ZeroGyroCommand());
-
-    driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWD)
-        .toggleOnTrue(new XModeCommand());
-
-    if (drivebase.xModeIsOn = true) {
-      driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
-          .onTrue(new InstantCommand(drivebase::addFakeVisionReading));
-    } else {
-      driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
-          .whileTrue(new InstantCommand(drivebase::addFakeVisionReading));
-    }
-
-    //driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_Y, FlySkyConstants.AXIS_LEFT_Y)
-    //.whileTrue(new );
-
+        .whileTrue(new RunRollersUntilGone(0.8));
 
     // left Joystick(extend arm command)
 
@@ -336,6 +346,7 @@ public class RobotContainer {
 
     }
 
+
   }
 
   private void setupSmartDashboardCommands() {
@@ -347,6 +358,13 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand());
     SmartDashboard.putData("set shooter wheels power", new ShooterWheelPowerCommand());
+
+    if ( intakeSubsystem.getRequestedShoulderPosition() != null && intakeSubsystem.getRequestedExtendPosition() != null) {
+      SmartDashboard.putData("Intake.elevate +", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() + 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
+      SmartDashboard.putData("Intake.elevate -", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() - 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
+      SmartDashboard.putData("Intake.extend +", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() + 0.5, intakeSubsystem.getActualWristPosition())));
+      SmartDashboard.putData("Intake.extend -", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() - 0.5, intakeSubsystem.getActualWristPosition())));
+    }
 
     /*
      * SmartDashboard.putData("GroundPosition", new
@@ -366,6 +384,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
+
+    SmartDashboard.putData("LockCamToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
 
     SmartDashboard.putData("Manually position intake", new PositionIntakeManuallyCommand());
 
@@ -390,7 +410,6 @@ public class RobotContainer {
     // test rollers
     SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected(0.8));
     SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone(-0.8));
-    SmartDashboard.putData("TakeAShot", new TakeAShotCommand());
 
     // test Shooter
     SmartDashboard.putData("Test Shooter angle to 60",
@@ -424,8 +443,11 @@ public class RobotContainer {
     SmartDashboard.putData("Test Intake Angle PID Zapper", new IntakeAnglePIDZapper());
     SmartDashboard.putData("Test Intake Extension PID Zapper", new IntakeExtensionPIDZapper());
 
+    SmartDashboard.putData("ShooterVisionAngleCommand", new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+
   }
 
+  
   SendableChooser<Command> chooser = new SendableChooser<>();
 
   public void setupAutonomousCommands() {
@@ -433,6 +455,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto mode", chooser);
 
+    chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
+    //chooser.addOption("Auto Command", drivebase.getAutonomousCommand("New Path", true));
     // chooser.addOption("Noop Command", new PrintCommand("no autonomous"));
     // chooser.addOption("PathPlannerAuto", getAutonomousCommand());
     // chooser.addOption("Auto Command", drivebase.driveToPose(new Pose2d(new
