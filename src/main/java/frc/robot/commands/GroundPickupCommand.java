@@ -23,6 +23,7 @@ public class GroundPickupCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetIntakeLocationCommand(intakeLocation.midGroundPosition),
+      new RunRollersUntilDetected(),
       new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() > 11),
       new SetIntakeLocationCommand(intakeLocation.groundPosition)
     );
