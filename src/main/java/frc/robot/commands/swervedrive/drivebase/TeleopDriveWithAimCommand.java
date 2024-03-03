@@ -96,11 +96,13 @@ public class TeleopDriveWithAimCommand extends Command {
 
       } else {
         //current heading
+
         double currentPosRotation = swerve.getHeading().getDegrees();
-        double targetHeading = currentPosRotation + headingToTag;
+        double targetHeading = currentPosRotation + headingToTag-6.5;
         //calculates angVelocity
         angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),
                                                   Units.degreesToRadians(targetHeading));
+                                          
         
         //angVelocity = aimController.calculate(currentPosRotation,targetHeading);
         //Prints on dashboard

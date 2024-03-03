@@ -22,7 +22,7 @@ public class ShooterVisionAngleAdjustmentCommand extends Command {
     this.vision = vision;
     this.shooter = shooter;
 
-    addRequirements(vision, shooter);
+    addRequirements(shooter);
 
     
   }
@@ -44,6 +44,7 @@ public class ShooterVisionAngleAdjustmentCommand extends Command {
       SmartDashboard.putString("shooterVision.doIHaveTarget", "yes");
       SmartDashboard.putNumber("shooterVision.Distance", distance);
       SmartDashboard.putNumber("shooterVision.DistanceFt", Units.metersToFeet(distance));
+      SmartDashboard.putNumber("shooterVision.Yaw", vision.camYawToSpeaker());
     }
   }
 
