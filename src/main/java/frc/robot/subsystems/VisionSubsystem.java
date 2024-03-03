@@ -169,7 +169,7 @@ public class VisionSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Target.DistanceFt", Units.metersToFeet(GroundTargetDist));
 
             //double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight) * (1.45-camHeight)));
-                result.distance = (GroundTargetDist - APRILTAGCAM_FRONT_OFFSET)/1.11; //1.87//.52
+                result.distance = (GroundTargetDist - APRILTAGCAM_FRONT_OFFSET)/1.1; //1.87//.52
 
             return result.distance;
             

@@ -13,7 +13,7 @@ public class SetShooterSpeedCommand extends Command {
   /** Creates a new SetShooterSpeedCommand. */
   public SetShooterSpeedCommand(double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    //addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.

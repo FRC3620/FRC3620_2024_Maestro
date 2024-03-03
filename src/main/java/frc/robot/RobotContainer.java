@@ -171,7 +171,7 @@ public class RobotContainer {
                                                                                 OperatorConstants.LEFT_X_DEADBAND),
                                                     () -> -rawDriverJoystick.getRawAxis(4), () -> true, visionSubsystem, superSwerveController);
 */
-    drivebase.setDefaultCommand(SuperFieldRel);
+    drivebase.setDefaultCommand(aimDrive);
 
     if (drivebase.getCurrentCommand() != null) {
       SmartDashboard.putString("CurrentCommand", drivebase.getCurrentCommand().toString());
@@ -280,7 +280,8 @@ public class RobotContainer {
                 .andThen(new ActivateClimberJoystickCommand()));
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
-        .toggleOnTrue(new SetShooterSpeedCommand(5000));
+        .toggleOnTrue(new SetShooterSpeedCommand(5000))
+        .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition))

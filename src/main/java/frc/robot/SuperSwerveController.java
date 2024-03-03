@@ -21,7 +21,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 /** Add your docs here. */
 public class SuperSwerveController {
     public PIDController headingPID;
-    private double kSpinP = 0.035; 
+    private double kSpinP = 0.0325; 
     private double kSpinI = 0.00;
     private double kSpinD = 0.00; //0.01
     SwerveSubsystem drivebase;
@@ -30,7 +30,7 @@ public class SuperSwerveController {
     public SuperSwerveController(SwerveSubsystem drivebase) {
         headingPID = new PIDController(kSpinP, kSpinI, kSpinD);
         headingPID.enableContinuousInput(-180, 180); // sets a circular range instead of a linear one.
-        headingPID.setTolerance(3);
+        headingPID.setTolerance(2.5);
         this.drivebase = drivebase;
         headingSetpoint = drivebase.getHeading().getDegrees();
     }

@@ -96,11 +96,13 @@ public class TeleopDriveWithAimCommand extends Command {
 
       } else {
         //current heading
+
         double currentPosRotation = swerve.getHeading().getDegrees();
-        double targetHeading = currentPosRotation + headingToTag;
+        double targetHeading = currentPosRotation + headingToTag+6.5;
         //calculates angVelocity
         angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),
                                                   Units.degreesToRadians(targetHeading));
+                                          
         
         //angVelocity = aimController.calculate(currentPosRotation,targetHeading);
         //Prints on dashboard
@@ -113,15 +115,15 @@ public class TeleopDriveWithAimCommand extends Command {
       }
     
     
-      // Drive using raw values.
-      swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
-          angVelocity                                                                                                                      * 5.1,
-          driveMode.getAsBoolean());
-    
+      
     } else {
       //swerve.setHeadingCorrection(true);
     }
-
+    
+    // Drive using raw values.
+    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
+        angVelocity                                                                                                                      * 5.1,
+        driveMode.getAsBoolean());
   }
 
   // Called once the command ends or is interrupted.
