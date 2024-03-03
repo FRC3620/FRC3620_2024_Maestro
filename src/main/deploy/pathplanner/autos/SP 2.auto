@@ -1,14 +1,26 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 15.181501815995084,
+      "y": 5.578111669043852
+    },
+    "rotation": 180.0
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "AM to 1"
+            "name": "CHARGE SUBWOOF OMEGA BEAM"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
@@ -18,22 +30,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1 to 4"
+            "name": "EXTEND OMEGA BEAM"
           }
         },
         {
@@ -45,14 +44,38 @@
                 "data": {
                   "name": "SLURPY IN"
                 }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SP to 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CHARGE MIDSTAGE OMEGA BEAM"
+                }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "4 to shoot"
+            "name": "LOAD OMEGA BEAM"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FIRE OMEGA BEAM"
           }
         },
         {
@@ -64,38 +87,7 @@
         {
           "type": "named",
           "data": {
-            "name": "FIRE OMEGA BEAM"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to 5"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "5 to Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FIRE OMEGA BEAM"
+            "name": "DISABLE OMEGA BEAM"
           }
         }
       ]

@@ -24,18 +24,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "PICKUP INTAKE POSITION"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "FIRE OMEGA BEAM"
                 }
               }

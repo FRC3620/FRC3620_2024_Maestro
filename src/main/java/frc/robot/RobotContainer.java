@@ -242,9 +242,11 @@ public class RobotContainer {
 
     if (drivebase != null) {
       // Driver controls
-     // new JoystickButton(rawDriverJoystick, FlySkyConstants.).onTrue(new InstantCommand(drivebase::zeroGyro));
-      new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_X)
-          .onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+      driverJoystick.analogButton(XBoxConstants.BUTTON_X, FlySkyConstants.BUTTON_SWC)
+        .onTrue(new InstantCommand(drivebase::zeroGyro));
+      new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
+      /*new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_X)
+          .onTrue(new InstantCommand(drivebase::addFakeVisionReading));*/
 
     }
     //new JoystickButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
@@ -444,7 +446,16 @@ public class RobotContainer {
   
   SendableChooser<Command> chooser = new SendableChooser<>();
 
-  public void setupAutonomousCommands() {
+  public void setupAutonomousCommands() 
+  {
+    NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunRollersUntilGone(0.8));
+    NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
+    NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8));
+    NamedCommands.registerCommand("LOAD OMEGA BEAM", new GroundToHomeCommand());
+    NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+    NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
+    NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
+
     chooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto mode", chooser);
@@ -453,15 +464,6 @@ public class RobotContainer {
     // chooser.addOption("PathPlannerAuto", getAutonomousCommand());
     // chooser.addOption("Auto Command", drivebase.driveToPose(new Pose2d(new
     // Translation2d(1.5, 0), new Rotation2d(0))));
-
-    NamedCommands.registerCommand("FIRE OMEGA BEAM", new TakeAShotCommand());
-    NamedCommands.registerCommand("PICKUP INTAKE POSITION", new GroundPickupCommand());
-    NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8));
-    NamedCommands.registerCommand("HOME INTAKE POSITION", new GroundToHomeCommand());
-    NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
-    NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
-    NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
-
   }
 
   /**
