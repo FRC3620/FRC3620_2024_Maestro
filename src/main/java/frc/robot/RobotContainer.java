@@ -163,14 +163,14 @@ public class RobotContainer {
      * () -> false);
      */
 
-/* FIX THIS
+
     TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,  
-                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getLeftY(), 
+                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y), 
                                                                                 OperatorConstants.LEFT_Y_DEADBAND),
-                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getLeftX(),
+                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X),
                                                                                 OperatorConstants.LEFT_X_DEADBAND),
                                                     () -> -rawDriverJoystick.getRawAxis(4), () -> true, visionSubsystem, superSwerveController);
-*/
+
     drivebase.setDefaultCommand(aimDrive);
 
     if (drivebase.getCurrentCommand() != null) {
@@ -294,9 +294,9 @@ public class RobotContainer {
     //driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
     //driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
 
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
-        .onTrue(new RunRollersUntilGone(-.3))
-        .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ejectAllShooter));
+    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
+      //  .onTrue(new RunRollersUntilGone(-.3))
+        //.onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ejectAllShooter));
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
         .onTrue(new SetClimberPowerPositionCommand());
