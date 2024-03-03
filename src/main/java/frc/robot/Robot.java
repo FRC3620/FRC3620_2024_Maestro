@@ -7,6 +7,7 @@ import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.ChameleonController.ControllerType;
 import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
@@ -115,6 +116,16 @@ public class Robot extends TimedRobot {
     logCANBusIfNecessary(); // don't do this when enabled; unnecessary overhead
   }
 
+ void setupDriverController() {
+    String driveControllerName = m_robotContainer.getDriverControllerName();
+    logger.info("Drive Controller Name: {}", driveControllerName);
+    if (driveControllerName.startsWith("FlySky")) {
+      m_robotContainer.setDriverControllerName(ControllerType.B);
+    } else {
+      m_robotContainer.setDriverControllerName(ControllerType.A);
+    }
+  }
+
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
@@ -128,6 +139,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    setupDriverController();
   }
 
   /** This function is called periodically during autonomous. */
@@ -149,6 +162,8 @@ public class Robot extends TimedRobot {
     processRobotModeChange(RobotMode.TELEOP);
 
     logMatchInfo();
+
+    setupDriverController();
     
   }
 

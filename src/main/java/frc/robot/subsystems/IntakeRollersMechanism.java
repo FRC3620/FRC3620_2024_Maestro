@@ -120,6 +120,13 @@ public class IntakeRollersMechanism implements HasTelemetry {
     return encoder.getVelocity();
   }
 
+  public double getPosition() {
+    if (encoder != null) {
+      return encoder.getPosition();
+    }
+    return 0;
+  }
+
   @Override
   public void updateTelemetry() {
     SmartDashboard.putBoolean(name + ".game_piece_detected", gamePieceDetected());

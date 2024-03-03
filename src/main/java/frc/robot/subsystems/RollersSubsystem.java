@@ -43,6 +43,10 @@ public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
     return intakeRollerMechanism.getVelocity();
   }
 
+  public double getRollerPosition() {
+    return intakeRollerMechanism.getPosition();
+  }
+
   public boolean gamePieceDetected() {
     return intakeRollerMechanism.gamePieceDetected();
   }

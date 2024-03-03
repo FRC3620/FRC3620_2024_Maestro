@@ -57,6 +57,9 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public double maximumSpeed = 4; //1
   double targetHeading;
+  boolean areweaiming = false;
+
+  
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -96,7 +99,7 @@ public class SwerveSubsystem extends SubsystemBase {
     logger.info ("{} making motors", this);
     addChild("cusscusscuss", new FakeMotor(999));
 
-    swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via
+    swerveDrive.setHeadingCorrection(true,0.1); // Heading correction should only be used while controlling the robot via
                                              // angle.
 
     setupPathPlanner();
@@ -458,5 +461,17 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Double getMaximumAngularVelocity() {
     return swerveDrive.getMaximumAngularVelocity();
+  }
+
+  public boolean getAreWeAiming(){
+    return areweaiming;
+  }
+
+  public void setAreWeAiming(boolean areweaiming){
+    this.areweaiming = areweaiming;
+  }
+
+  public void setHeadingCorrection(boolean correction) {
+    swerveDrive.setHeadingCorrection(correction);
   }
 }

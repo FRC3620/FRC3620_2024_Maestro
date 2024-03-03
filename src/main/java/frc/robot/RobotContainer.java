@@ -2,6 +2,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
+import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
 import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -23,15 +24,20 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
+import org.usfirst.frc3620.misc.ChameleonController;
+import org.usfirst.frc3620.misc.ChameleonController.ControllerType;
 import org.usfirst.frc3620.misc.JoystickAnalogButton;
 import org.usfirst.frc3620.misc.DPad;
 import org.usfirst.frc3620.misc.RobotParametersContainer;
 import org.usfirst.frc3620.misc.XBoxConstants;
+import org.usfirst.frc3620.misc.FlySkyConstants;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -62,6 +68,7 @@ public class RobotContainer {
   public static BlinkySubsystem blinkySubsystem;
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
+  private static VisionSubsystem visionSubsystem;
 
   public static List<Subsystem> allSubsystems = new ArrayList<>();
 
@@ -71,8 +78,10 @@ public class RobotContainer {
   private static DigitalInput practiceBotJumper;
 
   // joysticks here....
-  public static XboxController driverXbox;
+  // public static XboxController driverXbox;
+  public static Joystick rawDriverJoystick;
   public static Joystick operatorJoystick;
+  public static ChameleonController driverJoystick;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -113,6 +122,7 @@ public class RobotContainer {
      */
 
     makeSubsystems();
+    
 
     canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "RF Drive");
 
@@ -136,29 +146,34 @@ public class RobotContainer {
 
     SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase,
         superSwerveController,
-        () -> MathUtil.applyDeadband(-driverXbox.getLeftY(),
-            OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
-            OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(4),
-            OperatorConstants.RIGHT_X_DEADBAND),
+        () -> -getDriveVerticalJoystick(),
+        () -> -getDriveHorizontalJoystick(),
+        () -> -getDriveSpinJoystick(),
         () -> true);
+    /*
+     * TestDriveCommand StandardYagslDrive = new TestDriveCommand(drivebase,
+     * () -> -getDriveVerticalJoystick(),
+     * () -> -getDriveHorizontalJoystick(),
+     * () -> -getDriveSpinJoystick(),
+     * () -> true);
+     * 
+     * Command sitThereCommand = new TestDriveCommand(
+     * drivebase,
+     * () -> 0.0,
+     * () -> 0.0,
+     * () -> 0.0,
+     * () -> false);
+     */
 
-    TestDriveCommand StandardYagslDrive = new TestDriveCommand(drivebase,
-        () -> MathUtil.applyDeadband(-driverXbox.getLeftY(),
-            OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),
-            OperatorConstants.LEFT_X_DEADBAND),
-        () -> -driverXbox.getRawAxis(4), () -> true);
 
-    Command sitThereCommand = new TestDriveCommand(
-        drivebase,
-        () -> 0.0,
-        () -> 0.0,
-        () -> 0.0,
-        () -> false);
+    TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,  
+                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y), 
+                                                                                OperatorConstants.LEFT_Y_DEADBAND),
+                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X),
+                                                                                OperatorConstants.LEFT_X_DEADBAND),
+                                                    () -> -rawDriverJoystick.getRawAxis(4), () -> true, visionSubsystem, superSwerveController);
 
-    drivebase.setDefaultCommand(SuperFieldRel);
+    drivebase.setDefaultCommand(aimDrive);
 
     if (drivebase.getCurrentCommand() != null) {
       SmartDashboard.putString("CurrentCommand", drivebase.getCurrentCommand().toString());
@@ -166,8 +181,9 @@ public class RobotContainer {
       SmartDashboard.putString("CurrentCommand", "No Command");
     }
   }
-
+    
   private void makeSubsystems() {
+    visionSubsystem = new VisionSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     addSubsystem(intakeSubsystem);
 
@@ -200,6 +216,14 @@ public class RobotContainer {
 
   }
 
+  public String getDriverControllerName() {
+    return rawDriverJoystick.getName();
+  }
+
+  public void setDriverControllerName(ControllerType driveControllerType) {
+    driverJoystick.setCurrentControllerType(driveControllerType);
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
@@ -209,59 +233,112 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverXbox = new XboxController(0);
+    rawDriverJoystick = new Joystick(0);
+    driverJoystick = new ChameleonController(rawDriverJoystick);
     operatorJoystick = new Joystick(1);
-    DPad driverDPad = new DPad(driverXbox, 0);
+
+    DPad driverDPad = new DPad(rawDriverJoystick, 0);
     DPad operatorDpad = new DPad(operatorJoystick, 0);
 
     if (drivebase != null) {
       // Driver controls
-      new JoystickButton(driverXbox, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
-      new JoystickButton(driverXbox, XBoxConstants.BUTTON_X)
+     // new JoystickButton(rawDriverJoystick, FlySkyConstants.).onTrue(new InstantCommand(drivebase::zeroGyro));
+      new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_X)
           .onTrue(new InstantCommand(drivebase::addFakeVisionReading));
 
     }
     //new JoystickButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
-    new JoystickAnalogButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1).whileTrue(new RunRollersCommand(-0.8));
-    new JoystickAnalogButton(driverXbox, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1).whileTrue(new RunRollersUntilDetected(0.8));
+    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1).onTrue(new RunRollersUntilGone(0.8));
+    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1).whileTrue(new RunRollersCommand(0.2));
+    new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_B).whileTrue(new RunRollersCommand(-0.8));
+
     //new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).onTrue(new RunRollersCommand(0.0));
     
-    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileTrue(LockOnCommand);
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileTrue(new InstantCommand(() -> drivebase.setAreWeAiming(true)));
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileFalse(new InstantCommand(() -> drivebase.setAreWeAiming(false)));
     //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).onTrue(new RumbleControllerCommand(operatorJoystick, 1));
     //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).onTrue(new RumbleControllerCommand(operatorJoystick, 0));
 
-    
+    // new JoystickButton(operatorJoystick,
+    // XBoxConstants.BUTTON_X).whileTrue(LockOnCommand);
+    // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).onTrue(new
+    // RumbleControllerCommand(operatorJoystick, 1));
+    // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).onTrue(new
+    // RumbleControllerCommand(operatorJoystick, 0));
+
     // Operator intake controls
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
         .onTrue(new GroundPickupCommand());
+
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A)
         .onTrue(new GroundToHomeCommand());
+
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
-    //new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
-      //  .onTrue(new SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
 
-    //Operator shooter controls
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER)
-        .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
-        .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
+        .onTrue(new TrapShootCommand()
+                .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
+                .andThen(new ActivateClimberJoystickCommand()));
+
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
+        .toggleOnTrue(new SetShooterSpeedCommand(5000))
+        .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START)
+        .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition))
+        .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shooterHome));
+   // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
+     //   .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
 
     //driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
     //driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
     //driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
     //driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
 
-    //operatorDpad.up().onTrue(new RumbleControllerCommand(operatorJoystick, 1));
-    //operatorDpad.down().onTrue(new RumbleControllerCommand(operatorJoystick, 0));
+    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
+      //  .onTrue(new RunRollersUntilGone(-.3))
+        //.onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ejectAllShooter));
 
-    if ( intakeSubsystem.getRequestedShoulderPosition() != null && intakeSubsystem.getRequestedExtendPosition() != null) {
-      operatorDpad.up().onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() + 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
-      operatorDpad.down().onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() - 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
-      operatorDpad.right().onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() + 0.5, intakeSubsystem.getActualWristPosition())));
-      operatorDpad.left().onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() - 0.5, intakeSubsystem.getActualWristPosition())));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
+        .onTrue(new SetClimberPowerPositionCommand());
+    // Driver controls
+    // driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWD)
+    // .whileTrue(new XmodeCommand(driverSubsyste));
+
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE)
+        .whileTrue(new RunRollersCommand(.3));
+
+    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+        .whileTrue(new RunRollersUntilGone(0.8));
+
+    // left Joystick(extend arm command)
+
+    driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
+    driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
+    driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
+    driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
+
+    // operatorDpad.up().onTrue(new RumbleControllerCommand(operatorJoystick, 1));
+    // operatorDpad.down().onTrue(new RumbleControllerCommand(operatorJoystick, 0));
+
+    if (intakeSubsystem.getRequestedShoulderPosition() != null
+        && intakeSubsystem.getRequestedExtendPosition() != null) {
+      operatorDpad.up()
+          .onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() + 2,
+              intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
+      operatorDpad.down()
+          .onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() - 2,
+              intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
+      operatorDpad.right()
+          .onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(),
+              intakeSubsystem.getRequestedExtendPosition() + 0.5, intakeSubsystem.getActualWristPosition())));
+      operatorDpad.left()
+          .onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(),
+              intakeSubsystem.getRequestedExtendPosition() - 0.5, intakeSubsystem.getActualWristPosition())));
 
     }
+
 
   }
 
@@ -274,6 +351,14 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand());
     SmartDashboard.putData("set shooter wheels power", new ShooterWheelPowerCommand());
+    SmartDashboard.putData("goInSixInches", new goInSixInchesCommand());
+
+    if ( intakeSubsystem.getRequestedShoulderPosition() != null && intakeSubsystem.getRequestedExtendPosition() != null) {
+      SmartDashboard.putData("Intake.elevate +", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() + 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
+      SmartDashboard.putData("Intake.elevate -", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() - 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
+      SmartDashboard.putData("Intake.extend +", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() + 0.5, intakeSubsystem.getActualWristPosition())));
+      SmartDashboard.putData("Intake.extend -", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() - 0.5, intakeSubsystem.getActualWristPosition())));
+    }
 
     /*
      * SmartDashboard.putData("GroundPosition", new
@@ -287,13 +372,14 @@ public class RobotContainer {
      * SmartDashboard.putData("PreclimbPosition", new
      * SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
      */
-     SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
-     SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
-     SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
-
+    SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
+    SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
+    SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
 
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
+
+    SmartDashboard.putData("LockCamToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
 
     SmartDashboard.putData("Manually position intake", new PositionIntakeManuallyCommand());
 
@@ -318,7 +404,6 @@ public class RobotContainer {
     // test rollers
     SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected(0.8));
     SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone(-0.8));
-    SmartDashboard.putData("TakeAShot", new TakeAShotCommand());
 
     // test Shooter
     SmartDashboard.putData("Test Shooter angle to 60",
@@ -333,8 +418,10 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 25)));
 
     SmartDashboard.putData("Test Shooter Angle PID zapper", new ShooterAnglePIDZapper());
-    SmartDashboard.putData("Test Shooter Top PID zapper", new ShooterSpeedPIDZapper(shooterSubsystem.topMotor, "test.shooter.top"));
-    SmartDashboard.putData("Test Shooter Bottom PID zapper", new ShooterSpeedPIDZapper(shooterSubsystem.bottomMotor, "test.shooter.bottom"));
+    SmartDashboard.putData("Test Shooter Top PID zapper",
+        new ShooterSpeedPIDZapper(shooterSubsystem.topMotor, "test.shooter.top"));
+    SmartDashboard.putData("Test Shooter Bottom PID zapper",
+        new ShooterSpeedPIDZapper(shooterSubsystem.bottomMotor, "test.shooter.bottom"));
 
     SmartDashboard.putData("Test Shooter Speed to 0",
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 60)));
@@ -349,6 +436,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Test Intake Angle PID Zapper", new IntakeAnglePIDZapper());
     SmartDashboard.putData("Test Intake Extension PID Zapper", new IntakeExtensionPIDZapper());
+
+    SmartDashboard.putData("ShooterVisionAngleCommand", new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
   }
 
@@ -446,4 +535,53 @@ public class RobotContainer {
     allSubsystems.add(subsystem);
   }
 
+  public static double getClimberJoystickPosition() {
+    return operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
+  }
+
+  public static double getDriveVerticalJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y, FlySkyConstants.AXIS_LEFT_Y);
+    double deadzone = 0.1;
+    if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
+      deadzone = 0.05;
+    }
+    SmartDashboard.putNumber("driver.y.raw", axisValue);
+    if (Math.abs(axisValue) < deadzone) {
+      return 0;
+    }
+    return axisValue;
+  }
+
+  public static double getDriveHorizontalJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X, FlySkyConstants.AXIS_LEFT_X);
+    double deadzone = 0.1;
+    if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
+      deadzone = 0.05;
+    }
+    SmartDashboard.putNumber("driver.x.raw", axisValue);
+    if (Math.abs(axisValue) < deadzone) {
+      return 0;
+    }
+    if (axisValue < 0) {
+      return -(axisValue * axisValue);
+    }
+    return axisValue * axisValue;
+  }
+
+  public static double getDriveSpinJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X, FlySkyConstants.AXIS_RIGHT_X);
+    double deadzone = 0.1;
+    if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
+      deadzone = 0.05;
+    }
+    SmartDashboard.putNumber("driver.spin.raw", axisValue);
+    double rv = 0;
+    if (Math.abs(axisValue) >= deadzone) {
+      rv = axisValue * axisValue;
+      if (axisValue < 0) {
+        rv = -rv;
+      }
+    }
+    return axisValue;
+  }
 }
