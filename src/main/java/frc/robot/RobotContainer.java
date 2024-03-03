@@ -196,6 +196,7 @@ public class RobotContainer {
 
     blinkySubsystem = new BlinkySubsystem();
     addSubsystem(blinkySubsystem);
+    new InstantCommand(() -> blinkySubsystem.periodic());
 
     Robot.printMemoryStatus("making drivebase");
 

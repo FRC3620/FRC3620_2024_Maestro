@@ -4,24 +4,31 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.SparkLimitSwitch;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.blinky.BlinkPattern;
+import frc.robot.blinky.LightSegment;
+import frc.robot.blinky.SolidPattern;
+
 /**/
 public class BlinkySubsystem extends SubsystemBase {
 
   AddressableLED leds;
   AddressableLEDBuffer lBuffer;
   Timer timer;
+  public LightSegment lightSegment = new LightSegment(0, 19);
   // final int numberOfLeds= 20;
 
 
   /** Creates a new BlinkySubsystem. */
   public BlinkySubsystem() {
-    leds=new AddressableLED(9);
-    lBuffer=new AddressableLEDBuffer(10);
+    leds=new AddressableLED(0); 
+    lBuffer=new AddressableLEDBuffer(19);
     timer= new Timer();
     leds.setLength(lBuffer.getLength());
     leds.start();
@@ -33,7 +40,7 @@ public class BlinkySubsystem extends SubsystemBase {
     }
   }
 
-
+/* 
 public void setChase(int first,int last,Color color,int speed){
   timer.reset();
   timer.start();
@@ -44,8 +51,20 @@ public void setChase(int first,int last,Color color,int speed){
     // lBuffer.setLED(i+3, color);
   }
 }
+*/
   @Override
   public void periodic() {
-  leds.setData(lBuffer);      
+  leds.setData(lBuffer); 
+  // If game piece detected and we have a shooting solution, blink green
+  if (IntakeRollersMechanism.gamePieceDetected()){
+    if(VisionSubsystem.doIHaveShootingSolution()){
+      lightSegment.setPattern(new BlinkPattern().setColor(Color.kGreen));
+    }else{
+      // If we have gamepiece but no shooting solution, solid green
+      lightSegment.setPattern(new SolidPattern().setColor(Color.kGreen));
+    }
+  }else{ // No game piece, solid red
+      lightSegment.setPattern(new SolidPattern().setColor(Color.kRed));
+  }
   }
 }

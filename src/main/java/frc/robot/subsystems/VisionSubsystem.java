@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 //import frc.robot.FieldLayout;
@@ -43,22 +44,24 @@ public class VisionSubsystem extends SubsystemBase {
     // private PhotonCamera cam = new PhotonCamera("Microsoft_LifeCam_HD-3000 (1)");
     // private PhotonCamera cam = new PhotonCamera("HD_USB_Camera");
 
-    public PhotonCamera aprilTagCam; // around one inch off from around 60 inches, around 2 inches off from mid, 2
+    public static PhotonCamera aprilTagCam; // around one inch off from around 60 inches, around 2 inches off from mid, 2
                                      // inches off from around 3/4 field
-    public PhotonCamera noteDetectCam;
+    public static PhotonCamera noteDetectCam;
 
     AprilTagFieldLayout fieldLayout;
 
-    Optional<Alliance> color;
+    static Optional<Alliance> color;
 
-    Double camHeight = 0.641;// meters, change accordingly
-    Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
-    Double angCamToApriltags = 22.0;// degrees, facing up
+    static Double camHeight = 0.641;// meters, change accordingly
+    static Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
+    static Double angCamToApriltags = 22.0;// degrees, facing up
 
-    Double APRILTAGCAM_FRONT_OFFSET = .30734;// change if neccessary, add to calculations
+    static Double APRILTAGCAM_FRONT_OFFSET = .30734;// change if neccessary, add to calculations
     Double NOTEDETECTCAM_Y_OFFSET = 0.0;
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
+
+    static boolean ShootingSolutionStatus = false;
 
     public static final double targetWidth = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
 
@@ -106,7 +109,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     }
 
-    public boolean doIHaveTarget() {
+    public static boolean doIHaveTarget() {
         var res = aprilTagCam.getLatestResult();
         if (res.hasTargets()) {
             return true;
@@ -135,7 +138,7 @@ public class VisionSubsystem extends SubsystemBase {
         return null;
     }
 
-    PhotonTrackedTarget findTargetInResults(PhotonPipelineResult photonPipelineResult, int id) {
+    static PhotonTrackedTarget findTargetInResults(PhotonPipelineResult photonPipelineResult, int id) {
         for (var target : photonPipelineResult.targets) {
             if (target.getFiducialId() == id) {
                 return target;
@@ -144,7 +147,7 @@ public class VisionSubsystem extends SubsystemBase {
         return null;
     }
 
-    public Double camDistToSpeakerTag() {
+    public static Double camDistToSpeakerTag() {
         color = DriverStation.getAlliance();
 
         var res = aprilTagCam.getLatestResult();
@@ -308,5 +311,15 @@ public class VisionSubsystem extends SubsystemBase {
 
         }
 
+    }
+    public static boolean doIHaveShootingSolution(){
+        // If we are aiming and a target is detected and the target distance is less than 4.572 meters (15 feet), Status is true
+        if(SwerveSubsystem.getAreWeAiming()&&VisionSubsystem.doIHaveTarget()&&VisionSubsystem.camDistToSpeakerTag()<4.572){
+            ShootingSolutionStatus = true;
+        }else{
+            // else false
+            ShootingSolutionStatus = false;
+        }
+        return ShootingSolutionStatus;
     }
 }
