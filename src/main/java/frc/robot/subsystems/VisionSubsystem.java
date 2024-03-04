@@ -7,8 +7,6 @@ package frc.robot.subsystems;
 import java.io.IOException;
 import java.util.Optional;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -19,16 +17,13 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
-//import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 //import frc.robot.FieldLayout;
@@ -43,19 +38,19 @@ public class VisionSubsystem extends SubsystemBase {
     // private PhotonCamera cam = new PhotonCamera("Microsoft_LifeCam_HD-3000 (1)");
     // private PhotonCamera cam = new PhotonCamera("HD_USB_Camera");
 
-    public PhotonCamera aprilTagCam; // around one inch off from around 60 inches, around 2 inches off from mid, 2
+    public static PhotonCamera aprilTagCam; // around one inch off from around 60 inches, around 2 inches off from mid, 2
                                      // inches off from around 3/4 field
-    public PhotonCamera noteDetectCam;
+    public static PhotonCamera noteDetectCam;
 
     AprilTagFieldLayout fieldLayout;
 
-    Optional<Alliance> color;
+    static Optional<Alliance> color;
 
-    Double camHeight = 0.641;// meters, change accordingly
-    Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
-    Double angCamToApriltags = 22.0;// degrees, facing up
+    static Double camHeight = 0.641;// meters, change accordingly
+    static Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
+    static Double angCamToApriltags = 22.0;// degrees, facing up
 
-    Double APRILTAGCAM_FRONT_OFFSET = .30734;// change if neccessary, add to calculations
+    static Double APRILTAGCAM_FRONT_OFFSET = .30734;// change if neccessary, add to calculations
     Double NOTEDETECTCAM_Y_OFFSET = 0.0;
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
@@ -308,5 +303,12 @@ public class VisionSubsystem extends SubsystemBase {
 
         }
 
+    }
+    public boolean doIHaveShootingSolution(){
+        // If we are aiming and a target is detected and the target distance is less than 4.572 meters (15 feet), Status is true
+        if(SwerveSubsystem.getAreWeAiming() && doIHaveTarget() && camDistToSpeakerTag()<4.572){
+            return true;
+        } 
+        return false;
     }
 }
