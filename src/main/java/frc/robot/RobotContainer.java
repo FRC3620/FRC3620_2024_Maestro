@@ -1,14 +1,10 @@
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
-import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -27,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -76,8 +71,6 @@ public class RobotContainer {
   private static DigitalInput practiceBotJumper;
 
   // joysticks here....
-  // public static XboxController driverXbox;
-  public static Joystick rawDriverJoystick;
   public static Joystick operatorJoystick;
   public static ChameleonController driverJoystick;
 
@@ -96,7 +89,7 @@ public class RobotContainer {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
     }
 
-    if (canDeviceFinder.isPowerDistributionPresent() || true) {
+    if (canDeviceFinder.isPowerDistributionPresent()) {
       logger.info("We have a PowerDistributionPanel");
       powerDistribution = new PowerDistribution();
       if (powerDistribution == null) {
@@ -109,18 +102,7 @@ public class RobotContainer {
       logger.error("Missing power distribution panel");
     }
 
-    /*
-     * if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") ||
-     * iAmACompetitionRobot) {
-     * pneumaticModuleType = PneumaticsModuleType.REVPH;
-     * } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0,
-     * "CTRE PCM")) {
-     * pneumaticModuleType = PneumaticsModuleType.CTREPCM;
-     * }
-     */
-
     makeSubsystems();
-    
 
     canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "RF Drive");
 
@@ -140,7 +122,6 @@ public class RobotContainer {
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
-    
 
     SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase,
         superSwerveController,
@@ -164,12 +145,13 @@ public class RobotContainer {
      */
 
 
-    TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,  
-                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y), 
-                                                                                OperatorConstants.LEFT_Y_DEADBAND),
-                                                    () -> MathUtil.applyDeadband(-rawDriverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X),
-                                                                                OperatorConstants.LEFT_X_DEADBAND),
-                                                    () -> -rawDriverJoystick.getRawAxis(4), () -> true, visionSubsystem, superSwerveController);
+    TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,
+        () -> -getDriveVerticalJoystick(),
+        () -> -getDriveHorizontalJoystick(),
+        () -> -getDriveSpinJoystick(),
+        () -> true,
+        visionSubsystem,
+        superSwerveController);
 
     drivebase.setDefaultCommand(aimDrive);
 
@@ -211,11 +193,10 @@ public class RobotContainer {
     superSwerveController = new SuperSwerveController(drivebase);
 
     Robot.printMemoryStatus("making subsystems");
-
   }
 
   public String getDriverControllerName() {
-    return rawDriverJoystick.getName();
+    return driverJoystick.getName();
   }
 
   public void setDriverControllerName(ControllerType driveControllerType) {
@@ -223,46 +204,34 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * Use this method to define your button->command mappings.
    */
   private void configureButtonBindings() {
-    rawDriverJoystick = new Joystick(0);
-    driverJoystick = new ChameleonController(rawDriverJoystick);
+    driverJoystick = new ChameleonController(new Joystick(0));
     operatorJoystick = new Joystick(1);
 
-    DPad driverDPad = new DPad(rawDriverJoystick, 0);
     DPad operatorDpad = new DPad(operatorJoystick, 0);
 
+    // Driver controls
     if (drivebase != null) {
-      // Driver controls
-     // new JoystickButton(rawDriverJoystick, FlySkyConstants.).onTrue(new InstantCommand(drivebase::zeroGyro));
-      new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_X)
-          .onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+      // reset NavX
+      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
 
+      // X Mode
+      driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).whileTrue(new XModeCommand());
+
+      // turn off "autoaiming" (robot does not try to keep shooter pointed @ speaker)
+      driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF).whileTrue(new InstantCommand(() -> drivebase.setAreWeAiming(false)));
     }
-    //new JoystickButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
-    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1).onTrue(new RunRollersUntilGone(0.8));
-    new JoystickAnalogButton(rawDriverJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1).whileTrue(new RunRollersCommand(0.2));
-    new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_B).whileTrue(new RunRollersCommand(-0.8));
 
-    //new JoystickButton(driverXbox, XBoxConstants.BUTTON_B).onTrue(new RunRollersCommand(0.0));
-    
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileTrue(new InstantCommand(() -> drivebase.setAreWeAiming(true)));
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whileFalse(new InstantCommand(() -> drivebase.setAreWeAiming(false)));
-    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).onTrue(new RumbleControllerCommand(operatorJoystick, 1));
-    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).onTrue(new RumbleControllerCommand(operatorJoystick, 0));
+    // intake
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).whileTrue(new RunRollersCommand(0.2));
 
-    // new JoystickButton(operatorJoystick,
-    // XBoxConstants.BUTTON_X).whileTrue(LockOnCommand);
-    // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).onTrue(new
-    // RumbleControllerCommand(operatorJoystick, 1));
-    // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).onTrue(new
-    // RumbleControllerCommand(operatorJoystick, 0));
+    // well, shoot
+    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunRollersUntilGone(0.8));
+
+    // barf out a piece
+    driverJoystick.analogButton(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(-0.8));
 
     // Operator intake controls
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
@@ -286,34 +255,16 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition))
         .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shooterHome));
-   // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
-     //   .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
-
-    //driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
-    //driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
-    //driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
-    //driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
-
-    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
-      //  .onTrue(new RunRollersUntilGone(-.3))
-        //.onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ejectAllShooter));
-
+   
     operatorDpad.up().whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
     operatorDpad.down().whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, -4));
     operatorDpad.left().whileTrue(new ExtendPowerCommand(intakeSubsystem, -1.5));
     operatorDpad.right().whileTrue(new ExtendPowerCommand(intakeSubsystem, 1.5));
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
         .onTrue(new SetClimberPowerPositionCommand());
-    // Driver controls
-    // driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWD)
-    // .whileTrue(new XmodeCommand(driverSubsyste));
-
-
   }
 
   private void setupSmartDashboardCommands() {
-    // SmartDashboard.putData("set shooter speed", new
-    // SetShooterSpeedAndAngleCommand(10, shooterSubsystem));
     SmartDashboard.putData("set shooter #1",
         new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter1));
     SmartDashboard.putData("set shooter #2",

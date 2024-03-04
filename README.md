@@ -17,3 +17,14 @@
 # PDB assignments
 
 # Vision
+
+# Driver Controller
+
+* L/R X/Y: drive
+
+* A/SWA: reset NavX
+* LB/SWF: turn off vision
+* LT/SWE: intake
+* RT/SWH: shoot
+* X/SWD: X mode
+* B/SWC: outtake barf

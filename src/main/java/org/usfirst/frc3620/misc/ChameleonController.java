@@ -16,6 +16,10 @@ public class ChameleonController {
         this.joystick = joystick;
     }
 
+    public String getName() {
+        return joystick.getName();
+    }
+
     public void setCurrentControllerType(ControllerType controllerType) {
         this.currentControllerType = controllerType;
     }

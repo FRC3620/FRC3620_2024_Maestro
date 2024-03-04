@@ -26,6 +26,7 @@ public class GroundPickupCommand extends SequentialCommandGroup {
       new SetIntakeLocationCommand(IntakeLocation.midGroundPosition),
       new InstantCommand(() -> SmartDashboard.putString("SequentialGroupHappenings", "Waiting for extension goal")),
       new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() > 10),
+      new InstantCommand(() -> SmartDashboard.putString("SequentialGroupHappenings", "Goal met")),
       new ParallelCommandGroup(
         new RunRollersUntilDetected(0.8),
         new SetIntakeLocationCommand(IntakeLocation.groundPosition)

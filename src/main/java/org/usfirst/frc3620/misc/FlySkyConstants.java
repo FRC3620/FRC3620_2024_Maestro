@@ -11,4 +11,5 @@ public class FlySkyConstants {
 	public final static int BUTTON_SWA = 1;
 	public final static int BUTTON_SWC = 3;
 	public final static int BUTTON_SWD = 4;
+	public final static int BUTTON_SWF = 2;
 }

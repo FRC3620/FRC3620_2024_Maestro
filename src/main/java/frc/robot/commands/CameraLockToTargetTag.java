@@ -31,7 +31,7 @@ public class CameraLockToTargetTag extends Command {
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve);
-    addRequirements(vision);
+    //addRequirements(vision);
 
   }
 
