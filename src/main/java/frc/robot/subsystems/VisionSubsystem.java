@@ -7,8 +7,6 @@ package frc.robot.subsystems;
 import java.io.IOException;
 import java.util.Optional;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -19,12 +17,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
-//import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -60,8 +54,6 @@ public class VisionSubsystem extends SubsystemBase {
     Double NOTEDETECTCAM_Y_OFFSET = 0.0;
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
-
-    static boolean ShootingSolutionStatus = false;
 
     public static final double targetWidth = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
 
@@ -109,7 +101,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     }
 
-    public static boolean doIHaveTarget() {
+    public boolean doIHaveTarget() {
         var res = aprilTagCam.getLatestResult();
         if (res.hasTargets()) {
             return true;
@@ -138,7 +130,7 @@ public class VisionSubsystem extends SubsystemBase {
         return null;
     }
 
-    static PhotonTrackedTarget findTargetInResults(PhotonPipelineResult photonPipelineResult, int id) {
+    PhotonTrackedTarget findTargetInResults(PhotonPipelineResult photonPipelineResult, int id) {
         for (var target : photonPipelineResult.targets) {
             if (target.getFiducialId() == id) {
                 return target;
@@ -147,7 +139,7 @@ public class VisionSubsystem extends SubsystemBase {
         return null;
     }
 
-    public static Double camDistToSpeakerTag() {
+    public Double camDistToSpeakerTag() {
         color = DriverStation.getAlliance();
 
         var res = aprilTagCam.getLatestResult();
@@ -312,14 +304,11 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
     }
-    public static boolean doIHaveShootingSolution(){
+    public boolean doIHaveShootingSolution(){
         // If we are aiming and a target is detected and the target distance is less than 4.572 meters (15 feet), Status is true
-        if(SwerveSubsystem.getAreWeAiming()&&VisionSubsystem.doIHaveTarget()&&VisionSubsystem.camDistToSpeakerTag()<4.572){
-            ShootingSolutionStatus = true;
-        }else{
-            // else false
-            ShootingSolutionStatus = false;
-        }
-        return ShootingSolutionStatus;
+        if(SwerveSubsystem.getAreWeAiming() && doIHaveTarget() && camDistToSpeakerTag()<4.572){
+            return true;
+        } 
+        return false;
     }
 }

@@ -211,6 +211,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     intakeShoulderMechanism.updateTelemetry();
     intakeWristMechanism.updateTelemetry();
   }
+
 }
 
 

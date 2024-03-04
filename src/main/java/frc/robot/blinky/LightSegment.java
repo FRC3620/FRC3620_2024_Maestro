@@ -17,6 +17,7 @@ public class LightSegment {
    * @param pattern
    */
   public void setPattern(Pattern pattern) {
+    if (pattern == currentPattern) return;
     if (currentPattern != null) {
       currentPattern.done(this);
     }

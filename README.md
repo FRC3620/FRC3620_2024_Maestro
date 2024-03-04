@@ -12,6 +12,9 @@
 
 ## Analog IO
 
+## PWM
+* PWM 0: Blinky Lights
+
 ## Motor Controllers
 
 # PDB assignments

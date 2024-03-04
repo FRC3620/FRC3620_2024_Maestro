@@ -182,6 +182,8 @@ public class RobotContainer {
     
   private void makeSubsystems() {
     visionSubsystem = new VisionSubsystem();
+    addSubsystem(visionSubsystem);
+
     intakeSubsystem = new IntakeSubsystem();
     addSubsystem(intakeSubsystem);
 
@@ -194,9 +196,9 @@ public class RobotContainer {
     shooterSubsystem = new ShooterSubsystem();
     addSubsystem(shooterSubsystem);
 
-    blinkySubsystem = new BlinkySubsystem();
+    blinkySubsystem = new BlinkySubsystem(rollersSubsystem, visionSubsystem);
     addSubsystem(blinkySubsystem);
-    new InstantCommand(() -> blinkySubsystem.periodic());
+    //new InstantCommand(() -> blinkySubsystem.periodic());
 
     Robot.printMemoryStatus("making drivebase");
 
