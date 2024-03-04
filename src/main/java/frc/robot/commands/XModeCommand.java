@@ -21,7 +21,10 @@ public class XModeCommand extends Command {
   @Override
   public void execute() {}
 
-  // Called once the command ends or is interrupted.
+  /*
+   * the robot does not drive correctly after X mode. We need to
+   * figure that out.
+   */
   @Override
   public void end(boolean interrupted) {}
 
