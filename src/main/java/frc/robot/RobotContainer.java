@@ -217,11 +217,11 @@ public class RobotContainer {
       // reset NavX
       driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
 
-      // X Mode
-      driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).whileTrue(new XModeCommand());
-
       // turn off "autoaiming" (robot does not try to keep shooter pointed @ speaker)
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF).whileTrue(new InstantCommand(() -> drivebase.setAreWeAiming(false)));
+
+      // X Mode
+      driverJoystick.button(XBoxConstants.BUTTON_X, FlySkyConstants.BUTTON_SWD).whileTrue(new XModeCommand());
     }
 
     // intake

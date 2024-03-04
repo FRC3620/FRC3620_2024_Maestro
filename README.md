@@ -24,7 +24,7 @@
 
 * A/SWA: reset NavX
 * LB/SWF: turn off vision
+* X/SWD: X mode
 * LT/SWE: intake
 * RT/SWH: shoot
-* X/SWD: X mode
 * B/SWC: outtake barf
