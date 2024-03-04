@@ -240,7 +240,7 @@ public class RobotContainer {
 
     if (drivebase != null) {
       // Driver controls
-     // new JoystickButton(rawDriverJoystick, FlySkyConstants.).onTrue(new InstantCommand(drivebase::zeroGyro));
+      new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
       new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_X)
           .onTrue(new InstantCommand(drivebase::addFakeVisionReading));
 
