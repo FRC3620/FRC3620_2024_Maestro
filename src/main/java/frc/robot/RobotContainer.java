@@ -68,7 +68,7 @@ public class RobotContainer {
   public static BlinkySubsystem blinkySubsystem;
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
-  private static VisionSubsystem visionSubsystem;
+  public static VisionSubsystem visionSubsystem;
 
   public static List<Subsystem> allSubsystems = new ArrayList<>();
 
@@ -242,11 +242,9 @@ public class RobotContainer {
 
     if (drivebase != null) {
       // Driver controls
-      driverJoystick.analogButton(XBoxConstants.BUTTON_X, FlySkyConstants.BUTTON_SWC)
-        .onTrue(new InstantCommand(drivebase::zeroGyro));
       new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_A).onTrue(new InstantCommand(drivebase::zeroGyro));
-      /*new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_X)
-          .onTrue(new InstantCommand(drivebase::addFakeVisionReading));*/
+      new JoystickButton(rawDriverJoystick, XBoxConstants.BUTTON_X)
+          .onTrue(new InstantCommand(drivebase::addFakeVisionReading));
 
     }
     //new JoystickButton(driverXbox, XBoxConstants.AXIS_RIGHT_TRIGGER).toggleOnTrue(new TakeAShotCommand());
@@ -293,53 +291,25 @@ public class RobotContainer {
    // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
      //   .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
 
-    //driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
-    //driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
-    //driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
-    //driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
+    driverDPad.up().whileTrue(new TurnToCommand(drivebase, superSwerveController, 0));
+    driverDPad.right().whileTrue(new TurnToCommand(drivebase, superSwerveController, 90));
+    driverDPad.down().whileTrue(new TurnToCommand(drivebase, superSwerveController, 180));
+    driverDPad.left().whileTrue(new TurnToCommand(drivebase, superSwerveController, -90));
 
     //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
       //  .onTrue(new RunRollersUntilGone(-.3))
         //.onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ejectAllShooter));
 
+    operatorDpad.up().whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
+    operatorDpad.down().whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, -4));
+    operatorDpad.left().whileTrue(new ExtendPowerCommand(intakeSubsystem, -1.5));
+    operatorDpad.right().whileTrue(new ExtendPowerCommand(intakeSubsystem, 1.5));
+    
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
         .onTrue(new SetClimberPowerPositionCommand());
     // Driver controls
     // driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWD)
     // .whileTrue(new XmodeCommand(driverSubsyste));
-
-    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE)
-        .whileTrue(new RunRollersCommand(.3));
-
-    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-        .whileTrue(new RunRollersUntilGone(0.8));
-
-    // left Joystick(extend arm command)
-
-    driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
-    driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
-    driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
-    driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
-
-    // operatorDpad.up().onTrue(new RumbleControllerCommand(operatorJoystick, 1));
-    // operatorDpad.down().onTrue(new RumbleControllerCommand(operatorJoystick, 0));
-
-    if (intakeSubsystem.getRequestedShoulderPosition() != null
-        && intakeSubsystem.getRequestedExtendPosition() != null) {
-      operatorDpad.up()
-          .onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() + 2,
-              intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
-      operatorDpad.down()
-          .onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() - 2,
-              intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
-      operatorDpad.right()
-          .onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(),
-              intakeSubsystem.getRequestedExtendPosition() + 0.5, intakeSubsystem.getActualWristPosition())));
-      operatorDpad.left()
-          .onTrue(new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(),
-              intakeSubsystem.getRequestedExtendPosition() - 0.5, intakeSubsystem.getActualWristPosition())));
-
-    }
 
 
   }
