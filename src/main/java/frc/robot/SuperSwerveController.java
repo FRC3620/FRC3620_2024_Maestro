@@ -21,7 +21,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 /** Add your docs here. */
 public class SuperSwerveController {
     public PIDController headingPID;
-    private double kSpinP = 0.028; 
+    private double kSpinP = 0.025; 
     private double kSpinI = 0.00;
     private double kSpinD = 0.00; //0.01
     SwerveSubsystem drivebase;
