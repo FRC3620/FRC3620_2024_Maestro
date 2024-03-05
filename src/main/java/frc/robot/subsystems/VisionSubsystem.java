@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 //import frc.robot.FieldLayout;
@@ -59,6 +60,10 @@ public class VisionSubsystem extends SubsystemBase {
     Double NOTEDETECTCAM_Y_OFFSET = 0.0;
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
+
+    boolean DoIHaveSpeakerTarget = false;
+
+    Double camYawToSpeaker;
 
     public static final double targetWidth = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
 
@@ -103,7 +108,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        camYawToSpeaker();
     }
 
     public boolean doIHaveTarget() {
@@ -115,7 +120,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
-    public Double camYawToSpeaker() {
+    public void camYawToSpeaker() {
         vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
@@ -127,12 +132,32 @@ public class VisionSubsystem extends SubsystemBase {
             // if alliance is blue...
             int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
             var desiredTarget = findTargetInResults(res, desiredTargetId);
-            if (desiredTarget == null)
-                return null;
-            result.yaw = -desiredTarget.getYaw();
-            return result.yaw;
+
+            if (desiredTarget == null) {
+                DoIHaveSpeakerTarget = false;
+                camYawToSpeaker = null;
+            } else {
+
+                // result.yaw = -desiredTarget.getYaw();
+                camYawToSpeaker = -desiredTarget.getYaw();
+                DoIHaveSpeakerTarget = true;
+                SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
+                SmartDashboard.putNumber("VisionSwerve.camYawToSpeaker", RobotContainer.visionSubsystem.getCamYawToSpeaker());
+            }
+        } else {
+            DoIHaveSpeakerTarget = false;
         }
-        return null;
+        SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
+
+    }
+
+    public Double getCamYawToSpeaker() {
+        return camYawToSpeaker;
+    }
+
+    public Boolean doISeeSpeakerTag() {
+
+        return DoIHaveSpeakerTarget;
     }
 
     PhotonTrackedTarget findTargetInResults(PhotonPipelineResult photonPipelineResult, int id) {
@@ -159,20 +184,21 @@ public class VisionSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Target.pitch", desiredTarget.getPitch());
             SmartDashboard.putNumber("Target.yaw", desiredTarget.getYaw());
             SmartDashboard.putNumber("Target.skew", desiredTarget.getSkew());
-            
+
             vectorToSpeaker result = new vectorToSpeaker();
 
             double GroundTargetDist = (1.45 - camHeight)
-                        / Math.tan(Math.toRadians(angCamToApriltags + desiredTarget.getPitch()));
+                    / Math.tan(Math.toRadians(angCamToApriltags + desiredTarget.getPitch()));
 
             SmartDashboard.putNumber("Target.DistanceM", GroundTargetDist);
             SmartDashboard.putNumber("Target.DistanceFt", Units.metersToFeet(GroundTargetDist));
 
-            //double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight) * (1.45-camHeight)));
-                result.distance = (GroundTargetDist - APRILTAGCAM_FRONT_OFFSET)/1.1; //1.87//.52
+            // double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight)
+            // * (1.45-camHeight)));
+            result.distance = (GroundTargetDist - APRILTAGCAM_FRONT_OFFSET) / 1.1; // 1.87//.52
 
             return result.distance;
-            
+
         }
 
         return null;

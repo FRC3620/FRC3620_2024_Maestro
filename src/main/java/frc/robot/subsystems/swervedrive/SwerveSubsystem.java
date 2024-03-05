@@ -5,6 +5,7 @@
 package frc.robot.subsystems.swervedrive;
 
 import java.io.File;
+import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 import java.io.File;
 
@@ -57,6 +59,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public double maximumSpeed = 4; //1
   double targetHeading;
+  double RotationOffsetVision = 6.5;
   boolean areweaiming = false;
 
   
@@ -104,6 +107,26 @@ public class SwerveSubsystem extends SubsystemBase {
 
     setupPathPlanner();
   }
+
+  public Optional<Rotation2d> getRotationTargetOverride(){
+    
+    // Some condition that should decide if we want to override rotation
+    
+    if(RobotContainer.visionSubsystem.doISeeSpeakerTag()) {
+
+      double currentPosRotation = swerveDrive.getYaw().getDegrees();
+      double VisionTargetHeading = currentPosRotation + RobotContainer.visionSubsystem.getCamYawToSpeaker()+RotationOffsetVision;
+      Rotation2d VisionToTarget = new Rotation2d(Units.degreesToRadians(VisionTargetHeading));
+      
+      SmartDashboard.putNumber("VisionSwerve.VisionTargetHeading",VisionTargetHeading);
+        // Return an optional containing the rotation override (this should be a field relative rotation)
+        return Optional.of(VisionToTarget);
+    } else {
+        // return an empty optional when we don't want to override the path's rotation
+        return Optional.empty();
+    }
+    
+}
 
   /**
    * Setup AutoBuilder for PathPlanner.
