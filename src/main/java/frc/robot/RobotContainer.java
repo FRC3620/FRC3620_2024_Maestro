@@ -289,10 +289,10 @@ public class RobotContainer {
    // new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
      //   .whileTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
 
-    //driverDPad.up().onTrue(new TurnToCommand(drivebase, superSwerveController, 0));
-    //driverDPad.right().onTrue(new TurnToCommand(drivebase, superSwerveController, 90));
-    //driverDPad.down().onTrue(new TurnToCommand(drivebase, superSwerveController, 180));
-    //driverDPad.left().onTrue(new TurnToCommand(drivebase, superSwerveController, -90));
+    driverDPad.up().whileTrue(new TurnToCommand(drivebase, superSwerveController, 0));
+    driverDPad.right().whileTrue(new TurnToCommand(drivebase, superSwerveController, 90));
+    driverDPad.down().whileTrue(new TurnToCommand(drivebase, superSwerveController, 180));
+    driverDPad.left().whileTrue(new TurnToCommand(drivebase, superSwerveController, -90));
 
     //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
       //  .onTrue(new RunRollersUntilGone(-.3))
@@ -302,6 +302,7 @@ public class RobotContainer {
     operatorDpad.down().whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, -4));
     operatorDpad.left().whileTrue(new ExtendPowerCommand(intakeSubsystem, -1.5));
     operatorDpad.right().whileTrue(new ExtendPowerCommand(intakeSubsystem, 1.5));
+    
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
         .onTrue(new SetClimberPowerPositionCommand());
     // Driver controls

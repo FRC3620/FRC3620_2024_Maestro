@@ -27,6 +27,7 @@ public class TurnToCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    finishedTurn = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,7 +35,7 @@ public class TurnToCommand extends Command {
   public void execute() {
     controller.turnTo(swerve, targetHeading);
 
-    if(swerve.getHeading().getDegrees() < targetHeading + 2 && swerve.getHeading().getDegrees() > targetHeading - 2) {
+    if(swerve.getHeading().getDegrees() < targetHeading + 1 && swerve.getHeading().getDegrees() > targetHeading - 1) {
       finishedTurn = true;
     }
   }
