@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.VisionSubsystem;
 
 import java.io.File;
 
@@ -61,7 +60,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public double maximumSpeed = 3.85; //1
   double targetHeading;
-  double RotationOffsetVision = -6.5;
+  double RotationOffsetVision = 6.5;
   boolean areweaiming = false;
 
   
@@ -113,14 +112,16 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Optional<Rotation2d> getRotationTargetOverride(){
-    double currentPosRotation = swerveDrive.getYaw().getDegrees();
-    double VisionTargetHeading = currentPosRotation + RobotContainer.visionSubsystem.camYawToSpeaker()+RotationOffsetVision;
-    Rotation2d VisionToTarget = new Rotation2d(Units.degreesToRadians(VisionTargetHeading));
+    
     // Some condition that should decide if we want to override rotation
-
-    SmartDashboard.putNumber("VisionSwerve.VisionTargetHeading",VisionTargetHeading);
+    
     if(RobotContainer.visionSubsystem.doISeeSpeakerTag()) {
+
+      double currentPosRotation = swerveDrive.getYaw().getDegrees();
+      double VisionTargetHeading = currentPosRotation + RobotContainer.visionSubsystem.getCamYawToSpeaker()+RotationOffsetVision;
+      Rotation2d VisionToTarget = new Rotation2d(Units.degreesToRadians(VisionTargetHeading));
       
+      SmartDashboard.putNumber("VisionSwerve.VisionTargetHeading",VisionTargetHeading);
         // Return an optional containing the rotation override (this should be a field relative rotation)
         return Optional.of(VisionToTarget);
     } else {

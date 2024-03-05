@@ -81,18 +81,21 @@ public class TeleopDriveWithAimCommand extends Command {
     // see the right target?"
     
     
-    if(swerve.getAreWeAiming()){
+    if(swerve.getAreWeAiming())
+  {
       //grabs heading from vision subsystem
 
       // Turn Off Heading Correction
       //swerve.setHeadingCorrection(false);
 
-      Double headingToTag = vision.camYawToSpeaker();
+      vision.camYawToSpeaker();
+      Double headingToTag = vision.getCamYawToSpeaker();
       //Note: headingToTag is a measurement of the yaw from the robot's perspective. 
       //we need to turn this into field orientation later
       
       if (headingToTag == null) {
         SmartDashboard.putString("aimDrive.doIHaveTarget", "No");
+        angVelocity = 0;
 
       } else {
         //current heading
@@ -122,7 +125,7 @@ public class TeleopDriveWithAimCommand extends Command {
     
     // Drive using raw values.
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
-        angVelocity                                                                                                                      * 5.1,
+        angVelocity * 5.1,
         driveMode.getAsBoolean());
   }
 

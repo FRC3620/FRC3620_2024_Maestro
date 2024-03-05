@@ -63,6 +63,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     boolean DoIHaveSpeakerTarget = false;
 
+    Double camYawToSpeaker;
+
     public static final double targetWidth = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
 
     // See
@@ -106,7 +108,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        camYawToSpeaker();
     }
 
     public boolean doIHaveTarget() {
@@ -118,7 +120,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
-    public Double camYawToSpeaker() {
+    public void camYawToSpeaker() {
         vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
@@ -130,22 +132,31 @@ public class VisionSubsystem extends SubsystemBase {
             // if alliance is blue...
             int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
             var desiredTarget = findTargetInResults(res, desiredTargetId);
-            
 
-            if (desiredTarget == null){
+            if (desiredTarget == null) {
                 DoIHaveSpeakerTarget = false;
-                return null;
-            }     
-                
-            result.yaw = -desiredTarget.getYaw();
-            DoIHaveSpeakerTarget = true;
-            SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag",RobotContainer.visionSubsystem.doISeeSpeakerTag());
-            return result.yaw;
+                camYawToSpeaker = null;
+            } else {
+
+                // result.yaw = -desiredTarget.getYaw();
+                camYawToSpeaker = -desiredTarget.getYaw();
+                DoIHaveSpeakerTarget = true;
+                SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
+                SmartDashboard.putNumber("VisionSwerve.camYawToSpeaker", RobotContainer.visionSubsystem.getCamYawToSpeaker());
+            }
+        } else {
+            DoIHaveSpeakerTarget = false;
         }
-        return null;
+        SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
+
     }
+
+    public Double getCamYawToSpeaker() {
+        return camYawToSpeaker;
+    }
+
     public Boolean doISeeSpeakerTag() {
-        
+
         return DoIHaveSpeakerTarget;
     }
 
@@ -173,20 +184,21 @@ public class VisionSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Target.pitch", desiredTarget.getPitch());
             SmartDashboard.putNumber("Target.yaw", desiredTarget.getYaw());
             SmartDashboard.putNumber("Target.skew", desiredTarget.getSkew());
-            
+
             vectorToSpeaker result = new vectorToSpeaker();
 
             double GroundTargetDist = (1.45 - camHeight)
-                        / Math.tan(Math.toRadians(angCamToApriltags + desiredTarget.getPitch()));
+                    / Math.tan(Math.toRadians(angCamToApriltags + desiredTarget.getPitch()));
 
             SmartDashboard.putNumber("Target.DistanceM", GroundTargetDist);
             SmartDashboard.putNumber("Target.DistanceFt", Units.metersToFeet(GroundTargetDist));
 
-            //double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight) * (1.45-camHeight)));
-                result.distance = (GroundTargetDist - APRILTAGCAM_FRONT_OFFSET)/1.1; //1.87//.52
+            // double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight)
+            // * (1.45-camHeight)));
+            result.distance = (GroundTargetDist - APRILTAGCAM_FRONT_OFFSET) / 1.1; // 1.87//.52
 
             return result.distance;
-            
+
         }
 
         return null;
