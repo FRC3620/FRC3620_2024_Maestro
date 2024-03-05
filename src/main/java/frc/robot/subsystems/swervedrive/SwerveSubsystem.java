@@ -5,8 +5,10 @@
 package frc.robot.subsystems.swervedrive;
 
 import java.io.File;
+import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -26,6 +28,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.VisionSubsystem;
 
 import java.io.File;
 
@@ -57,6 +61,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public double maximumSpeed = 4; //1
   double targetHeading;
+  double RotationOffsetVision = -6.5;
   boolean areweaiming = false;
 
   
@@ -67,6 +72,8 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param directory Directory of swerve drive config files.
    */
   public SwerveSubsystem(File directory) {
+
+    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     // In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
     // The encoder resolution per motor revolution is 1 per motor revolution.
@@ -104,6 +111,24 @@ public class SwerveSubsystem extends SubsystemBase {
 
     setupPathPlanner();
   }
+
+  public Optional<Rotation2d> getRotationTargetOverride(){
+    double currentPosRotation = swerveDrive.getYaw().getDegrees();
+    double VisionTargetHeading = currentPosRotation + RobotContainer.visionSubsystem.camYawToSpeaker()+RotationOffsetVision;
+    Rotation2d VisionToTarget = new Rotation2d(Units.degreesToRadians(VisionTargetHeading));
+    // Some condition that should decide if we want to override rotation
+
+    SmartDashboard.putNumber("VisionSwerve.VisionTargetHeading",VisionTargetHeading);
+    if(RobotContainer.visionSubsystem.doISeeSpeakerTag()) {
+      
+        // Return an optional containing the rotation override (this should be a field relative rotation)
+        return Optional.of(VisionToTarget);
+    } else {
+        // return an empty optional when we don't want to override the path's rotation
+        return Optional.empty();
+    }
+    
+}
 
   /**
    * Setup AutoBuilder for PathPlanner.

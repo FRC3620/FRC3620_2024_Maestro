@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 //import frc.robot.FieldLayout;
@@ -59,6 +60,8 @@ public class VisionSubsystem extends SubsystemBase {
     Double NOTEDETECTCAM_Y_OFFSET = 0.0;
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
+
+    boolean DoIHaveSpeakerTarget = false;
 
     public static final double targetWidth = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
 
@@ -127,12 +130,23 @@ public class VisionSubsystem extends SubsystemBase {
             // if alliance is blue...
             int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
             var desiredTarget = findTargetInResults(res, desiredTargetId);
-            if (desiredTarget == null)
+            
+
+            if (desiredTarget == null){
+                DoIHaveSpeakerTarget = false;
                 return null;
+            }     
+                
             result.yaw = -desiredTarget.getYaw();
+            DoIHaveSpeakerTarget = true;
+            SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag",RobotContainer.visionSubsystem.doISeeSpeakerTag());
             return result.yaw;
         }
         return null;
+    }
+    public Boolean doISeeSpeakerTag() {
+        
+        return DoIHaveSpeakerTarget;
     }
 
     PhotonTrackedTarget findTargetInResults(PhotonPipelineResult photonPipelineResult, int id) {

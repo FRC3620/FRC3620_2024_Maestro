@@ -66,7 +66,7 @@ public class RobotContainer {
   public static BlinkySubsystem blinkySubsystem;
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
-  private static VisionSubsystem visionSubsystem;
+  public static VisionSubsystem visionSubsystem;
 
   public static List<Subsystem> allSubsystems = new ArrayList<>();
 
