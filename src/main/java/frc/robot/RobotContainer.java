@@ -411,8 +411,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("ShooterVisionAngleCommand", new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
+    SmartDashboard.putData("CameraLockToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
   }
-
   
   SendableChooser<Command> chooser = new SendableChooser<>();
 

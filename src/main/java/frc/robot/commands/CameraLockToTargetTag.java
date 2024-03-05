@@ -16,7 +16,7 @@ public class CameraLockToTargetTag extends Command {
   private final VisionSubsystem vision;
   private final SuperSwerveController controller;
 
-  private double headingToTag;
+  private Double headingToTag;
 
   /**
    * Creates a new CameraLockToTargetTag.
@@ -44,32 +44,35 @@ public class CameraLockToTargetTag extends Command {
   @Override
   public void execute() {
 
-    headingToTag = vision.getCamYawToSpeaker();
+    if(vision.getCamYawToSpeaker() != null) {
+      headingToTag = vision.getCamYawToSpeaker() + 6.5;
+    } else {
+      headingToTag = null;
+    }
+    if (headingToTag == null || !vision.doISeeSpeakerTag()) {
+      finishedTurn = true;
+    } else {
+      double headingError = headingToTag - swerve.getHeading().getDegrees();
+      // putting current robot heading and target heading
+      SmartDashboard.putNumber("vision.currentHeading", swerve.getHeading().getDegrees());
+      SmartDashboard.putNumber("vision.headingToApril", headingToTag);
+      SmartDashboard.putNumber("vision.headingError", headingError);
+      // if target heading is greater than -300, execute turn
 
-    double headingError = headingToTag-swerve.getHeading().getDegrees();
-    // putting current robot heading and target heading
-    SmartDashboard.putNumber("vision.currentHeading", swerve.getHeading().getDegrees());
-    SmartDashboard.putNumber("vision.headingToApril", headingToTag);
-    SmartDashboard.putNumber("vision.headingError", headingError);
-    // if target heading is greater than -300, execute turn
-    if (headingToTag > -300) {
       // returns if command is turning
       SmartDashboard.putString("vision.IsCommandTurning?", "yes");
       // turns by target heading
-      
+
       controller.turnTo(swerve, swerve.getHeading().getDegrees() + headingToTag);
       // if heading is close enough, stop turning
-      if (swerve.getHeading().getDegrees() < headingToTag + 1 && swerve.getHeading().getDegrees() > headingToTag - 1) {
+      if (swerve.getHeading().getDegrees() < headingToTag + 2 && swerve.getHeading().getDegrees() > headingToTag - 2) {
         finishedTurn = true;
         SmartDashboard.putString("vision.IsCommandTurning?", "no");
       } else {
         // if command isn't turning, return no
         finishedTurn = false;
-        
-      }
 
-    }else{
-      SmartDashboard.putString("vision.IsCommandTurning?", "no");
+      }
     }
   }
 
