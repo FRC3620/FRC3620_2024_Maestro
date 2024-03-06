@@ -473,7 +473,7 @@ public class RobotContainer {
 
   public static double getDriveHorizontalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X, FlySkyConstants.AXIS_LEFT_X);
-    double deadzone = 0.1;
+    double deadzone = 0.05;
     if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
       deadzone = 0.05;
     }
@@ -489,7 +489,7 @@ public class RobotContainer {
 
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X, FlySkyConstants.AXIS_RIGHT_X);
-    double deadzone = 0.1;
+    double deadzone = 0.05;
     if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
       deadzone = 0.05;
     }

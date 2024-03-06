@@ -8,7 +8,8 @@ package frc.robot.subsystems;
 /** Add your docs here. */
 public class IntakeLocation {
     public static IntakeLocation groundPosition = new IntakeLocation(-17.6,12, 5);
-    public static IntakeLocation midGroundPosition = new IntakeLocation(18,12, 0);
+    public static IntakeLocation midGroundPositionForPickup = new IntakeLocation(5,12, 0);
+    public static IntakeLocation midGroundPositionForHome = new IntakeLocation(18,12, 0);
     public static IntakeLocation homePosition = new IntakeLocation(1.84, 0, 0);//0, 0, 5.71);
     public static IntakeLocation ampPosition = new IntakeLocation(72.1, 11.2, 22.5);
     public static IntakeLocation trapPosition = new IntakeLocation(69.342, 17.962, 24.976);
