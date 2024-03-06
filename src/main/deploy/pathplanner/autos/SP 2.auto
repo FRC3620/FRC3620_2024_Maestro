@@ -1,0 +1,104 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 15.181501815995084,
+      "y": 5.578111669043852
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "CHARGE SUBWOOF OMEGA BEAM"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FIRE OMEGA BEAM"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "EXTEND OMEGA BEAM"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SLURPY IN"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SP to 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CHARGE MIDSTAGE OMEGA BEAM"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LOAD OMEGA BEAM"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FIRE OMEGA BEAM"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DISABLE OMEGA BEAM"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

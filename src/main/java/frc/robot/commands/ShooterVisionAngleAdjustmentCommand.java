@@ -44,7 +44,7 @@ public class ShooterVisionAngleAdjustmentCommand extends Command {
       SmartDashboard.putString("shooterVision.doIHaveTarget", "yes");
       SmartDashboard.putNumber("shooterVision.Distance", distance);
       SmartDashboard.putNumber("shooterVision.DistanceFt", Units.metersToFeet(distance));
-      SmartDashboard.putNumber("shooterVision.Yaw", vision.camYawToSpeaker());
+      SmartDashboard.putNumber("shooterVision.Yaw", vision.getCamYawToSpeaker());
     }
   }
 

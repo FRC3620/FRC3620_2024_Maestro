@@ -12,9 +12,16 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Steal 8765"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Steal 8765"
+                }
+              }
+            ]
           }
         }
       ]
