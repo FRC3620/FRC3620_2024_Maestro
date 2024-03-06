@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 15.181501815995084,
-      "y": 5.578111669043852
+      "x": 1.3473171105886368,
+      "y": 5.5430292057165325
     },
-    "rotation": 180.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -61,15 +61,34 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "LOAD OMEGA BEAM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CENTER OMEGA BEAM"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "LOAD OMEGA BEAM"
+            "name": "PITCH OMEGA BEAM"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {

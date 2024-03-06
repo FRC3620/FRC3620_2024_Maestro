@@ -63,6 +63,7 @@ public class CameraLockToTargetTag extends Command {
       SmartDashboard.putString("vision.IsCommandTurning?", "yes");
       // turns by target heading
 
+      //new TurnToCommand(swerve, controller, swerve.getHeading().getDegrees() + headingToTag);
       controller.turnTo(swerve, swerve.getHeading().getDegrees() + headingToTag);
       // if heading is close enough, stop turning
       if (swerve.getHeading().getDegrees() < headingToTag + 2 && swerve.getHeading().getDegrees() > headingToTag - 2) {

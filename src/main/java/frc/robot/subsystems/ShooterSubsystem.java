@@ -284,6 +284,10 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     }
   }
 
+  public double getElevationPosition() {
+    return elevationMotorEncoder.getPosition();
+  }
+
   void setElevationPower(double power) {
     if (!disabledForDebugging) {
       elevationMotor.set(power);

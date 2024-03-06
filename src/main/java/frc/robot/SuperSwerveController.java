@@ -21,7 +21,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 /** Add your docs here. */
 public class SuperSwerveController {
     public PIDController headingPID;
-    private double kSpinP = 0.025; 
+    private double kSpinP = 0.085; 
     private double kSpinI = 0.00;
     private double kSpinD = 0.00; //0.01
     SwerveSubsystem drivebase;
@@ -81,12 +81,13 @@ public class SuperSwerveController {
         double targetOmega = 0;
         if (headingSetpoint != null) {
             targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), targetHeading);
+            targetOmega = MathUtil.clamp(targetOmega, -4, 4);
             headingSetpoint = targetHeading;
         }
-        if(Math.abs(targetOmega)< 0.005) {
+        if(Math.abs(targetOmega) < 0.16) {
             targetOmega = 0;
         }
-        swerve.drive(new Translation2d(0, 0), targetOmega * 2.5, true);
+        swerve.drive(new Translation2d(0, 0), targetOmega, true);
 
         SmartDashboard.putNumber("SuperSwerve.targetOmega", targetOmega);
         if (headingSetpoint != null) {
