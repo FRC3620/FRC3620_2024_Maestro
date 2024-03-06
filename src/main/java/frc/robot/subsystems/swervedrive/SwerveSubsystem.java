@@ -60,7 +60,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public double maximumSpeed = 4; //1
   double targetHeading;
   double RotationOffsetVision = 6.5;
-  boolean areweaiming = false;
+  static boolean areweaiming = false;
 
   
 
