@@ -42,10 +42,10 @@ public class RunRollersCommand extends Command {
     double power = 0;
     if (savedPower == null) {
       power = SmartDashboard.getNumber("rollers.manual.input", 0);
-      logger.info ("got power from slider: {}", power);
+      // logger.info ("got power from slider: {}", power);
     } else {
       power = savedPower;
-      logger.info ("using savedPower: {}", power);
+      // logger.info ("using savedPower: {}", power);
     }
     subsystem.setRollerPower(power);
   }
