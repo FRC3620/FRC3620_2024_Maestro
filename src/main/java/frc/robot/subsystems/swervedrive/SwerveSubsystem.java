@@ -264,6 +264,7 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Swerve.pose.y", getPose().getY());
       SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
     }
+    SmartDashboard.putBoolean("swerve.areweaiming", areweaiming);
   }
 
   @Override

@@ -221,14 +221,16 @@ public class RobotContainer {
       driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
 
       // turn off "autoaiming" (robot does not try to keep shooter pointed @ speaker)
-      driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF).whileTrue(new InstantCommand(() -> drivebase.setAreWeAiming(false)));
+      driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
+        .onTrue(new InstantCommand(() -> drivebase.setAreWeAiming(false)))
+        .onFalse(new InstantCommand(() -> drivebase.setAreWeAiming(true)));
 
       // X Mode is not working
       // driverJoystick.button(XBoxConstants.BUTTON_X, FlySkyConstants.BUTTON_SWD).whileTrue(new XModeCommand());
     }
 
     // intake
-    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).whileTrue(new RunRollersCommand(0.2));
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).onTrue(new GroundPickupCommand());
 
     // well, shoot
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunRollersUntilGone(0.8));
@@ -236,17 +238,13 @@ public class RobotContainer {
     // barf out a piece
     driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(-0.8));
 
-    // Operator intake controls
+    // bring intake to home position
+    operatorDpad.up().onTrue(new GroundToHomeCommand());
+
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
-        .onTrue(new GroundPickupCommand());
-
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A)
-        .onTrue(new GroundToHomeCommand());
-
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
         .onTrue(new TrapShootCommand()
                 .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
                 .andThen(new ActivateClimberJoystickCommand()));
@@ -255,16 +253,14 @@ public class RobotContainer {
         .toggleOnTrue(new SetShooterSpeedCommand(5000))
         .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.homePosition))
-        .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shooterHome));
-   
-    operatorDpad.up().whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
-    operatorDpad.down().whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, -4));
     operatorDpad.left().whileTrue(new ExtendPowerCommand(intakeSubsystem, -1.5));
     operatorDpad.right().whileTrue(new ExtendPowerCommand(intakeSubsystem, 1.5));
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
-        .onTrue(new SetClimberPowerPositionCommand());
+
+    // TODO make operator joystick bump the shoulder position
+
+    // NOT NEEDED. ActivateClimberJoystickCommand takes care of these
+    // new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
+    //    .onTrue(new SetClimberPowerPositionCommand());
   }
 
   private void setupSmartDashboardCommands() {
