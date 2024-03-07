@@ -104,7 +104,8 @@ public class TeleopDriveWithAimCommand extends Command {
         double targetHeading = currentPosRotation + headingToTag+6.5;
         //calculates angVelocity
         angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),
-                                                  Units.degreesToRadians(targetHeading));
+                                                  Units.degreesToRadians(targetHeading)) 
+                                                  / 1.5;
                                           
         
         //angVelocity = aimController.calculate(currentPosRotation,targetHeading);
