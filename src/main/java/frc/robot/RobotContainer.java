@@ -462,7 +462,7 @@ public class RobotContainer {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y, FlySkyConstants.AXIS_LEFT_Y);
     double deadzone = 0.1;
     if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
-      deadzone = 0.05;
+      deadzone = 0.02;
     }
     SmartDashboard.putNumber("driver.y.raw", axisValue);
     if (Math.abs(axisValue) < deadzone) {
@@ -475,7 +475,7 @@ public class RobotContainer {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X, FlySkyConstants.AXIS_LEFT_X);
     double deadzone = 0.05;
     if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
-      deadzone = 0.05;
+      deadzone = 0.02;
     }
     SmartDashboard.putNumber("driver.x.raw", axisValue);
     if (Math.abs(axisValue) < deadzone) {
@@ -491,7 +491,7 @@ public class RobotContainer {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X, FlySkyConstants.AXIS_RIGHT_X);
     double deadzone = 0.05;
     if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
-      deadzone = 0.05;
+      deadzone = 0.02;
     }
     SmartDashboard.putNumber("driver.spin.raw", axisValue);
     double rv = 0;
