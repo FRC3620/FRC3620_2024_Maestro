@@ -105,6 +105,7 @@ public class TeleopDriveWithAimCommand extends Command {
         //calculates angVelocity
         angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),
                                                   Units.degreesToRadians(targetHeading));
+        angVelocity = angVelocity / 4;
                                           
         
         //angVelocity = aimController.calculate(currentPosRotation,targetHeading);
@@ -116,6 +117,7 @@ public class TeleopDriveWithAimCommand extends Command {
         SmartDashboard.putNumber("aimDrive.targetHeading", targetHeading);
         SmartDashboard.putNumber("aimDrive.lastAngVelocity", angVelocity);
         SmartDashboard.putNumber("aimDrive.headingError", controller.headingPID.getPositionError());
+        //angVelocity = 0; // TODO remove this
       }
     
     

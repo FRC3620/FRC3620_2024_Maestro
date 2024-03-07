@@ -91,7 +91,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("rotation", 0);
 
-        noteDetectCam = new PhotonCamera("USB_2M_GS_camera(1)");
+        noteDetectCam = new PhotonCamera("NoteDetectCam");
 
         aprilTagCam.setPipelineIndex(0);
 
@@ -149,6 +149,7 @@ public class VisionSubsystem extends SubsystemBase {
             camYawToSpeaker = null;
         }
         SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
+
 
     }
 
