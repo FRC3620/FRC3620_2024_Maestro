@@ -3,7 +3,7 @@
   "wheelGripCoefficientOfFriction": 1.19,
   "currentLimit": {
     "drive": 40,
-    "angle": 20
+    "angle": 40
   },
   "conversionFactor": {
     "angle": 5.714,
@@ -11,6 +11,6 @@
   },
   "rampRate": {
     "drive": 0.1,
-    "angle": 0.20
+    "angle": 0.1
   }
 }
