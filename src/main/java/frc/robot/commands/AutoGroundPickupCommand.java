@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
@@ -13,18 +16,17 @@ import frc.robot.subsystems.IntakeSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class GroundToHomeCommand extends SequentialCommandGroup {
+public class AutoGroundPickupCommand extends SequentialCommandGroup {
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
   /** Creates a new GroundPickupCommand. */
-  public GroundToHomeCommand() {
+  public AutoGroundPickupCommand() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetIntakeLocationCommand(IntakeLocation.midGroundPositionForHome),
-      new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 12),
-      new SetIntakeLocationCommand(IntakeLocation.homePosition),
-      new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() < 1.5 && intakeSubsystem.getActualShoulderElevation() < 5),
-      new SetIntakeLocationCommand(IntakeLocation.parkPosition)
+      new SetIntakeLocationCommand(IntakeLocation.midGroundPositionForPickup),
+      new InstantCommand(() -> SmartDashboard.putString("SequentialGroupHappenings", "Waiting for extension goal")),
+      new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() > 8.2),
+      new SetIntakeLocationCommand(IntakeLocation.groundPosition)
     );
   }
 }

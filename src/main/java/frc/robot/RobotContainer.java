@@ -1,10 +1,14 @@
 package frc.robot;
 
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
+import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -35,6 +40,8 @@ import org.usfirst.frc3620.misc.XBoxConstants;
 import org.usfirst.frc3620.misc.FlySkyConstants;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -364,12 +371,23 @@ public class RobotContainer {
 
     SmartDashboard.putData("ShooterVisionAngleCommand", new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
+    SmartDashboard.putData("CameraLockToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
   }
 
-  
   SendableChooser<Command> chooser = new SendableChooser<>();
+  
+  public void setupAutonomousCommands() 
+  {
+    NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunRollersUntilGone(0.8));
+    NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
+    NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8).withTimeout(3));
+    NamedCommands.registerCommand("LOAD OMEGA BEAM", new GroundToHomeCommand());
+    NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+    NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
+    NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
+    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(2));
+    NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
-  public void setupAutonomousCommands() {
     chooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto mode", chooser);

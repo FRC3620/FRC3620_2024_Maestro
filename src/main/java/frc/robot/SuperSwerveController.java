@@ -81,7 +81,11 @@ public class SuperSwerveController {
         double targetOmega = 0;
         if (headingSetpoint != null) {
             targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), targetHeading);
+            targetOmega = MathUtil.clamp(targetOmega, -4, 4);
             headingSetpoint = targetHeading;
+        }
+        if(Math.abs(targetOmega) < 0.16) {
+            targetOmega = 0;
         }
         swerve.drive(new Translation2d(0, 0), targetOmega, true);
 

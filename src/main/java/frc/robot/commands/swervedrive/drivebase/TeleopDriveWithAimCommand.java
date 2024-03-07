@@ -110,10 +110,11 @@ public class TeleopDriveWithAimCommand extends Command {
         //angVelocity = aimController.calculate(currentPosRotation,targetHeading);
         //Prints on dashboard
         SmartDashboard.putString("aimDrive.doIHaveTarget", "Yes");
-        SmartDashboard.putNumber("aimDrive.AngVelocity", angVelocity);
+        
         SmartDashboard.putNumber("aimDrive.currentRobotRotation", currentPosRotation);
         SmartDashboard.putNumber("aimDrive.headingToTag", headingToTag);
         SmartDashboard.putNumber("aimDrive.targetHeading", targetHeading);
+        SmartDashboard.putNumber("aimDrive.lastAngVelocity", angVelocity);
         SmartDashboard.putNumber("aimDrive.headingError", controller.headingPID.getPositionError());
       }
     
@@ -122,7 +123,7 @@ public class TeleopDriveWithAimCommand extends Command {
     } else {
       //swerve.setHeadingCorrection(true);
     }
-    
+    SmartDashboard.putNumber("aimDrive.AngVelocity", angVelocity);
     // Drive using raw values.
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
         angVelocity * 5.1,
