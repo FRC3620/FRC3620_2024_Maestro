@@ -48,11 +48,12 @@ public class AutoShooterVisionAngleAdjustmentCommand extends Command {
       SmartDashboard.putNumber("shooterVision.Distance", distance);
       SmartDashboard.putNumber("shooterVision.DistanceFt", Units.metersToFeet(distance));
       SmartDashboard.putNumber("shooterVision.Yaw", vision.getCamYawToSpeaker());
+      
+      if (shooter.getElevationPosition() > (ShooterCalcutlaiter.CalculaiteAngleM(distance).getPosition() - 1) && shooter.getElevationPosition() < (ShooterCalcutlaiter.CalculaiteAngleM(distance).getPosition() + 1)) {
+        isFinished = true;
+      }
     }
 
-    if (shooter.getElevationPosition() > (ShooterCalcutlaiter.CalculaiteAngleM(distance).getPosition() - 1) && shooter.getElevationPosition() < (ShooterCalcutlaiter.CalculaiteAngleM(distance).getPosition() + 1)) {
-      isFinished = true;
-    }
   }
 
   // Called once the command ends or is interrupted.

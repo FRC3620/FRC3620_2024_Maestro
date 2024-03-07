@@ -72,7 +72,8 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public SwerveSubsystem(File directory) {
 
-    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+    //PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     // In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
     // The encoder resolution per motor revolution is 1 per motor revolution.
@@ -265,6 +266,7 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Swerve.pose.y", getPose().getY());
       SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
     }
+    SmartDashboard.putBoolean("swerve.areweaiming", areweaiming);
   }
 
   @Override
@@ -499,3 +501,9 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setHeadingCorrection(correction);
   }
 }
+
+
+
+
+// Mic and AJ were here for two darn diggidy heckin months
+//:D

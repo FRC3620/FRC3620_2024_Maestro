@@ -420,12 +420,12 @@ public class RobotContainer {
   {
     NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunRollersUntilGone(0.8));
     NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
-    NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8));
+    NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8).withTimeout(3));
     NamedCommands.registerCommand("LOAD OMEGA BEAM", new GroundToHomeCommand());
     NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
     NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
     NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
-    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(1));
+    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(2));
     NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
     chooser = AutoBuilder.buildAutoChooser();

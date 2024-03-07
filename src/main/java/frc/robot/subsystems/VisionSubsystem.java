@@ -121,7 +121,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public void camYawToSpeaker() {
-        vectorToSpeaker result = new vectorToSpeaker();
+        //vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
 
@@ -141,11 +141,12 @@ public class VisionSubsystem extends SubsystemBase {
                 // result.yaw = -desiredTarget.getYaw();
                 camYawToSpeaker = -desiredTarget.getYaw();
                 DoIHaveSpeakerTarget = true;
-                SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
+                //SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
                 SmartDashboard.putNumber("VisionSwerve.camYawToSpeaker", RobotContainer.visionSubsystem.getCamYawToSpeaker());
             }
         } else {
             DoIHaveSpeakerTarget = false;
+            camYawToSpeaker = null;
         }
         SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
 

@@ -22,8 +22,8 @@ public class ShooterCalcutlaiter {
 
         return shooterSpeedAndAngle;
     }
-    public static ShooterSpeedAndAngle CalculaiteAngleM(Double distanceM){
-        distanceM*=3.28;
-        return CalculaiteAngleFt(distanceM);
+    public static ShooterSpeedAndAngle CalculaiteAngleM(Double distanceM) {
+            distanceM*=3.28;
+            return CalculaiteAngleFt(distanceM);
     }
 }
