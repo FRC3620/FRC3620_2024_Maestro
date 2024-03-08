@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6924444618120005,
+      "y": 6.735832958845405
+    },
+    "rotation": 60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "CHARGE SUBWOOF OMEGA BEAM"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FIRE OMEGA BEAM"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AM to 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DISABLE OMEGA BEAM"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LOAD OMEGA BEAM"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 back"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
