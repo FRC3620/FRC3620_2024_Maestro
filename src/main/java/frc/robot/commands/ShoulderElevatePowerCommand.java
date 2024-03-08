@@ -24,7 +24,12 @@ public class ShoulderElevatePowerCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    setPoint = intakeSubsystem.getRequestedShoulderPosition();
+    Double s = intakeSubsystem.getRequestedShoulderPosition();
+    if (s == null) {
+      setPoint = 0;
+    } else {
+      setPoint = s;
+    }
     startTime = Timer.getFPGATimestamp();
   }
 
