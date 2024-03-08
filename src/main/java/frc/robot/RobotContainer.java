@@ -271,7 +271,11 @@ public class RobotContainer {
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
-      .toggleOnTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+      .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
+      .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
+
 
 
     // NOT NEEDED. ActivateClimberJoystickCommand takes care of these
