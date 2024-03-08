@@ -1,0 +1,98 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.247767002656512,
+        "y": 4.373613761472538
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.2009903848867527,
+        "y": 1.7307348574811106
+      },
+      "isLocked": false,
+      "linkedName": "3"
+    },
+    {
+      "anchor": {
+        "x": 4.925728369975258,
+        "y": 3.6485761860412613
+      },
+      "prevControl": {
+        "x": 4.0895037940121,
+        "y": 2.977651816954542
+      },
+      "nextControl": {
+        "x": 5.9314256520250925,
+        "y": 4.455472842569617
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.486748192869604,
+        "y": 4.092954054853979
+      },
+      "prevControl": {
+        "x": 6.317332748625611,
+        "y": 4.432084533684737
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 26.97456531686875,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.2,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EXTEND OMEGA BEAM"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "SLURPY IN"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
