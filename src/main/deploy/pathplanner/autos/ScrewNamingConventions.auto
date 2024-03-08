@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.51,
-      "y": 7.308846526524962
+      "x": 1.4525645005705963,
+      "y": 5.472864279061892
     },
     "rotation": 0
   },
@@ -20,19 +20,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FIRE OMEGA BEAM"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
+            "waitTime": 2.0
           }
         },
         {
