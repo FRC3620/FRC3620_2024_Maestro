@@ -70,6 +70,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   SlidingWindowStats topSpeedStats, bottomSpeedStats;
 
+  boolean areWeShooting = false;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     topConfig.Voltage.PeakForwardVoltage = 12;
@@ -178,7 +180,14 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   public void setRequestedWheelSpeed(double speed) {
     SmartDashboard.putNumber (name + ".wheels.requested_velocity", speed);
+    if (speed > 4500) {
+      areWeShooting = true;
+    } else {
+      areWeShooting = false;
+    }
     this.requestedWheelSpeed = speed / 60; // convert RPM to RPS
+
+
   }
 
   public double getTopMotorVelocity() {
@@ -205,6 +214,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   @Override
   public void periodic() {
+          SmartDashboard.putBoolean("areWeShooting", areWeShooting);
+
     if (topMotor != null) {
       if (manuallySetPower != null) {
         topMotor.set(manuallySetPower);

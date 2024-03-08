@@ -333,7 +333,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
     public boolean doIHaveShootingSolution(){
         // If we are aiming and a target is detected and the target distance is less than 4.572 meters (15 feet), Status is true
-        if(SwerveSubsystem.getAreWeAiming() && doIHaveTarget() && camDistToSpeakerTag()<4.572){
+        if(SwerveSubsystem.getAreWeAiming() && doIHaveTarget()){
             return true;
         } 
         return false;
