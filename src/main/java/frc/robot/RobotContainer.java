@@ -270,6 +270,9 @@ public class RobotContainer {
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
 
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
+      .toggleOnTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+
 
     // NOT NEEDED. ActivateClimberJoystickCommand takes care of these
     // new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
@@ -380,6 +383,7 @@ public class RobotContainer {
   {
     NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunRollersUntilGone(0.8));
     NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
+    NamedCommands.registerCommand("PICKUP INTAKE POSITION", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8).withTimeout(3));
     NamedCommands.registerCommand("LOAD OMEGA BEAM", new GroundToHomeCommand());
     NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
