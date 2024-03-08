@@ -3,53 +3,83 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5404204540602812,
-        "y": 3.9760125104295794
+        "x": 0.7158327706968803,
+        "y": 4.373613761472538
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1719047939520382,
-        "y": 2.829985375070466
+        "x": 1.686447589419395,
+        "y": 1.1694154442439941
       },
       "isLocked": false,
       "linkedName": "SC"
     },
     {
       "anchor": {
-        "x": 4.259161566756181,
-        "y": 2.104947799639189
+        "x": 3.9434193968103033,
+        "y": 1.0758622087044754
       },
       "prevControl": {
-        "x": 2.820780570336069,
-        "y": 2.6311847495489866
+        "x": 2.2360728482140715,
+        "y": 1.0641680542620335
       },
       "nextControl": {
-        "x": 5.431903251345923,
-        "y": 1.675895963813674
+        "x": 5.192152908539883,
+        "y": 1.0844151779628985
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.69,
-        "y": 0.82
+        "x": 8.118232532761363,
+        "y": 0.7835083476434771
       },
       "prevControl": {
-        "x": 7.360268385920183,
-        "y": 1.0622081004829729
+        "x": 7.692791791224608,
+        "y": 0.7820991586142729
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "8"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EXTEND OMEGA BEAM"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "SLURPY IN"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -61,8 +91,8 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -60.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
