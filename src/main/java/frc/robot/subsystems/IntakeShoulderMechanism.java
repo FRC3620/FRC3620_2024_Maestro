@@ -62,7 +62,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
       pid.setI(kI); // 
       pid.setD(kD); // 
       pid.setFF(kFF); //
-      pid.setOutputRange(-0.1, 0.9);
+      pid.setOutputRange(-0.6, 0.9);
 
       this.motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);

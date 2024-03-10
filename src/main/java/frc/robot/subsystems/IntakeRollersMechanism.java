@@ -43,8 +43,8 @@ public class IntakeRollersMechanism implements HasTelemetry {
 
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean(name + "limit_switch_ispressed", gamePieceDetector.isPressed());
-    SmartDashboard.putBoolean(name + "game_peice_detected", gamePieceDetected());
+    //SmartDashboard.putBoolean(name + "limit_switch_ispressed", gamePieceDetector.isPressed());
+    //SmartDashboard.putBoolean(name + "game_peice_detected", gamePieceDetected());
 
     if (motor != null) {
       SmartDashboard.putNumber(name + ".motor_current", motor.getOutputCurrent());

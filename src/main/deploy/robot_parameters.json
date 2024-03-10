@@ -8,7 +8,7 @@
   {
     "name": "2024 competition",
     "macAddress": "00-80-2F-17-EB-08",
-    "makeAllCANDevices": false
+    "makeAllCANDevices": true
   },
   {
     "name": "TOAD",

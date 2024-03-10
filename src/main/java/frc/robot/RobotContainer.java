@@ -123,6 +123,7 @@ public class RobotContainer {
       SmartDashboard.putString("can.missing", "");
     }
 
+
     // Configure the button bindings
     configureButtonBindings();
 
@@ -251,11 +252,6 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER)
-        .onTrue(new TrapShootCommand()
-                .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
-                .andThen(new ActivateClimberJoystickCommand()));
-
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
         .toggleOnTrue(new SetShooterSpeedCommand(5000))
         .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
@@ -276,7 +272,13 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
 
+    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
+      //  .onTrue(new TrapShootCommand()
+        //        .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
+          //      .andThen(new ActivateClimberJoystickCommand()));
 
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
+        .onTrue(new ActivateClimberJoystickCommand());    
 
     // NOT NEEDED. ActivateClimberJoystickCommand takes care of these
     // new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
