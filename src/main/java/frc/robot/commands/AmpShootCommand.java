@@ -19,7 +19,6 @@ public class AmpShootCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetIntakeLocationCommand(IntakeLocation.ampPosition)
     );
   }
 }

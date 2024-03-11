@@ -12,9 +12,7 @@ public class PositionIntakeManuallyCommand extends Command {
   /** Creates a new SetIntakeLocationCommand. */
   public PositionIntakeManuallyCommand() {
     SmartDashboard.putNumber("intake.manual.shoulder", 0);
-    SmartDashboard.putNumber("intake.manual.extension", 0);
-    SmartDashboard.putNumber("intake.manual.wrist", 0);
-
+  
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -28,9 +26,7 @@ public class PositionIntakeManuallyCommand extends Command {
   @Override
   public void execute() {
     double shoulder = SmartDashboard.getNumber("intake.manual.shoulder", 0);
-    double extension = SmartDashboard.getNumber("intake.manual.extension", 0);
-    double wrist = SmartDashboard.getNumber("intake.manual.wrist", 0);
-    IntakeLocation location = new IntakeLocation(shoulder, extension, wrist);
+    IntakeLocation location = new IntakeLocation(shoulder);
     subsystem.setLocation(location);
   }
 
