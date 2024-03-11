@@ -1,10 +1,9 @@
 package frc.robot.blinky;
 
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.RobotContainer;
+import frc.robot.subsystems.BlinkySubsystem.LightSegment;
 
 public class SolidPattern extends Pattern {
-  public LightSegment lightSegment = new LightSegment(0, 0);
   private Color color;
 
   public SolidPattern setColor(Color color) {
@@ -14,10 +13,7 @@ public class SolidPattern extends Pattern {
 
   @Override
   public void start(LightSegment lightSegment) {
+    lightSegment.updateLEDs(color);
   }
 
-  @Override
-  public void periodic(LightSegment lightSegment) {
-    RobotContainer.blinkySubsystem.updateLEDS(lightSegment.first, lightSegment.last, color);
-  }
 }

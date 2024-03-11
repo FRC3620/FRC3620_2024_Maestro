@@ -16,8 +16,10 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
+import frc.robot.blinky.DefaultBlinkyCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.BlinkySubsystem.LightSegment;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -58,10 +60,12 @@ public class RobotContainer {
   public static RollersSubsystem rollersSubsystem;
   public static ClimbElevationSubsystem climbElevationSubsystem;
   public static ShooterSubsystem shooterSubsystem;
-  public static BlinkySubsystem blinkySubsystem;
+  /* public static */ BlinkySubsystem blinkySubsystem;
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
   public static VisionSubsystem visionSubsystem;
+
+  public static LightSegment lightSegment;
 
   public static List<Subsystem> allSubsystems = new ArrayList<>();
 
@@ -179,9 +183,11 @@ public class RobotContainer {
     shooterSubsystem = new ShooterSubsystem();
     addSubsystem(shooterSubsystem);
 
-    blinkySubsystem = new BlinkySubsystem(rollersSubsystem, visionSubsystem);
+    blinkySubsystem = new BlinkySubsystem();
     addSubsystem(blinkySubsystem);
-    //new InstantCommand(() -> blinkySubsystem.periodic());
+
+    lightSegment = blinkySubsystem.getLightSegment(0, 19);
+    lightSegment.setDefaultCommand(new DefaultBlinkyCommand(lightSegment));
 
     Robot.printMemoryStatus("making drivebase");
 

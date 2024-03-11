@@ -2,15 +2,15 @@ package frc.robot.blinky;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.RobotContainer;
+import frc.robot.subsystems.BlinkySubsystem.LightSegment;
 
 /** Add your docs here. */
 public class BlinkPattern extends Pattern {
-  // private int onSec;
-  private double Sec;
+  private double onSeconds = 0.25;
+  private double offSeconds = 0.25;
   private Color color;
   private Timer timer;
-  private boolean lSate;
+  private boolean on;
 
   public BlinkPattern() {
     timer = new Timer();
@@ -23,26 +23,44 @@ public class BlinkPattern extends Pattern {
     return this;
   }
 
-  public BlinkPattern setBlink(double Sec) {
-    this.Sec = Sec;
-    // this.onSec=onSec;
+  public BlinkPattern setOnSeconds(double seconds) {
+    this.onSeconds = seconds;
+    return this;
+  }
+
+  public BlinkPattern setOffSeconds(double seconds) {
+    this.offSeconds = seconds;
+    return this;
+  }
+
+  public BlinkPattern setBlink(double seconds) {
+    this.onSeconds = seconds;
+    this.offSeconds = seconds;
     return this;
   }
 
   public void start(LightSegment lightSegment) {
+    on = true;
+    timer.reset();
+    timer.start();
   }
 
-  public void periodic(LightSegment lightSegment) {
-    if (timer.hasElapsed(Sec)) {
-      if (!lSate) {
-        lSate = true;
-        RobotContainer.blinkySubsystem.updateLEDS(lightSegment.first, lightSegment.last, Color.kBlack);
+  public boolean periodic(LightSegment lightSegment) {
+    if (on) {
+      if (timer.hasElapsed(onSeconds)) {
+        lightSegment.updateLEDs(Color.kBlack);
         timer.restart();
-      } else if (lSate) {
-        lSate = false;
-        RobotContainer.blinkySubsystem.updateLEDS(lightSegment.first, lightSegment.last, color);
+        on = false;
+        return true;
+      }
+    } else {
+      if (timer.hasElapsed(offSeconds)) {
+        lightSegment.updateLEDs(color);
         timer.restart();
+        on = true;
+        return true;
       }
     }
+    return false;
   }
 }
