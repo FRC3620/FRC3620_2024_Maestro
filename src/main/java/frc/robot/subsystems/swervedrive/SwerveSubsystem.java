@@ -96,12 +96,6 @@ public class SwerveSubsystem extends SubsystemBase {
       throw new RuntimeException(e);
     }
 
-    FakeMotor fm = new FakeMotor(4098);
-    addChild ("fakeyfakey1", fm);
-
-    logger.info ("{} making motors", this);
-    addChild("cusscusscuss", new FakeMotor(999));
-
     swerveDrive.setHeadingCorrection(true,0.1); // Heading correction should only be used while controlling the robot via
                                              // angle.
 
