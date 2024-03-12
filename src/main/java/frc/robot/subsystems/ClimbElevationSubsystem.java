@@ -41,7 +41,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   //public static ClimbElevationSubsystem climbPosition = setPosition();
 
   // Ingredients: Motor, Encoder, PID, and Timer
-  CANSparkMaxSendable motor;
+  public CANSparkMaxSendable motor;
   RelativeEncoder motorEncoder;
   DigitalInput limitSwitch;
   Timer calibrationTimer;

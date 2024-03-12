@@ -42,9 +42,21 @@ public class RobotDataLogger {
 		addSwerveDataLoggers(dataLogger);
 		
 		// weAreAiming
+		dataLogger.addDataProvider("weAreAiming",() -> RobotContainer.drivebase.getAreWeAiming());
 		// motor temps
+		if( RobotContainer.climbElevationSubsystem.motor != null){
+		dataLogger.addDataProvider("climber.temperature",() ->  RobotContainer.climbElevationSubsystem.motor.getMotorTemperature());
+		}		
 		// we have a target?
+		dataLogger.addDataProvider("doWeHaveATarget",() -> RobotContainer.visionSubsystem.doIHaveTarget());
 		// requested vs actual headings
+		// shooter motor velocities
+		if(RobotContainer.shooterSubsystem.topMotor != null){
+		dataLogger.addDataProvider("shooter.top.velocity",() -> RobotContainer.shooterSubsystem.topMotor.getVelocity());
+		}
+		if(RobotContainer.shooterSubsystem.bottomMotor != null){
+		dataLogger.addDataProvider("shooter.top.velocity",() -> RobotContainer.shooterSubsystem.bottomMotor.getVelocity());
+		}
 	}
 
 	void addSwerveDataLoggers(DataLogger dataLogger) {
