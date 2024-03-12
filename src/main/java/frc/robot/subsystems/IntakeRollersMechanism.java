@@ -24,7 +24,7 @@ public class IntakeRollersMechanism implements HasTelemetry {
   /** Creates a new IntakeRollersMechanism. */
   CANSparkMaxSendable motor;
   RelativeEncoder encoder;
-  SparkLimitSwitch gamePieceDetector;
+  static SparkLimitSwitch gamePieceDetector;
 
   final String name = "intake.rollers";
 
@@ -103,7 +103,7 @@ public class IntakeRollersMechanism implements HasTelemetry {
     }
   }
 
-  public boolean gamePieceDetected() {
+  public static boolean gamePieceDetected() {
     if(gamePieceDetector != null){
       if (gamePieceDetector.isPressed()) {
         return true;

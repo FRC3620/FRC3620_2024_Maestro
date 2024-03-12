@@ -4,52 +4,75 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.SparkLimitSwitch;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.blinky.BlinkPattern;
 import frc.robot.blinky.LightSegment;
 import frc.robot.blinky.SolidPattern;
+import frc.robot.commands.ShooterVisionAngleAdjustmentCommand;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import swervelib.SwerveDrive;
+
 /**/
 public class BlinkySubsystem extends SubsystemBase {
 
   AddressableLED leds;
   AddressableLEDBuffer lBuffer;
   Timer timer;
-  public LightSegment lightSegment= new LightSegment(0, 19);
+  public LightSegment lightSegment = new LightSegment(0, 19);
   // final int numberOfLeds= 20;
-
 
   /** Creates a new BlinkySubsystem. */
   public BlinkySubsystem() {
-    leds=new AddressableLED(0);
-    lBuffer=new AddressableLEDBuffer(19);
-    timer= new Timer();
+    leds = new AddressableLED(0);
+    lBuffer = new AddressableLEDBuffer(19);
+    timer = new Timer();
     leds.setLength(lBuffer.getLength());
     leds.start();
   }
-  
-  public void updateLEDS(int first, int last, Color color ){
-    for(int i=first;i<last;i++){
+
+  public void updateLEDS(int first, int last, Color color) {
+    for (int i = first; i < last; i++) {
       lBuffer.setLED(i, color);
     }
   }
-  
 
-/*public void setChase(int first,int last,Color color,int speed){
-  timer.reset();
-  timer.start();
-  for(int i= first;i<last;i++){
-    lBuffer.setLED(i, color);
-    lBuffer.setLED(i+1, color);
-    lBuffer.setLED(i+2, color);
-    // lBuffer.setLED(i+3, color);
-  }
-}*/
+  /*
+   * public void setChase(int first,int last,Color color,int speed){
+   * timer.reset();
+   * timer.start();
+   * for(int i= first;i<last;i++){
+   * lBuffer.setLED(i, color);
+   * lBuffer.setLED(i+1, color);
+   * lBuffer.setLED(i+2, color);
+   * // lBuffer.setLED(i+3, color);
+   * }
+   * }
+   */
   @Override
   public void periodic() {
-  leds.setData(lBuffer);      
+    leds.setData(lBuffer);
+//if game piece detected
+    if (IntakeRollersMechanism.gamePieceDetected()) {
+      //if valid shooting solution
+      if (VisionSubsystem.doIHaveShootingSolution()) {
+        //blink green
+        lightSegment.setPattern(new BlinkPattern().setColor(Color.kGreen));
+        
+      } else {
+        //solid green if no shooting solution but gamepiece
+        lightSegment.setPattern(new SolidPattern().setColor(Color.kGreen));
+      }
+    } else {
+      //solid red for no game piece
+      lightSegment.setPattern(new SolidPattern().setColor(Color.kRed));
+    }
+
   }
 }

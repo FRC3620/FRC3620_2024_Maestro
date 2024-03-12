@@ -194,7 +194,7 @@ public class RobotContainer {
 
     blinkySubsystem = new BlinkySubsystem();
     addSubsystem(blinkySubsystem);
-    blinkySubsystem.lightSegment.setPattern(new SolidPattern().setColor(Color.kRed));
+    // blinkySubsystem.lightSegment.setPattern(new SolidPattern().setColor(Color.kRed));
 
     Robot.printMemoryStatus("making drivebase");
 

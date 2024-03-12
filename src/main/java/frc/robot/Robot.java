@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.blinky.SolidPattern;
 import frc.robot.subsystems.SwerveMotorTestSubsystem;
 
 /**
@@ -71,73 +73,73 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     printMemoryStatus("making RobotContainer");
     m_robotContainer = new RobotContainer();
+ //turn LEDs red
+ // get data logging going
+ printMemoryStatus("setting up data logger");
+ DataLogger robotDataLogger = new DataLogger();
+ new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
+ robotDataLogger.setInterval(0.25);
+ robotDataLogger.start();
+ 
+ FileSaver.add("networktables.ini");
+ 
+ enableLiveWindowInTest(true);
+ 
+ printMemoryStatus("robotInit done");
+}
 
-    // get data logging going
-    printMemoryStatus("setting up data logger");
-    DataLogger robotDataLogger = new DataLogger();
-    new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
-    robotDataLogger.setInterval(0.25);
-    robotDataLogger.start();
+/**
+ * This function is called every robot packet, no matter the mode. Use this for items like
+ * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+ *
+ * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+ * SmartDashboard integrated updating.
+ */
+@Override
+public void robotPeriodic() {
+  // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+  // commands, running already-scheduled commands, removing finished or interrupted commands,
+  // and running subsystem periodic() methods.  This must be called from the robot's periodic
+  // block in order for anything in the Command-based framework to work.
+  CommandScheduler.getInstance().run();
+  
+  updateTelemetry();
+}
 
-    FileSaver.add("networktables.ini");
+/** This function is called once each time the robot enters Disabled mode. */
+@Override
+public void disabledInit() {
+  processRobotModeChange(RobotMode.DISABLED);
+}
 
-    enableLiveWindowInTest(true);
-    
-    printMemoryStatus("robotInit done");
+@Override
+public void disabledPeriodic() {
+  logCANBusIfNecessary(); // don't do this when enabled; unnecessary overhead
+}
+
+/** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+@Override
+public void autonomousInit() {
+  logCANBusIfNecessary();
+  
+  processRobotModeChange(RobotMode.AUTONOMOUS);
+  
+  m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+  
+  // schedule the autonomous command (example)
+  if (m_autonomousCommand != null) {
+    m_autonomousCommand.schedule();
   }
+}
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+/** This function is called periodically during autonomous. */
+@Override
+public void autonomousPeriodic() {}
 
-    updateTelemetry();
-  }
-
-  /** This function is called once each time the robot enters Disabled mode. */
-  @Override
-  public void disabledInit() {
-    processRobotModeChange(RobotMode.DISABLED);
-  }
-
-  @Override
-  public void disabledPeriodic() {
-    logCANBusIfNecessary(); // don't do this when enabled; unnecessary overhead
-  }
-
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
-  @Override
-  public void autonomousInit() {
-    logCANBusIfNecessary();
-
-    processRobotModeChange(RobotMode.AUTONOMOUS);
-
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
-
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {}
-
-  @Override
+@Override
   public void teleopInit() {
     logCANBusIfNecessary();
-
+    
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -145,37 +147,39 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
+    
     processRobotModeChange(RobotMode.TELEOP);
-
+    
     logMatchInfo();
     
   }
-
+  
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    RobotContainer.blinkySubsystem.lightSegment.setPattern(new SolidPattern().setColor(Color.kRed));
+     
   }
-
+  
   @Override
   public void testInit() {
     logCANBusIfNecessary();
-
+    
     if (RobotContainer.swerveMotorTestSubsystem == null) {
-          RobotContainer.swerveMotorTestSubsystem = new SwerveMotorTestSubsystem(RobotContainer.drivebase.getSwerveDrive(), 59);
-
+      RobotContainer.swerveMotorTestSubsystem = new SwerveMotorTestSubsystem(RobotContainer.drivebase.getSwerveDrive(), 59);
+      
     }
-
+    
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-
+    
     processRobotModeChange(RobotMode.TEST);
   }
-
+  
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
-
+  
   /*
   * this routine gets called whenever we change modes
   */
@@ -184,32 +188,32 @@ public class Robot extends TimedRobot {
     
     previousRobotMode = currentRobotMode;
     currentRobotMode = newMode;
-
+    
     // if any subsystems need to know about mode changes, let
     // them know here.
     // exampleSubsystem.processRobotModeChange(newMode);
     
   }
-
+  
   public static RobotMode getCurrentRobotMode(){
     return currentRobotMode;
   }
-
+  
   public static RobotMode getPreviousRobotMode(){
     return previousRobotMode;
   }
-
+  
   void logMatchInfo() {
     if (DriverStation.isFMSAttached()) {
       logger.info("FMS attached. Event name {}, match type {}, match number {}, replay number {}", 
-        DriverStation.getEventName(),
-        DriverStation.getMatchType(),
-        DriverStation.getMatchNumber(),
-        DriverStation.getReplayNumber());
+      DriverStation.getEventName(),
+      DriverStation.getMatchType(),
+      DriverStation.getMatchNumber(),
+      DriverStation.getReplayNumber());
     }
     logger.info("Alliance {}, position {}", DriverStation.getAlliance(), DriverStation.getLocation());
   }
-
+  
   private final static long SOME_TIME_AFTER_1970 = 523980000000L;
   private boolean hasCANBusBeenLogged;
   
@@ -226,7 +230,7 @@ public class Robot extends TimedRobot {
       }
     }
   }
-
+  
   void updateTelemetry() {
     for (var subsystem : RobotContainer.allSubsystems) {
       if (subsystem instanceof HasTelemetry) {
@@ -235,7 +239,7 @@ public class Robot extends TimedRobot {
     }
     SmartDashboard.putNumber ("batteryVoltage", RobotController.getBatteryVoltage());
   }
-
+  
   static public void printMemoryStatus (String label) {
     StringBuilder sb = new StringBuilder("Memory: ");
     sb.append(label);
@@ -248,5 +252,5 @@ public class Robot extends TimedRobot {
     sb.append(Runtime.getRuntime().maxMemory());
     System.out.println (sb.toString());
   }
-
+  
 }

@@ -18,7 +18,9 @@ public class RunRollersUntilDetected extends RunRollersCommand {
 
   @Override
   public boolean isFinished() {
+    if(subsystem.gamePieceDetected())
     RobotContainer.blinkySubsystem.lightSegment.setPattern(new SolidPattern().setColor(Color.kGreen));
+
      return subsystem.gamePieceDetected();
     
   }
