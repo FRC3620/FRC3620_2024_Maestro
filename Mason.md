@@ -21,7 +21,7 @@
 
 ## Code tasks
 
-### Autonomous
+### Path Planner
 
 Continue to do all work on branch PathPlannerRepeatabilityTests.
 
@@ -79,6 +79,13 @@ Do all work on branch MasonTelemetry, start that brnach from branch MasonStart.
 Do all work on branch MasonClimber, start that brnach from branch MasonStart.
 
 * Fix the scaling factor for the climber to match new mechanism (single stage vs double stage, possibly differe nt gearboxes).
+
+### Autonomous 
+
+Continue to do all work on branch MasonAuto.
+
+* Figure out what to do if we miss a piece.
+* other optimizations?
 
 ### Clear out old paths
 
