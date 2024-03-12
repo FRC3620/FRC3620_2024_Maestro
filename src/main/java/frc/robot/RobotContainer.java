@@ -272,13 +272,13 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
 
-    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
-      //  .onTrue(new TrapShootCommand()
-        //        .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
-          //      .andThen(new ActivateClimberJoystickCommand()));
-
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
-        .onTrue(new ActivateClimberJoystickCommand());    
+        .onTrue(new TrapShootCommand()
+                .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
+                .andThen(new ActivateClimberJoystickCommand()));
+
+    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
+      //  .onTrue(new ActivateClimberJoystickCommand());    
 
     // NOT NEEDED. ActivateClimberJoystickCommand takes care of these
     // new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
