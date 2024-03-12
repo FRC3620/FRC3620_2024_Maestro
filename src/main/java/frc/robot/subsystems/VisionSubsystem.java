@@ -7,10 +7,6 @@ package frc.robot.subsystems;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.Vector;
 //import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -24,9 +20,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers;
 //import frc.robot.FieldLayout;
 ////
 
@@ -38,10 +39,6 @@ public class VisionSubsystem extends SubsystemBase {
 
     // private PhotonCamera cam = new PhotonCamera("Microsoft_LifeCam_HD-3000 (1)");
     // private PhotonCamera cam = new PhotonCamera("HD_USB_Camera");
-
-    public static PhotonCamera aprilTagCam; // around one inch off from around 60 inches, around 2 inches off from mid, 2
-                                     // inches off from around 3/4 field
-    public static PhotonCamera noteDetectCam;
 
     AprilTagFieldLayout fieldLayout;
 
@@ -59,6 +56,8 @@ public class VisionSubsystem extends SubsystemBase {
     boolean DoIHaveSpeakerTarget = false;
 
     Double camYawToSpeaker;
+
+    Double camDistToSpeakerTag;
 
     public static final double targetWidth = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
 
@@ -82,13 +81,7 @@ public class VisionSubsystem extends SubsystemBase {
     /** Creates a new Vision. */
     public VisionSubsystem() {
 
-        aprilTagCam = new PhotonCamera("AprilTagCam");
-
         SmartDashboard.putNumber("rotation", 0);
-
-        noteDetectCam = new PhotonCamera("USB_2M_GS_camera(1)");
-
-        aprilTagCam.setPipelineIndex(0);
 
         // noteDetectCam.setPipelineIndex(0);
 
@@ -103,47 +96,36 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        camYawToSpeaker();
-    }
-
-    public boolean doIHaveTarget() {
-        var res = aprilTagCam.getLatestResult();
-        if (res.hasTargets()) {
-            return true;
-        } else {
-            return false;
+        LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults("");
+        if (results.targetingResults.targets_Fiducials.length > 0) {
+            SmartDashboard.putString("Vision.DoIHaveTag", "got one");
         }
-    }
-
-    public void camYawToSpeaker() {
-        //vectorToSpeaker result = new vectorToSpeaker();
+        // vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
 
-        // takes latest results
-        var res = aprilTagCam.getLatestResult();
+        // if alliance is blue...
+        int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
+        var desiredTarget = findTargetInResults(results, desiredTargetId);
 
-        if (res.hasTargets()) {
-            // if alliance is blue...
-            int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
-            var desiredTarget = findTargetInResults(res, desiredTargetId);
-
-            if (desiredTarget == null) {
-                DoIHaveSpeakerTarget = false;
-                camYawToSpeaker = null;
-            } else {
-
-                // result.yaw = -desiredTarget.getYaw();
-                camYawToSpeaker = -desiredTarget.getYaw();
-                DoIHaveSpeakerTarget = true;
-                SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
-                SmartDashboard.putNumber("VisionSwerve.camYawToSpeaker", RobotContainer.visionSubsystem.getCamYawToSpeaker());
-        }
-        } else {
-            DoIHaveSpeakerTarget = false;
+        if (desiredTarget == null) {
             camYawToSpeaker = null;
-    }
-        SmartDashboard.putBoolean("VisionSwerve.doISeeSpeakerTag", RobotContainer.visionSubsystem.doISeeSpeakerTag());
+        } else {
+            Pose3d camResults = desiredTarget.getCameraPose_TargetSpace();
+
+            var camRotation = camResults.getRotation();
+            camYawToSpeaker = camRotation.getY();
+            double camPitchToSpeaker = camRotation.getX();
+
+            camDistToSpeakerTag = (1.45 - camHeight)
+                    / Math.tan(Math.toRadians(angCamToApriltags + camPitchToSpeaker));
+
+            SmartDashboard.putNumber("Vision.camRotationX", camPitchToSpeaker);
+            SmartDashboard.putNumber("Vision.camRotationHorizontal", camRotation.getY());
+            SmartDashboard.putNumber("Target.DistanceM", camDistToSpeakerTag);
+            SmartDashboard.putNumber("Target.DistanceFt", Units.metersToFeet(camDistToSpeakerTag));
+
+        }
 
     }
 
@@ -151,191 +133,27 @@ public class VisionSubsystem extends SubsystemBase {
         return camYawToSpeaker;
     }
 
-    public Boolean doISeeSpeakerTag() {
-
-        return DoIHaveSpeakerTarget;
-    }
-
-    PhotonTrackedTarget findTargetInResults(PhotonPipelineResult photonPipelineResult, int id) {
-        for (var target : photonPipelineResult.targets) {
-            if (target.getFiducialId() == id) {
+    LimelightTarget_Fiducial findTargetInResults(LimelightResults limelightResults, int id) {
+        for (var target : limelightResults.targetingResults.targets_Fiducials) {
+            if (target.fiducialID == id) {
                 return target;
             }
         }
         return null;
     }
 
-    public Double camDistToSpeakerTag() {
-        color = DriverStation.getAlliance();
+    public Double getCamDistToSpeaker() {
 
-        var res = aprilTagCam.getLatestResult();
-        if (res.hasTargets()) {
-
-            int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
-            var desiredTarget = findTargetInResults(res, desiredTargetId);
-
-            if (desiredTarget == null)
-                return null;
-
-            SmartDashboard.putNumber("Target.pitch", desiredTarget.getPitch());
-            SmartDashboard.putNumber("Target.yaw", desiredTarget.getYaw());
-            SmartDashboard.putNumber("Target.skew", desiredTarget.getSkew());
-            
-            vectorToSpeaker result = new vectorToSpeaker();
-
-            double GroundTargetDist = (1.45 - camHeight)
-                        / Math.tan(Math.toRadians(angCamToApriltags + desiredTarget.getPitch()));
-
-            SmartDashboard.putNumber("Target.DistanceM", GroundTargetDist);
-            SmartDashboard.putNumber("Target.DistanceFt", Units.metersToFeet(GroundTargetDist));
-
-            // double GD = Math.sqrt((camToTargetDist * camToTargetDist) - ((1.45-camHeight)
-            // * (1.45-camHeight)));
-                result.distance = (GroundTargetDist - APRILTAGCAM_FRONT_OFFSET)/1.1; //1.87//.52
-
-            return result.distance;
-            
-        }
-
-        return null;
-    }
-
-    public vectorToSpeaker camDistanceToTargetSpeaker() {
-        var res = aprilTagCam.getLatestResult();
-        if (res.hasTargets()) {
-
-            var bestTarget = res.getBestTarget();
-            if (bestTarget.getFiducialId() == 4) {
-
-                vectorToSpeaker result = new vectorToSpeaker();
-
-                var camToTargetTransform = bestTarget.getBestCameraToTarget();
-
-                double camToTargetDist = (1.45 - camHeight)
-                        / Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
-                double distanceXFromTarget = camToTargetTransform.getX();
-                double GD = Math.sqrt((camToTargetDist * camToTargetDist) - (camHeight * camHeight));
-
-                result.distance = camToTargetDist;
-                result.yaw = bestTarget.getYaw();
-                result.distanceX = distanceXFromTarget;
-                result.GD = GD;
-
-                return result;
-            } else {
-                return null;
-            }
-
-        } else {
-            return null;
-        }
+        return camDistToSpeakerTag;
 
     }
 
-    public static class vectorToSpeaker {
-
-        double distance;
-        double GD;
-        double yaw;
-        double distanceX;
-        double distanceY;
-
-    }
-
-    public vectorToTag camDistanceToTag() {
-        var res = aprilTagCam.getLatestResult();
-        if (res != null) {
-            var bestTarget = res.getBestTarget();
-
-            vectorToTag result = new vectorToTag();
-
-            double camToTagDist = (1.45 - camHeight) / Math.sin(Math.toRadians(angCamToApriltags));
-
-            result.distance = camToTagDist;
-            result.yaw = bestTarget.getYaw();
-
-            return result;
-        } else {
-            return null;
-        }
-    }
-
-    public static class vectorToTag {
-
-        double distance;
-        double yaw;
-
-    }
-
-    public vectorToNote camYawToNote() {
-        var res = noteDetectCam.getLatestResult();
-        if (res != null) {
-            var bestTarget = res.getBestTarget();
-            SmartDashboard.putNumber("target.id", bestTarget.getFiducialId());
-
-            double pitch = bestTarget.getPitch(); // degrees
-
-            double camAngToTarget = 90 - (angCamToObject - pitch); // degrees relative to horizon line
-
-            double camDistToCenterNote = Math.tan(Math.toRadians(camAngToTarget));
-
-            var confidenceNote = bestTarget.getPoseAmbiguity();
-
-            vectorToNote result = new vectorToNote();
-
-            result.distance = camDistToCenterNote;
-            result.yaw = bestTarget.getYaw();
-            result.confidence = confidenceNote;
-            // SmartDashboard.putNumber("note Distance", result.distance);
-            SmartDashboard.putNumber("note yaw", result.yaw);
-            // SmartDashboard.putNumber("note confidence", result.confidence);
-
-            return result;
-        } else {
-            return null;
-        }
-    }
-
-    public static class vectorToNote {
-        double distance;
-        double yaw;
-        double confidence;
-    }
-
-    void aprilTagsPeriodic() {
-        var res = aprilTagCam.getLatestResult();
-        if (res.hasTargets()) {
-            var bestTarget = res.getBestTarget();
-
-            var bestTagPose = fieldLayout.getTagPose(bestTarget.getFiducialId());
-
-            if (bestTagPose.isPresent()) {
-                var bestTagPoseValue = bestTagPose.get();
-
-                double camToTargetDist = (bestTagPoseValue.getZ() - camHeight)
-                        / Math.sin(Math.toRadians(angCamToApriltags + bestTarget.getPitch()));
-                double GD = Math.sqrt((camToTargetDist * camToTargetDist) - (camHeight * camHeight)) * 1.254248946;
-
-                double rotation = SmartDashboard.getNumber("rotation", 0);
-                Rotation2d robotRotation = new Rotation2d(Math.toRadians(rotation));
-                Transform2d robotTransToTarget = new Transform2d(Math.cos(Math.toRadians(rotation)) * GD,
-                        Math.sin(Math.toRadians(rotation)) * GD, robotRotation);
-
-                SmartDashboard.putNumber("GroundDist", GD);
-                SmartDashboard.putNumber("robot.X", bestTagPoseValue.getX() - robotTransToTarget.getX());
-                SmartDashboard.putNumber("robot.Y", bestTagPoseValue.getY() - robotTransToTarget.getY());
-                SmartDashboard.putNumber("robot.Rotation", rotation);
-
-            }
-
-        }
-
-    }
-    public boolean doIHaveShootingSolution(){
-        // If we are aiming and a target is detected and the target distance is less than 4.572 meters (15 feet), Status is true
-        if(SwerveSubsystem.getAreWeAiming() && doIHaveTarget()){
+    public boolean doIHaveShootingSolution() {
+        // If we are aiming and a target is detected and the target distance is less
+        // than 4.572 meters (15 feet), Status is true
+        if (SwerveSubsystem.getAreWeAiming()) {
             return true;
-        } 
+        }
         return false;
     }
 }

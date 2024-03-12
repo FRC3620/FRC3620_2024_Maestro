@@ -105,11 +105,11 @@ public class SwerveSubsystem extends SubsystemBase {
   public Optional<Rotation2d> getRotationTargetOverride(){
     
     // Some condition that should decide if we want to override rotation
-    
-    if(RobotContainer.visionSubsystem.doISeeSpeakerTag()) {
+    var camYawToSpeaker = RobotContainer.visionSubsystem.getCamYawToSpeaker();
+    if(camYawToSpeaker != null) {
 
       double currentPosRotation = swerveDrive.getYaw().getDegrees();
-      double VisionTargetHeading = currentPosRotation + RobotContainer.visionSubsystem.getCamYawToSpeaker()+RotationOffsetVision;
+      double VisionTargetHeading = currentPosRotation + camYawToSpeaker+RotationOffsetVision;
       Rotation2d VisionToTarget = new Rotation2d(Units.degreesToRadians(VisionTargetHeading));
       
       SmartDashboard.putNumber("VisionSwerve.VisionTargetHeading",VisionTargetHeading);

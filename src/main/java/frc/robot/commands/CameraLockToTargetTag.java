@@ -43,16 +43,10 @@ public class CameraLockToTargetTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    vision.camYawToSpeaker();
-    if (vision.getCamYawToSpeaker() != null) {
+    var camYaw_Speaker = vision.getCamYawToSpeaker();
+    if (camYaw_Speaker != null) {
       headingToTag = vision.getCamYawToSpeaker() + 6.5;
-    } else {
-      headingToTag = null;
-    }
 
-    if (headingToTag == null || !vision.doISeeSpeakerTag()) {
-      finishedTurn = true;
-    } else {
       double headingError = headingToTag - swerve.getHeading().getDegrees();
       // putting current robot heading and target heading
       SmartDashboard.putNumber("vision.currentHeading", swerve.getHeading().getDegrees());
@@ -69,9 +63,13 @@ public class CameraLockToTargetTag extends Command {
         // if command isn't turning, return no
         finishedTurn = false;
       }
-
+    } else {
+      headingToTag = null;
+      finishedTurn = true;
     }
+
     SmartDashboard.putString("vision.IsCommandTurning?", finishedTurn ? "no" : "yes");
+
   }
 
   // Called once the command ends or is interrupted.
