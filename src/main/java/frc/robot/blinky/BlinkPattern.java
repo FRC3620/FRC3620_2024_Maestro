@@ -63,4 +63,10 @@ public class BlinkPattern extends Pattern {
     }
     return false;
   }
+
+  @Override
+  public String toString() {
+    return "BlinkPattern[" + color.toString() + "]";
+  }
+
 }

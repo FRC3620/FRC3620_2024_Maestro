@@ -16,4 +16,9 @@ public class SolidPattern extends Pattern {
     lightSegment.updateLEDs(color);
   }
 
+  @Override
+  public String toString() {
+    return "SolidPattern[" + color.toString() + "]";
+  }
+
 }
