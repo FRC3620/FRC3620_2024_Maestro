@@ -24,6 +24,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.commands.TurnToCommand;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import frc.robot.LimelightHelpers;
@@ -44,7 +45,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     static Optional<Alliance> color;
 
-    static Double camHeight = 0.641;// meters, change accordingly
+    static Double camHeight = 0.546;// meters, change accordingly
     static Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
     static Double angCamToApriltags = 22.0;// degrees, facing up
 
@@ -110,20 +111,24 @@ public class VisionSubsystem extends SubsystemBase {
 
         if (desiredTarget == null) {
             camYawToSpeaker = null;
+            camDistToSpeakerTag = null;
         } else {
             Pose3d camResults = desiredTarget.getCameraPose_TargetSpace();
-
+            Pose3d targetResults = desiredTarget.getTargetPose_CameraSpace();
             var camRotation = camResults.getRotation();
-            camYawToSpeaker = camRotation.getY();
-            double camPitchToSpeaker = camRotation.getX();
+            camYawToSpeaker = Math.toDegrees(camRotation.getY());
+            double camPitchToSpeaker = desiredTarget.ty + angCamToApriltags;
 
             camDistToSpeakerTag = (1.45 - camHeight)
-                    / Math.tan(Math.toRadians(angCamToApriltags + camPitchToSpeaker));
-
-            SmartDashboard.putNumber("Vision.camRotationX", camPitchToSpeaker);
-            SmartDashboard.putNumber("Vision.camRotationHorizontal", camRotation.getY());
-            SmartDashboard.putNumber("Target.DistanceM", camDistToSpeakerTag);
-            SmartDashboard.putNumber("Target.DistanceFt", Units.metersToFeet(camDistToSpeakerTag));
+                    / Math.tan(Units.degreesToRadians(camPitchToSpeaker));
+            
+            
+            SmartDashboard.putNumber("Vision.tx", desiredTarget.tx);
+            SmartDashboard.putNumber("Vision.ty", desiredTarget.ty);
+            /*  SmartDashboard.putNumber("Vision.camRotationPitch", camPitchToSpeaker);
+            SmartDashboard.putNumber("Vision.camRotationYaw", camYawToSpeaker);*/ // don't need right now
+            SmartDashboard.putNumber("Vision.TargetDistanceM", camDistToSpeakerTag);
+            SmartDashboard.putNumber("Vision.TargetDistanceFt", Units.metersToFeet(camDistToSpeakerTag));
 
         }
 
