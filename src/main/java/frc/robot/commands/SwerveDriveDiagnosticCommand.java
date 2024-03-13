@@ -31,13 +31,17 @@ public class SwerveDriveDiagnosticCommand extends Command {
   LightSegment lightSegment;
   Logger logger = EventLogging.getLogger(getClass());
   List<CANSparkBase> azimuths = new ArrayList<>(4); // probably 4 motors
+
   Map<String, SlidingWindowStats> driveMotorCurrents = new HashMap<>();
+
   double power;
 
-  Pattern patternOk = new SolidPattern().setColor(Color.kGreen);
-  Pattern patternBad = new BlinkPattern().setColor(Color.kPink).setBlink(0.25);
-  Pattern patternAziBad = new BlinkPattern().setColor(Color.kBlue).setBlink(.25);
-  Pattern patternZeroMotors = new BlinkPattern().setColor(Color.kYellow).setBlink(.25);
+  Color colorOk = Color.kGreen;
+  Color colorDriveBad = Color.kPink;
+  Color colorAziBad = Color.kBlue;
+  Color colorZeroMotors = Color.kYellow;
+
+  BlinkPattern myPattern = new BlinkPattern().setColor1(Color.kBlack).setColor2(Color.kBlack).setBlink(0.5);
 
   /** Creates a new SwerveDriveDiagnosticCommand. */
   public SwerveDriveDiagnosticCommand() {
@@ -47,6 +51,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
   public SwerveDriveDiagnosticCommand(double power) {
     this.power = power;
     this.lightSegment = RobotContainer.lightSegment;
+
     for (var nameAndMotor : RobotContainer.swerveDriveMotors.entrySet()) {
       if (nameAndMotor.getValue() instanceof CANSparkBase) {
         driveMotorCurrents.put(nameAndMotor.getKey(), new SlidingWindowStats(100));
@@ -55,6 +60,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
             nameAndMotor.getValue().getClass());
       }
     }
+
     for (var nameAndMotor : RobotContainer.swerveAzimuthMotors.entrySet()) {
       if (nameAndMotor.getValue() instanceof CANSparkBase) {
         azimuths.add((CANSparkBase) nameAndMotor.getValue());
@@ -71,35 +77,55 @@ public class SwerveDriveDiagnosticCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    lightSegment.setPattern(myPattern);
+
+    for (var stat : driveMotorCurrents.values()) {
+      stat.clear();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    List<Double> speeds = new ArrayList<>();
-    List<Double> currents = new ArrayList<>();
-    for (var nameAndMotor : RobotContainer.swerveDriveMotors.entrySet()) {
-      if (nameAndMotor.getValue() instanceof CANSparkBase) {
-        CANSparkBase motor = (CANSparkBase) nameAndMotor.getValue();
-        motor.set(power);
-        speeds.add(motor.getEncoder().getVelocity());
-        SlidingWindowStats currentsStats = driveMotorCurrents.get(nameAndMotor.getKey());
-        currentsStats.addValue(motor.getOutputCurrent());
-        currents.add(currentsStats.getMean());
-        SmartDashboard.putNumber("Diagnostics." + nameAndMotor.getKey() + ".drive.current", currentsStats.getMean());
-      }
-    }
-    double minSpeed = Collections.min(speeds);
-    double maxSpeed = Collections.max(speeds);
-    double minCurrent = Collections.min(currents);
-    double maxCurrent = Collections.max(currents);
+    Color driveColor = colorOk;
+    Color aziColor = colorOk;
 
-    for (var azimuth : azimuths) {
-      azimuth.set(power);
+    List<Double> driveSpeeds = new ArrayList<>();
+    List<Double> driveCurrents = new ArrayList<>();
+    for (var nameAndCurrentStat : driveMotorCurrents.entrySet()) {
+      String name = nameAndCurrentStat.getKey();
+      SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
+      CANSparkBase motor = (CANSparkBase) RobotContainer.swerveDriveMotors.get(name);
+      motor.set(power);
+
+      double velocity = motor.getEncoder().getVelocity();
+      SmartDashboard.putNumber("Diagnostics." + name + ".drive.speed", velocity);
+      driveSpeeds.add(velocity);
+
+      currentStat.addValue(motor.getOutputCurrent());
+      double mean = currentStat.getMean();
+      SmartDashboard.putNumber("Diagnostics." + name + ".drive.current", mean);
+      driveCurrents.add(mean);
     }
+
+    double minDriveSpeed = Collections.min(driveSpeeds);
+    double maxDriveSpeed = Collections.max(driveSpeeds);
+    double minDriveCurrent = Collections.min(driveCurrents);
+    double maxDriveCurrent = Collections.max(driveCurrents);
+
+    if (minDriveSpeed / maxDriveSpeed < .9) {
+      driveColor = colorDriveBad;
+    }
+
+    if (minDriveCurrent / maxDriveCurrent < .9) {
+      driveColor = colorDriveBad;
+    }
+
     List<Double> aziSpeeds = new ArrayList<>(azimuths.size());
     List<Double> aziCurrents = new ArrayList<>(azimuths.size());
     for (var azimuth : azimuths) {
+      azimuth.set(power);
+
       aziSpeeds.add(azimuth.getEncoder().getVelocity());
       aziCurrents.add(azimuth.getOutputCurrent());
     }
@@ -108,32 +134,22 @@ public class SwerveDriveDiagnosticCommand extends Command {
     double minAziCurrent = Collections.min(aziCurrents);
     double maxAziCurrent = Collections.max(aziCurrents);
 
-    Pattern p = patternOk;
-    // replace this with an expression to check the current
-    if (minSpeed / maxSpeed < .9) {
-      p = patternBad;
-    }
-
     if (minAziSpeed / maxAziSpeed < .9) {
-      p = patternAziBad;
-    }
-
-    // replace this with an expression to check the speeds
-    if (minCurrent / maxCurrent < .9) {
-      p = patternBad;
+      aziColor = colorAziBad;
     }
 
     if (minAziCurrent / maxAziCurrent < .9) {
-      p = patternAziBad;
+      aziColor = colorAziBad;
     }
 
-    if (maxAziSpeed == 0 || maxAziCurrent == 0 || maxCurrent == 0 || maxSpeed == 0) {
-      p = patternZeroMotors;
+    if (maxAziSpeed == 0 || maxAziCurrent == 0 || maxDriveCurrent == 0 || maxDriveSpeed == 0) {
+      aziColor = driveColor = colorZeroMotors;
     }
 
-    // lightSegment.setPattern(p);
-    SmartDashboard.putString("SwerveDriveDiagnosticCommand", p.toString());
-    lightSegment.setPattern(patternAziBad);
+    myPattern.setColor1(driveColor);
+    myPattern.setColor2(aziColor);
+
+    SmartDashboard.putString("Diagnostics.lightPattern", myPattern.toString());
   }
 
   // Called once the command ends or is interrupted.
