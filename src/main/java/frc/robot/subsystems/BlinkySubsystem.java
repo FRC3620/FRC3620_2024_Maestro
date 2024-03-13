@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
@@ -12,6 +15,7 @@ import frc.robot.blinky.Pattern;
 
 /**/
 public class BlinkySubsystem extends SubsystemBase {
+  Logger logger = EventLogging.getLogger(getClass());
 
   AddressableLED leds;
   AddressableLEDBuffer lBuffer;
@@ -58,6 +62,7 @@ public class BlinkySubsystem extends SubsystemBase {
     public LightSegment(int first, int last) {
       this.segment_first = first;
       this.segment_length = (last - first) + 1;
+      setName(getName() + "[" + first + "-" + last + "]");
     }
 
     /**
@@ -68,6 +73,7 @@ public class BlinkySubsystem extends SubsystemBase {
     public void setPattern(Pattern pattern) {
       if (pattern == currentPattern)
         return;
+      logger.info ("{} pattern set to {}", getName(), pattern.toString());
       patternChanged = true;
       if (currentPattern != null) {
         currentPattern.done(this);
