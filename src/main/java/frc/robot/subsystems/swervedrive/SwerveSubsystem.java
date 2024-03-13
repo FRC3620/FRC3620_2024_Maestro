@@ -141,7 +141,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // Translation PID constants
             new PIDConstants(7.5, 0.0, 0.0), // 7.5, 0, 0
             // Rotation PID constants
-            new PIDConstants(9.0, 0.3, 0.0),
+            new PIDConstants(9.0, 0.4, 0.3),
             // Max module speed, in m/s
             4,
             swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
