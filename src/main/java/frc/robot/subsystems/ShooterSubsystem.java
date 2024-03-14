@@ -183,11 +183,10 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       setup.apply(ampBarMotor);
       addChild("AmpBar", ampBarMotor);
 
-      MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(80);
-      motorSetup.apply(ampBarMotor);
       ampBarEncoder = ampBarMotor.getEncoder();
-      ampBarEncoder.setPositionConversionFactor(positionConverionFactor);
-      ampBarEncoder.setVelocityConversionFactor(velocityConverionFactor);
+      ampBarEncoder.setPositionConversionFactor(1.0);
+      ampBarEncoder.setVelocityConversionFactor(1.0);
+      ampBarEncoder.setPosition(0.0);
 
       ampBarPID = ampBarMotor.getPIDController();
       ampBarPID.setP(aP);
@@ -250,13 +249,22 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public void setWheelPower(Double p) {
     manuallySetPower = p;
   }
-public void setAmpBarPosition(double position){
-  // ampBarMotor.set
-  ampBarPID.setReference(position, ControlType.kPosition);
-}
-public Double getAmpBarPosition(){
-  return ampBarEncoder.getPosition();
-}
+
+  public void setAmpBarPosition(double position) {
+    SmartDashboard.putNumber (name + ".ampbar.requested_position", position);
+    if (ampBarPID != null) {
+      ampBarPID.setReference(position, ControlType.kPosition);
+    }
+  }
+
+  public Double getAmpBarPosition() {
+    if (ampBarEncoder != null) {
+      return ampBarEncoder.getPosition();
+    } else {
+      return 0.0;
+    }
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("areWeShooting", areWeShooting);
@@ -374,6 +382,18 @@ public Double getAmpBarPosition(){
         double position = elevationMotorEncoder.getPosition();
         SmartDashboard.putNumber(name + ".elevation.velocity", velocity);
         SmartDashboard.putNumber(name + ".elevation.position", position);
+      }
+    }
+    if (ampBarMotor != null) {
+      SmartDashboard.putNumber(name + ".ampbar.current", ampBarMotor.getOutputCurrent());
+      SmartDashboard.putNumber(name + ".ampbar.power", ampBarMotor.getAppliedOutput());
+      SmartDashboard.putNumber(name + ".ampbar.temperature", ampBarMotor.getMotorTemperature());
+
+      if (ampBarEncoder != null) { // if there is an encoder, display these
+        double velocity = ampBarEncoder.getVelocity();
+        double position = ampBarEncoder.getPosition();
+        SmartDashboard.putNumber(name + ".ampbar.velocity", velocity);
+        SmartDashboard.putNumber(name + ".ampbar.position", position);
       }
     }
   }
