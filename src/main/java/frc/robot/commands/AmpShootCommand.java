@@ -21,6 +21,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class AmpShootCommand extends SequentialCommandGroup {
   ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
   ShooterSpeedAndAngle shooterSpeedAndAngle= new ShooterSpeedAndAngle(10, 50);
+  ShooterSpeedAndAngle stopShooterSpeedAndAngle= new ShooterSpeedAndAngle(0, 50);
   Timer timer= new Timer();
   /** Creates a new AmpShootCommand. */
   public AmpShootCommand() {
@@ -35,7 +36,8 @@ public class AmpShootCommand extends SequentialCommandGroup {
   new InstantCommand(()->shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle)),
   new InstantCommand(()-> timer.restart()),
   new  WaitUntilCommand(()-> timer.get()==0.2),
-  new InstantCommand(()-> shooterSubsystem.setAmpBarPosition(0))
+  new InstantCommand(()-> shooterSubsystem.setAmpBarPosition(0)),
+  new InstantCommand(()-> shooterSubsystem.setSpeedAndAngle(stopShooterSpeedAndAngle))
     );
   }
 }

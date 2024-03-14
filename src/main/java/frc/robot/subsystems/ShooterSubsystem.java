@@ -43,9 +43,9 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public TalonFX topMotor, bottomMotor;
 
   public CANSparkMaxSendable elevationMotor;
-  RelativeEncoder elevationMotorEncoder;
+  RelativeEncoder elevationMotorEncoder, ampBarEncoder;
 
-  CANSparkMaxSendable ampBar= new CANSparkMaxSendable(MOTORID_AMP_BAR, null);
+  CANSparkMaxSendable ampBarMotor;
 
   public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   private double requestedWheelSpeed = 0;
@@ -53,8 +53,9 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public final static int MOTORID_SHOOTER_BOTTOM = 14;
   public final static int MOTORID_SHOOTER_TOP = 15;
   public final static int MOTORID_SHOOTER_ELEVATION = 16;
-  public final static int MOTORID_AMP_BAR=8;//TODO this is a placeholder CHANGE IT
+  public final static int MOTORID_AMP_BAR=61;//TODO this is a placeholder CHANGE IT
 
+  SparkPIDController ampBarPID;
   SparkPIDController elevationPid = null;
 
   // Robot is set to "not calibrated" by default
@@ -120,6 +121,15 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     final double negOutputLimit = -0.2;
     final double posOutputLimit = 0.2;
 
+    // amp bar pid
+    final double aP = 0.02;
+    final double aI = 0.0;
+    final double aD = 0;
+    final double aFF = 0;
+    final double aIMaxAccum = 0.0;
+    final double aNegOutputLimit = -0.2;
+    final double aPosOutputLimit = 0.2;
+
     // was 9.44 before we swapped out 3:1/5:1 for a 5:1/5:1
     // final double positionConverionFactor = 1.0 * 9.44 * (15.0 / 25.0);
     final double positionConverionFactor = (64 - 18.1) / (64 - 54.93); // difference in angle divided by difference in
@@ -168,27 +178,27 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     
     if (deviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_AMP_BAR, "Shooter Amp Bar")
         || RobotContainer.shouldMakeAllCANDevices()) {
-      ampBar = new CANSparkMaxSendable(MOTORID_AMP_BAR, MotorType.kBrushless);//brushless??
+      ampBarMotor = new CANSparkMaxSendable(MOTORID_AMP_BAR, MotorType.kBrushless);//brushless??
       MotorSetup setup = new MotorSetup().setCurrentLimit(10).setCoast(false);
-      setup.apply(ampBar);
-      addChild("AmpBar", ampBar);
+      setup.apply(ampBarMotor);
+      addChild("AmpBar", ampBarMotor);
 
       MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(80);
-      motorSetup.apply(elevationMotor);
-      elevationMotorEncoder = elevationMotor.getEncoder();
-      elevationMotorEncoder.setPositionConversionFactor(positionConverionFactor);
-      elevationMotorEncoder.setVelocityConversionFactor(velocityConverionFactor);
+      motorSetup.apply(ampBarMotor);
+      ampBarEncoder = ampBarMotor.getEncoder();
+      ampBarEncoder.setPositionConversionFactor(positionConverionFactor);
+      ampBarEncoder.setVelocityConversionFactor(velocityConverionFactor);
 
-      elevationPid = elevationMotor.getPIDController();
-      elevationPid.setP(kP);
-      elevationPid.setI(kI);
-      elevationPid.setD(kD);
-      elevationPid.setFF(kFF);
-      var err = elevationPid.setIMaxAccum(kIMaxAccum, 0);
+      ampBarPID = ampBarMotor.getPIDController();
+      ampBarPID.setP(aP);
+      ampBarPID.setI(aI);
+      ampBarPID.setD(aD);
+      ampBarPID.setFF(aFF);
+      var err = ampBarPID.setIMaxAccum(aIMaxAccum, 0);
       if (err != REVLibError.kOk) {
-        logger.error("Could not set elevation kImaxAccum: {}", err);
+        logger.error("Could not set amp bar kImaxAccum: {}", err);
       }
-      elevationPid.setOutputRange(negOutputLimit, posOutputLimit);
+      ampBarPID.setOutputRange(aNegOutputLimit, aPosOutputLimit);
     }
     
     topSpeedStats = new SlidingWindowStats(100);
@@ -240,7 +250,13 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public void setWheelPower(Double p) {
     manuallySetPower = p;
   }
-
+public void setAmpBarPosition(double position){
+  // ampBarMotor.set
+  ampBarPID.setReference(position, ControlType.kPosition);
+}
+public Double getAmpBarPosition(){
+  return ampBarEncoder.getPosition();
+}
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("areWeShooting", areWeShooting);
