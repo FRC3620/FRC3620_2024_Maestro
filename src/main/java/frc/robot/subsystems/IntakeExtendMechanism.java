@@ -28,7 +28,8 @@ public class IntakeExtendMechanism implements HasTelemetry {
   final double kFF = 0; // define FF
   final double outputLimit = 1; // the limit that the power cannot exceed
 
-  final double positionConverionFactor = 3.14159 * 1.625 / 9;  // 1 5/8" diameter, moves one circumference for every motor revolution, 1:9
+  final double positionConverionFactor = 3.14159 * 1.625 / 9; // 1 5/8" diameter, moves one circumference for every
+                                                              // motor revolution, 1:9
   final double velocityConverionFactor = 1.0;
 
   // Ingredients: Motor, Encoder, PID, and Timer
@@ -87,7 +88,8 @@ public class IntakeExtendMechanism implements HasTelemetry {
       if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) {
-            // If the robot is enabled, and we are "not calibrated," run motors very slowly towards the stop
+            // If the robot is enabled, and we are "not calibrated," run motors very slowly
+            // towards the stop
             setPower(0.03);
 
             if (calibrationTimer == null) {
@@ -140,6 +142,7 @@ public class IntakeExtendMechanism implements HasTelemetry {
   boolean outOfWhack() {
     double position2;
     double position1;
+    if (motorEncoder != null && motor2Encoder != null) {
     position1 = motorEncoder.getPosition();
     position2 = motor2Encoder.getPosition();
     SmartDashboard.putNumber(name + ".whackiness", Math.abs(position2 - position1));
@@ -147,6 +150,9 @@ public class IntakeExtendMechanism implements HasTelemetry {
       // change 1 to actual restraint
       return true;
     } else {
+      return false;
+    }
+    }else{
       return false;
     }
   }

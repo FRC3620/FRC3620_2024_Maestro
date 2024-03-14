@@ -19,6 +19,7 @@ public class ShooterSpeedPIDZapper extends InstantCommand {
     this.prefix = prefix;
 
     addRequirements(subsystem);
+    if (motor != null) {
 
     Slot0Configs config = new Slot0Configs();
     StatusCode ss = motor.getConfigurator().refresh(config);
@@ -31,10 +32,12 @@ public class ShooterSpeedPIDZapper extends InstantCommand {
     SmartDashboard.putNumber(prefix + ".pid.requested.kI", config.kI);
     SmartDashboard.putNumber(prefix + ".pid.requested.kV", config.kV);
   }
+  }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (motor != null) {
     Slot0Configs config = new Slot0Configs();
     motor.getConfigurator().refresh(config);
     config.kP = SmartDashboard.getNumber(prefix + ".pid.requested.kP", 0);
@@ -46,6 +49,7 @@ public class ShooterSpeedPIDZapper extends InstantCommand {
     SmartDashboard.putNumber(prefix + ".pid.actual.kP", config.kP);
     SmartDashboard.putNumber(prefix + ".pid.actual.kI", config.kI);
     SmartDashboard.putNumber(prefix + ".pid.actual.kV", config.kV);
+    }
   }
 
   @Override
