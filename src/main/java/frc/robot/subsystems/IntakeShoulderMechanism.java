@@ -32,7 +32,8 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   final double kFF = 0.0; // define FF
   //final double outputLimit = 0.5; // the limit that the power cannot exceed
 
-  // convert rotations to degree, run through a 75:1 gearbox, chain drive is 64 / 24;
+  // convert rotations to degree, run through a 75:1 gearbox, chain drive is 64 /
+  // 24;
   final double positionConverionFactor = 360 * ( 1 / 75.0) * (24.0 / 64.0); 
   final double velocityConverionFactor = positionConverionFactor;
 
@@ -76,7 +77,8 @@ public class IntakeShoulderMechanism implements HasTelemetry {
       if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
-            // If the robot is running, and the encoder is "not calibrated," run motor very slowly towards the stop
+            // If the robot is running, and the encoder is "not calibrated," run motor very
+            // slowly towards the stop
             setPower(0.0);
             if (calibrationTimer == null) {
               // we need to calibrate and we have no timer. make one and start it
@@ -100,7 +102,8 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   }
 
   public void markCalibrated() {
-    // the motor is not moving, stop the motor, set encoder position to 0, and set calibration to true
+    // the motor is not moving, stop the motor, set encoder position to 0, and set
+    // calibration to true
     encoderCalibrated = true;
     setPower(0.0);
     motorEncoder.setPosition(0);
@@ -119,6 +122,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
   /**
    * Set the target position
+   * 
    * @param position units are ???, referenced from position 0 == ?????
    */
   public void setPosition(Double position) {
@@ -144,6 +148,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
   /**
    * return the last requested position
+   * 
    * @return the last requested position, units as in setPosition()
    */
   public Double getRequestedPosition() {
@@ -152,13 +157,19 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
   /**
    * return the actual position
+   * 
    * @return the current position
    */
   public double getActualPosition() {
+    if (motorEncoder != null) {
     return motorEncoder.getPosition();
+    } else {
+      return 0.0;
+    }
   }
 
-  // Remember that power and position are different things. this should probably only
+  // Remember that power and position are different things. this should probably
+  // only
   // be used by the calibration routine in periodic()
   void setPower(double power) {
     if (motor != null) {
