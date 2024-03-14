@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.989596833894521,
-        "y": 0.7718141932010376
+        "x": 3.3119350569185464,
+        "y": 2.5142432051245875
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.52782752858953,
-        "y": 1.356521915323035
+        "x": 3.8498661612707834,
+        "y": 3.473163869404662
       },
       "isLocked": false,
-      "linkedName": "8"
+      "linkedName": "SC Shoot"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 4.116342363738859
       },
       "prevControl": {
-        "x": 6.551215837474409,
-        "y": 4.584108541436456
+        "x": 6.621380764129049,
+        "y": 4.701050085860856
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -34.07719528013077,
     "velocity": 0
   },
   "useDefaultConstraints": true
