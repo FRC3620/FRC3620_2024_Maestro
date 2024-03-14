@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6924444618120005,
+      "y": 6.735832958845405
+    },
+    "rotation": 60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AM to 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 to 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 back"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
