@@ -67,6 +67,7 @@ public class RobotContainer {
   public static VisionSubsystem visionSubsystem;
 
   public static LightSegment lightSegment;
+  public static HealthMonitorSubsystem healthMonitorSubsystem;
 
   public static List<Subsystem> allSubsystems = new ArrayList<>();
 
@@ -190,6 +191,9 @@ public class RobotContainer {
 
     blinkySubsystem = new BlinkySubsystem();
     addSubsystem(blinkySubsystem);
+
+    healthMonitorSubsystem = new HealthMonitorSubsystem();
+    addSubsystem(healthMonitorSubsystem);
 
     lightSegment = blinkySubsystem.getLightSegment(0, 19);
     lightSegment.setDefaultCommand(new DefaultBlinkyCommand(lightSegment));

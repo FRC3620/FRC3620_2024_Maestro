@@ -41,7 +41,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
   Color colorAziBad = Color.kBlue;
   Color colorZeroMotors = Color.kYellow;
 
-  BlinkPattern myPattern = new BlinkPattern().setColor1(Color.kBlack).setColor2(Color.kBlack).setBlink(0.5);
+  BlinkPattern myPattern = new BlinkPattern().setColor1(Color.kBlack).setColor2(Color.kBlack).setBlinkTime(0.5);
 
   /** Creates a new SwerveDriveDiagnosticCommand. */
   public SwerveDriveDiagnosticCommand() {

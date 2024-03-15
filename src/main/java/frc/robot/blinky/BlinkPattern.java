@@ -34,7 +34,7 @@ public class BlinkPattern extends Pattern {
     return this;
   }
 
-  public BlinkPattern setBlink(double seconds) {
+  public BlinkPattern setBlinkTime(double seconds) {
     this.color1Seconds = seconds;
     this.color2Seconds = seconds;
     return this;

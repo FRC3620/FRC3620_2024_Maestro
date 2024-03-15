@@ -6,6 +6,7 @@ package frc.robot.blinky;
 
 import org.usfirst.frc3620.misc.RobotMode;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
@@ -18,10 +19,13 @@ public class DefaultBlinkyCommand extends Command {
   RollersSubsystem rollersSubsystem = RobotContainer.rollersSubsystem;
   VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
 
-  final Pattern blinkyGreen = new BlinkPattern().setColor(Color.kGreen);
-  final Pattern solidGreen = new SolidPattern().setColor(Color.kGreen);
-  final Pattern solidRed = new SolidPattern().setColor(Color.kRed);
-  final Pattern blinkyRed = new BlinkPattern().setColor(Color.kRed).setOnSeconds(0.1).setOffSeconds(1.0);
+  final Pattern patternReadyToShoot = new BlinkPattern().setColor(Color.kGreen);
+  final Pattern patternGotPiece = new SolidPattern().setColor(Color.kGreen);
+  final Pattern patternNoPiece = new SolidPattern().setColor(Color.kRed);
+  final Pattern patternIdle = new BlinkPattern().setColor(Color.kGreen).setOnSeconds(0.1).setOffSeconds(1.0);
+  // final Pattern patternSick = new
+  // ChasePattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.25);
+  final Pattern patternSick = new BlinkPattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.25);
 
   LightSegment lightSegment;
 
@@ -32,20 +36,33 @@ public class DefaultBlinkyCommand extends Command {
 
   @Override
   public void execute() {
+    Pattern p;
     if (Robot.getCurrentRobotMode() == RobotMode.DISABLED) {
-      lightSegment.setPattern(blinkyRed);
+      if (!RobotContainer.healthMonitorSubsystem.isHealthy()) {
+        p = patternSick;
+      } else {
+        p = patternIdle;
+      }
     } else {
       if (rollersSubsystem.gamePieceDetected()) {
         if (visionSubsystem.doIHaveShootingSolution()) {
-          lightSegment.setPattern(blinkyGreen);
+          p = patternReadyToShoot;
         } else {
           // If we have gamepiece but no shooting solution, solid green
-          lightSegment.setPattern(solidGreen);
+          p = patternGotPiece;
         }
       } else { // No game piece, solid red
-        lightSegment.setPattern(solidRed);
+        p = patternNoPiece;
       }
+
+      if (!DriverStation.isFMSAttached()) {
+        if (!RobotContainer.healthMonitorSubsystem.isHealthy()) {
+          p = patternSick;
+        }
+      }
+
     }
+    lightSegment.setPattern(p);
   }
 
   @Override
