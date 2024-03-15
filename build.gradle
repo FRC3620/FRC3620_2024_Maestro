@@ -61,6 +61,9 @@ deploy {
 
                 // Static files artifact
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                    predeploy << { execute 'find /home/lvuser/deploy'}
+                    predeploy << { execute 'rm -rf /home/lvuser/deploy'}
+                    predeploy << { execute 'find /home/lvuser/deploy'}
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                 }
