@@ -246,8 +246,14 @@ public class RobotContainer {
     // barf out a piece
     driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(-0.8));
 
-    driverJoystick.button(XBoxConstants.BUTTON_RIGHT_BUMPER, 99)
+    driverJoystick.button(XBoxConstants.BUTTON_X, 99)
       .onTrue(new InstantCommand(() -> drivebase.lock()));
+
+    driverJoystick.button(XBoxConstants.BUTTON_Y,98)
+      .onTrue(new InstantCommand(() -> drivebase.alignModules(0)));
+
+    driverJoystick.button(XBoxConstants.BUTTON_B,97)
+      .onTrue(new InstantCommand(() -> drivebase.alignModules(90)));
 
     // bring intake to home position
     operatorDpad.up().onTrue(new GroundToHomeCommand());
