@@ -69,6 +69,7 @@ public class RobotContainer {
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
   public static VisionSubsystem visionSubsystem;
+  public static IntakeLocation intakeLocation;
 
   public static List<Subsystem> allSubsystems = new ArrayList<>();
 
@@ -238,7 +239,8 @@ public class RobotContainer {
     }
 
     // intake
-    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).onTrue(new GroundPickupCommand());
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnTrue(new GroundPickupCommand());
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnFalse(new GroundToHomeCommand());
 
     // well, shoot
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunRollersUntilGone(0.8));
@@ -249,15 +251,14 @@ public class RobotContainer {
     // bring intake to home position
     operatorDpad.up().onTrue(new GroundToHomeCommand());
 
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
-        .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER) //TODO
+        .onTrue(new SetIntakeLocationCommand(IntakeLocation.IntakeIn)); //Fix button and make out button
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
         .toggleOnTrue(new SetShooterSpeedCommand(5000))
         .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
-    operatorDpad.left().whileTrue(new ExtendPowerCommand(intakeSubsystem, -1.5));
-    operatorDpad.right().whileTrue(new ExtendPowerCommand(intakeSubsystem, 1.5));
+   
 
     // operator right joystick bumps the shoulder position
     // remember that Y-axis is inverted. pushing up makes a negative
@@ -294,12 +295,7 @@ public class RobotContainer {
     SmartDashboard.putData("set shooter wheels power", new ShooterWheelPowerCommand());
     SmartDashboard.putData("goInSixInches", new goInSixInchesCommand());
 
-    if ( intakeSubsystem.getRequestedShoulderPosition() != null && intakeSubsystem.getRequestedExtendPosition() != null) {
-      SmartDashboard.putData("Intake.elevate +", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() + 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
-      SmartDashboard.putData("Intake.elevate -", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getRequestedShoulderPosition() - 2, intakeSubsystem.getActualExtendPosition(), intakeSubsystem.getActualWristPosition())));
-      SmartDashboard.putData("Intake.extend +", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() + 0.5, intakeSubsystem.getActualWristPosition())));
-      SmartDashboard.putData("Intake.extend -", new SetIntakeLocationCommand(new IntakeLocation(intakeSubsystem.getActualShoulderElevation(), intakeSubsystem.getRequestedExtendPosition() - 0.5, intakeSubsystem.getActualWristPosition())));
-    }
+   
 
     /*
      * SmartDashboard.putData("GroundPosition", new
@@ -314,8 +310,6 @@ public class RobotContainer {
      * SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
      */
     SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
-    SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
-    SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
 
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
@@ -324,23 +318,21 @@ public class RobotContainer {
 
     SmartDashboard.putData("Manually position intake", new PositionIntakeManuallyCommand());
 
-    SmartDashboard.putData("Intake limp", new SetIntakeLocationCommand(new IntakeLocation(null, null, null)));
-
-    SmartDashboard.putData("Intake elevate to 0", new SetIntakeLocationCommand(new IntakeLocation(0, 0, 0)));
-    SmartDashboard.putData("Intake elevate to 10", new SetIntakeLocationCommand(new IntakeLocation(10, 0, 0)));
-    SmartDashboard.putData("Intake elevate to 20", new SetIntakeLocationCommand(new IntakeLocation(20, 0, 0)));
-    SmartDashboard.putData("Intake elevate to 40", new SetIntakeLocationCommand(new IntakeLocation(40, 0, 0)));
+    SmartDashboard.putData("Intake elevate to 0", new SetIntakeLocationCommand(new IntakeLocation(0)));
+    SmartDashboard.putData("Intake elevate to 10", new SetIntakeLocationCommand(new IntakeLocation(10)));
+    SmartDashboard.putData("Intake elevate to 20", new SetIntakeLocationCommand(new IntakeLocation(20)));
+    SmartDashboard.putData("Intake elevate to 40", new SetIntakeLocationCommand(new IntakeLocation(40)));
 
     SmartDashboard.putData("Intake elevate-extend-wrist to 10-0-0",
-        new SetIntakeLocationCommand(new IntakeLocation(10, 0, 0)));
+        new SetIntakeLocationCommand(new IntakeLocation(10)));
     SmartDashboard.putData("Intake elevate-extend-wrist to 10-0-4",
-        new SetIntakeLocationCommand(new IntakeLocation(10, 0, 4)));
-    SmartDashboard.putData("Intake elevate-extend to 10-2", new SetIntakeLocationCommand(new IntakeLocation(10, 2, 0)));
-    SmartDashboard.putData("Intake elevate-extend to 10-6", new SetIntakeLocationCommand(new IntakeLocation(10, 6, 0)));
-    SmartDashboard.putData("Intake elevate-extend to 10-8", new SetIntakeLocationCommand(new IntakeLocation(10, 8, 0)));
+        new SetIntakeLocationCommand(new IntakeLocation(10)));
+    SmartDashboard.putData("Intake elevate-extend to 10-2", new SetIntakeLocationCommand(new IntakeLocation(10)));
+    SmartDashboard.putData("Intake elevate-extend to 10-6", new SetIntakeLocationCommand(new IntakeLocation(10)));
+    SmartDashboard.putData("Intake elevate-extend to 10-8", new SetIntakeLocationCommand(new IntakeLocation(10)));
     SmartDashboard.putData("Intake elevate-extend to 10-14",
-        new SetIntakeLocationCommand(new IntakeLocation(10, 14, 0)));
-    SmartDashboard.putData("Intake elevate-extend to 75-0", new SetIntakeLocationCommand(new IntakeLocation(75, 0, 0)));
+        new SetIntakeLocationCommand(new IntakeLocation(10)));
+    SmartDashboard.putData("Intake elevate-extend to 75-0", new SetIntakeLocationCommand(new IntakeLocation(75)));
 
     // test rollers
     SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected(0.8));
@@ -376,7 +368,6 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(4500, 60)));
 
     SmartDashboard.putData("Test Intake Angle PID Zapper", new IntakeAnglePIDZapper());
-    SmartDashboard.putData("Test Intake Extension PID Zapper", new IntakeExtensionPIDZapper());
 
     SmartDashboard.putData("ShooterVisionAngleCommand", new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
