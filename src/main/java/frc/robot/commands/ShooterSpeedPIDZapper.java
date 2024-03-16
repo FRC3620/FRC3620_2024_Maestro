@@ -13,6 +13,7 @@ public class ShooterSpeedPIDZapper extends InstantCommand {
   ShooterSubsystem subsystem = RobotContainer.shooterSubsystem;
   TalonFX motor;
   String prefix;
+
   /** Creates a new ShooterAnglePIDZapper. */
   public ShooterSpeedPIDZapper(TalonFX motor, String prefix) {
     this.motor = motor;
@@ -21,18 +22,19 @@ public class ShooterSpeedPIDZapper extends InstantCommand {
     addRequirements(subsystem);
     if (motor != null) {
 
-    Slot0Configs config = new Slot0Configs();
-    StatusCode ss = motor.getConfigurator().refresh(config);
-    SmartDashboard.putString(prefix + ".pid.refresh.status", ss.toString());
+      Slot0Configs config = new Slot0Configs();
+      StatusCode ss = motor.getConfigurator().refresh(config);
+      SmartDashboard.putString(prefix + ".pid.refresh.status", ss.toString());
 
-    SmartDashboard.putNumber(prefix + ".pid.actual.kP", config.kP);
-    SmartDashboard.putNumber(prefix + ".pid.actual.kI", config.kI);
-    SmartDashboard.putNumber(prefix + ".pid.actual.kV", config.kV);
-    SmartDashboard.putNumber(prefix + ".pid.requested.kP", config.kP);
-    SmartDashboard.putNumber(prefix + ".pid.requested.kI", config.kI);
-    SmartDashboard.putNumber(prefix + ".pid.requested.kV", config.kV);
+      SmartDashboard.putNumber(prefix + ".pid.actual.kP", config.kP);
+      SmartDashboard.putNumber(prefix + ".pid.actual.kI", config.kI);
+      SmartDashboard.putNumber(prefix + ".pid.actual.kV", config.kV);
+      SmartDashboard.putNumber(prefix + ".pid.requested.kP", config.kP);
+      SmartDashboard.putNumber(prefix + ".pid.requested.kI", config.kI);
+      SmartDashboard.putNumber(prefix + ".pid.requested.kV", config.kV);
+    }
   }
-  }
+
 
   // Called when the command is initially scheduled.
   @Override

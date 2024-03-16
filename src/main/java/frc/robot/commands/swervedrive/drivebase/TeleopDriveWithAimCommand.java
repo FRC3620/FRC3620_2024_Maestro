@@ -81,14 +81,12 @@ public class TeleopDriveWithAimCommand extends Command {
     // see the right target?"
     
     
-    if(swerve.getAreWeAiming())
-  {
+    if(swerve.getAreWeAiming()){
       //grabs heading from vision subsystem
 
       // Turn Off Heading Correction
       //swerve.setHeadingCorrection(false);
 
-      vision.camYawToSpeaker();
       Double headingToTag = vision.getCamYawToSpeaker();
       //Note: headingToTag is a measurement of the yaw from the robot's perspective. 
       //we need to turn this into field orientation later

@@ -37,7 +37,7 @@ public class AutoShooterVisionAngleAdjustmentCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Double distance = vision.camDistToSpeakerTag();
+    Double distance = vision.getCamDistToSpeaker();
     if(distance == null){
       SmartDashboard.putString("shooterVision.doIHaveTarget", "no");
     }else{

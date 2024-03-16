@@ -30,7 +30,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0.0; // define FF
-  //final double outputLimit = 0.5; // the limit that the power cannot exceed
+  // final double outputLimit = 0.5; // the limit that the power cannot exceed
 
   // convert rotations to degree, run through a 75:1 gearbox, chain drive is 64 /
   // 24;
@@ -55,13 +55,13 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
   boolean disabledForDebugging = false;
 
-  public IntakeShoulderMechanism(CANSparkMax motor) { //The constructor
+  public IntakeShoulderMechanism(CANSparkMax motor) { // The constructor
     this.motor = motor;
     if (motor != null) {
       pid = motor.getPIDController();
-      pid.setP(kP); // 
-      pid.setI(kI); // 
-      pid.setD(kD); // 
+      pid.setP(kP); //
+      pid.setI(kI); //
+      pid.setD(kD); //
       pid.setFF(kFF); //
       pid.setOutputRange(-0.6, 0.9);
 
@@ -73,7 +73,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
   public void periodic() {
     // only do something if we actually have a motor
-    if (motor != null) { 
+    if (motor != null) {
       if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
@@ -109,7 +109,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
     motorEncoder.setPosition(0);
     setPosition(null);
 
-    //If there was a requested position while we were calibrating, go there
+    // If there was a requested position while we were calibrating, go there
     if (requestedPositionWhileCalibrating != null) {
       setPosition(requestedPositionWhileCalibrating);
       requestedPositionWhileCalibrating = null;
@@ -127,7 +127,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
    */
   public void setPosition(Double position) {
     // new Exception("who is doing this?").printStackTrace();
-    //logger.info ("Setting position to {}", position);
+    // logger.info ("Setting position to {}", position);
     SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
     if (position != null) {
       position = MathUtil.clamp(position, -40, 70);
@@ -185,7 +185,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
     SmartDashboard.putNumber(name + ".position", getActualPosition());
 
-    if (motor != null) { 
+    if (motor != null) {
       SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
       SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
