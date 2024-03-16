@@ -70,6 +70,8 @@ public class RobotDataLogger {
     for (var m : RobotContainer.swerveDriveMotors.entrySet()) {
       addMotorProviders(dataLogger, "swerve." + m.getKey() + ".drive", m.getValue(), EnumSet.allOf(MotorFields.class));
     }
+		dataLogger.addDataProvider("Robot.Odometry", () -> RobotContainer.drivebase.getPose());
+		dataLogger.addDataProvider("Robot.IMU.Heading", () -> RobotContainer.drivebase.getHeading());
   }
 
   void addMotorProviders(DataLogger dataLogger, String name, Object motor) {
