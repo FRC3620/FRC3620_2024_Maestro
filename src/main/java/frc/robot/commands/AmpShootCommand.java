@@ -4,21 +4,36 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.IntakeLocation;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSpeedAndAngle;
+import frc.robot.subsystems.ShooterSubsystem;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AmpShootCommand extends SequentialCommandGroup {
-  IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
+public class AmpShootCommand extends Command {
+  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
+  ShooterSpeedAndAngle shooterSpeedAndAngle = new ShooterSpeedAndAngle(10, 50);
+  ShooterSpeedAndAngle stopShooterSpeedAndAngle = new ShooterSpeedAndAngle(0, 50);
+
   /** Creates a new AmpShootCommand. */
   public AmpShootCommand() {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-    );
+    
+  }
+  @Override
+  public  void initialize(){
+    shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle);
+     shooterSubsystem.setAmpBarPosition(7);
+   
+    // need to add something for Shooter to be at speed and in correct position?
+    // need to work the indexer?
+
+  }
+  @Override
+  public void end(boolean interrupted) {
+      shooterSubsystem.setAmpBarPosition(0);
+      shooterSubsystem.setSpeedAndAngle(stopShooterSpeedAndAngle);
   }
 }
