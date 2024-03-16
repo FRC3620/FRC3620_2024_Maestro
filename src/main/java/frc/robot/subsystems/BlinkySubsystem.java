@@ -1,82 +1,114 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
-import com.revrobotics.SparkLimitSwitch;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.blinky.BlinkPattern;
-import frc.robot.blinky.LightSegment;
 import frc.robot.blinky.Pattern;
-import frc.robot.blinky.SolidPattern;
 
 /**/
 public class BlinkySubsystem extends SubsystemBase {
+  Logger logger = EventLogging.getLogger(getClass());
 
   AddressableLED leds;
   AddressableLEDBuffer lBuffer;
   Timer timer;
+  List<LightSegment> lightSegments = new ArrayList<>();
   public LightSegment lightSegment = new LightSegment(0, 19);
-  // final int numberOfLeds= 20;
-
-  RollersSubsystem rollersSubsystem;
-  VisionSubsystem visionSubsystem;
 
   /** Creates a new BlinkySubsystem. */
-  public BlinkySubsystem(RollersSubsystem rollersSubsystem, VisionSubsystem visionSubsystem) {
-    this.rollersSubsystem = rollersSubsystem;
-    this.visionSubsystem = visionSubsystem;
-
+  public BlinkySubsystem() {
     leds = new AddressableLED(0);
-    lBuffer = new AddressableLEDBuffer(19);
+    lBuffer = new AddressableLEDBuffer(20);
     timer = new Timer();
     leds.setLength(lBuffer.getLength());
     leds.start();
   }
 
-  public void updateLEDS(int first, int last, Color color) {
-    for (int i = first; i < last; i++) {
-      lBuffer.setLED(i, color);
+  @Override
+  public void periodic() {
+    boolean changed = false;
+    for (var lightSegment : lightSegments) {
+      if (lightSegment.runPattern()) {
+        changed = true;
+      }
+    }
+    if (changed) {
+      leds.setData(lBuffer);
     }
   }
 
-  /*
-   * public void setChase(int first,int last,Color color,int speed){
-   * timer.reset();
-   * timer.start();
-   * for(int i= first;i<last;i++){
-   * lBuffer.setLED(i, color);
-   * lBuffer.setLED(i+1, color);
-   * lBuffer.setLED(i+2, color);
-   * // lBuffer.setLED(i+3, color);
-   * }
-   * }
-   */
+  public LightSegment getLightSegment(int first, int last) {
+    LightSegment rv = new LightSegment(first, last);
+    lightSegments.add(rv);
+    return rv;
+  }
 
-  final Pattern blinkyGreen = new BlinkPattern().setColor(Color.kGreen);
-  final Pattern solidGreen = new SolidPattern().setColor(Color.kGreen);
-  final Pattern solidRed = new SolidPattern().setColor(Color.kRed);
+  public class LightSegment extends SubsystemBase {
+    int segment_first;
+    int segment_length;
 
-  @Override
-  public void periodic() {
-    // If game piece detected and we have a shooting solution, blink green
-    if (rollersSubsystem.gamePieceDetected()) {
-      if (visionSubsystem.doIHaveShootingSolution()) {
-        lightSegment.setPattern(blinkyGreen);
-      } else {
-        // If we have gamepiece but no shooting solution, solid green
-        lightSegment.setPattern(solidGreen);
-      }
-    } else { // No game piece, solid red
-      lightSegment.setPattern(solidRed);
+    Pattern currentPattern;
+
+    boolean patternChanged = false;
+
+    public LightSegment(int first, int last) {
+      this.segment_first = first;
+      this.segment_length = (last - first) + 1;
+      setName(getName() + "[" + first + "-" + last + "]");
     }
-    lightSegment.periodic();
-    leds.setData(lBuffer);
+
+    /**
+     * Define what pattern the light segment should display.
+     * 
+     * @param pattern
+     */
+    public void setPattern(Pattern pattern) {
+      if (pattern == currentPattern)
+        return;
+      logger.info ("{} pattern set to {}", getName(), pattern.toString());
+      patternChanged = true;
+      if (currentPattern != null) {
+        currentPattern.done(this);
+      }
+      currentPattern = pattern;
+      currentPattern.start(this);
+    }
+
+    boolean runPattern() {
+      boolean rv = patternChanged;
+      patternChanged = false;
+      if (currentPattern != null) {
+        if (currentPattern.periodic(this)) {
+          rv = true;
+        }
+      }
+      return rv;
+    }
+
+    public void updateLEDs(Color color) {
+      updateLEDs(0, segment_length, color);
+    }
+
+    public void updateLEDs(int first, Color color) {
+      updateLEDs(first, first, color);
+    }
+
+    public void updateLEDs(int first, int last, Color color) {
+      for (int i = first; i < last; i++) {
+        lBuffer.setLED(i + segment_first, color);
+      }
+    }
+
+    public int getLength() {
+      return segment_length;
+    }
   }
 }

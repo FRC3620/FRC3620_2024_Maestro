@@ -5,6 +5,7 @@
 package org.usfirst.frc3620.misc;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -143,4 +144,9 @@ public class Utilities {
 
   }
 
+  public static double sum (List<Double> l) {
+    double rv = 0;
+    for (double v : l) rv += v;
+    return rv;
+  }
 }

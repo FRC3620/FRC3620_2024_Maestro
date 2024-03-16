@@ -1,14 +1,11 @@
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
-import frc.robot.commands.swervedrive.drivebase.TestDriveCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import edu.wpi.first.math.MathUtil;
+import swervelib.SwerveModule;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -20,14 +17,14 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
+import frc.robot.blinky.DefaultBlinkyCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.BlinkySubsystem.LightSegment;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -41,7 +38,6 @@ import org.usfirst.frc3620.misc.FlySkyConstants;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -65,15 +61,21 @@ public class RobotContainer {
   public static RollersSubsystem rollersSubsystem;
   public static ClimbElevationSubsystem climbElevationSubsystem;
   public static ShooterSubsystem shooterSubsystem;
-  public static BlinkySubsystem blinkySubsystem;
+  /* public static */ BlinkySubsystem blinkySubsystem;
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
   public static VisionSubsystem visionSubsystem;
   public static IntakeLocation intakeLocation;
 
+  public static LightSegment lightSegment;
+  public static HealthMonitorSubsystem healthMonitorSubsystem;
+
   public static List<Subsystem> allSubsystems = new ArrayList<>();
 
   private SuperSwerveController superSwerveController;
+
+  public static Map<String, Object> swerveDriveMotors = new HashMap<>();
+  public static Map<String, Object> swerveAzimuthMotors = new HashMap<>();
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
@@ -130,7 +132,8 @@ public class RobotContainer {
 
     setupSmartDashboardCommands();
 
-    setupAutonomousCommands();
+    // TODO put this back
+    // setupAutonomousCommands();
 
     SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase,
         superSwerveController,
@@ -187,9 +190,14 @@ public class RobotContainer {
     shooterSubsystem = new ShooterSubsystem();
     addSubsystem(shooterSubsystem);
 
-    blinkySubsystem = new BlinkySubsystem(rollersSubsystem, visionSubsystem);
+    blinkySubsystem = new BlinkySubsystem();
     addSubsystem(blinkySubsystem);
-    //new InstantCommand(() -> blinkySubsystem.periodic());
+
+    healthMonitorSubsystem = new HealthMonitorSubsystem();
+    addSubsystem(healthMonitorSubsystem);
+
+    lightSegment = blinkySubsystem.getLightSegment(0, 19);
+    lightSegment.setDefaultCommand(new DefaultBlinkyCommand(lightSegment));
 
     Robot.printMemoryStatus("making drivebase");
 
@@ -205,6 +213,13 @@ public class RobotContainer {
     superSwerveController = new SuperSwerveController(drivebase);
 
     Robot.printMemoryStatus("making subsystems");
+
+    SwerveModule[] modules = drivebase.getSwerveDrive().getModules();
+    for (var module : modules) {
+      String moduleName = module.getConfiguration().name;
+      swerveAzimuthMotors.put(moduleName, module.getAngleMotor().getMotor());
+      swerveDriveMotors.put(moduleName, module.getDriveMotor().getMotor());
+    }
   }
 
   public String getDriverControllerName() {
@@ -372,6 +387,7 @@ public class RobotContainer {
     SmartDashboard.putData("ShooterVisionAngleCommand", new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
     SmartDashboard.putData("CameraLockToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
+    SmartDashboard.putData("SwerveDaignostics", new SwerveDriveDiagnosticCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
