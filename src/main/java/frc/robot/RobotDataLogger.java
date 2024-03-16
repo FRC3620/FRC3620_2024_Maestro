@@ -49,7 +49,7 @@ public class RobotDataLogger {
           () -> RobotContainer.climbElevationSubsystem.motor.getMotorTemperature());
     }
     // we have a target?
-    dataLogger.addDataProvider("doWeHaveATarget", () -> RobotContainer.visionSubsystem.doIHaveTarget());
+    dataLogger.addDataProvider("doWeHaveATarget", () -> RobotContainer.visionSubsystem.getCamYawToSpeaker() != null);
     // requested vs actual headings
     // shooter motor velocities
     if (RobotContainer.shooterSubsystem.topMotor != null) {
