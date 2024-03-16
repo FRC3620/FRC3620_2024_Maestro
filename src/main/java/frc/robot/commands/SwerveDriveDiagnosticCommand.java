@@ -15,24 +15,21 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.misc.Utilities.SlidingWindowStats;
 
 import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.blinky.BlinkPattern;
-import frc.robot.blinky.Pattern;
-import frc.robot.blinky.SolidPattern;
 import frc.robot.subsystems.BlinkySubsystem.LightSegment;
 
 public class SwerveDriveDiagnosticCommand extends Command {
+  final int slidingWindowSize = 100; // 50 samples a second, so 2 seconds
   LightSegment lightSegment;
   Logger logger = EventLogging.getLogger(getClass());
-  List<CANSparkBase> azimuths = new ArrayList<>(4); // probably 4 motors
 
   Map<String, SlidingWindowStats> driveMotorCurrents = new HashMap<>();
+  Map<String, SlidingWindowStats> azimuthMotorCurrents = new HashMap<>();
 
   double power;
 
@@ -54,7 +51,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
 
     for (var nameAndMotor : RobotContainer.swerveDriveMotors.entrySet()) {
       if (nameAndMotor.getValue() instanceof CANSparkBase) {
-        driveMotorCurrents.put(nameAndMotor.getKey(), new SlidingWindowStats(100));
+        driveMotorCurrents.put(nameAndMotor.getKey(), new SlidingWindowStats(slidingWindowSize));
       } else {
         logger.error("Swerve Drive Motor {} is not a CANSparkBase, it is a {}", nameAndMotor.getKey(),
             nameAndMotor.getValue().getClass());
@@ -63,9 +60,9 @@ public class SwerveDriveDiagnosticCommand extends Command {
 
     for (var nameAndMotor : RobotContainer.swerveAzimuthMotors.entrySet()) {
       if (nameAndMotor.getValue() instanceof CANSparkBase) {
-        azimuths.add((CANSparkBase) nameAndMotor.getValue());
+        azimuthMotorCurrents.put(nameAndMotor.getKey(), new SlidingWindowStats(slidingWindowSize));
       } else {
-        logger.error("Swerve Aizmuth Motor {} is not a CANSparkBase, it is a {}", nameAndMotor.getKey(),
+        logger.error("Swerve Azimuth Motor {} is not a CANSparkBase, it is a {}", nameAndMotor.getKey(),
             nameAndMotor.getValue().getClass());
       }
     }
@@ -82,6 +79,9 @@ public class SwerveDriveDiagnosticCommand extends Command {
     for (var stat : driveMotorCurrents.values()) {
       stat.clear();
     }
+    for (var stat : azimuthMotorCurrents.values()) {
+      stat.clear();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -90,8 +90,8 @@ public class SwerveDriveDiagnosticCommand extends Command {
     Color driveColor = colorOk;
     Color aziColor = colorOk;
 
-    List<Double> driveSpeeds = new ArrayList<>();
-    List<Double> driveCurrents = new ArrayList<>();
+    List<Double> driveSpeeds = new ArrayList<>(driveMotorCurrents.size());
+    List<Double> driveCurrents = new ArrayList<>(driveMotorCurrents.size());
     for (var nameAndCurrentStat : driveMotorCurrents.entrySet()) {
       String name = nameAndCurrentStat.getKey();
       SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
@@ -121,14 +121,24 @@ public class SwerveDriveDiagnosticCommand extends Command {
       driveColor = colorDriveBad;
     }
 
-    List<Double> aziSpeeds = new ArrayList<>(azimuths.size());
-    List<Double> aziCurrents = new ArrayList<>(azimuths.size());
-    for (var azimuth : azimuths) {
-      azimuth.set(power);
+    List<Double> aziSpeeds = new ArrayList<>(azimuthMotorCurrents.size());
+    List<Double> aziCurrents = new ArrayList<>(azimuthMotorCurrents.size());
+    for (var nameAndCurrentStat : azimuthMotorCurrents.entrySet()) {
+      String name = nameAndCurrentStat.getKey();
+      SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
+      CANSparkBase motor = (CANSparkBase) RobotContainer.swerveAzimuthMotors.get(name);
+      motor.set(power);
 
-      aziSpeeds.add(azimuth.getEncoder().getVelocity());
-      aziCurrents.add(azimuth.getOutputCurrent());
+      double velocity = motor.getEncoder().getVelocity();
+      SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.speed", velocity);
+      driveSpeeds.add(velocity);
+
+      currentStat.addValue(motor.getOutputCurrent());
+      double mean = currentStat.getMean();
+      SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.current", mean);
+      driveCurrents.add(mean);
     }
+
     double minAziSpeed = Collections.min(aziSpeeds);
     double maxAziSpeed = Collections.max(aziSpeeds);
     double minAziCurrent = Collections.min(aziCurrents);
@@ -142,8 +152,12 @@ public class SwerveDriveDiagnosticCommand extends Command {
       aziColor = colorAziBad;
     }
 
-    if (maxAziSpeed == 0 || maxAziCurrent == 0 || maxDriveCurrent == 0 || maxDriveSpeed == 0) {
-      aziColor = driveColor = colorZeroMotors;
+    if (maxAziSpeed == 0 || maxAziCurrent == 0) {
+      aziColor = colorZeroMotors;
+    }
+
+    if (maxDriveCurrent == 0 || maxDriveSpeed == 0) {
+      driveColor = colorZeroMotors;
     }
 
     myPattern.setColor1(driveColor);
@@ -155,9 +169,6 @@ public class SwerveDriveDiagnosticCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //for (var motor : motors) {
-    //  motor.set(0.0);
-    //}
   }
 
   // Returns true when the command should end.
