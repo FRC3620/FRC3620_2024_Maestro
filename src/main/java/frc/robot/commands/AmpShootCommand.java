@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -12,26 +13,27 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class AmpShootCommand extends SequentialCommandGroup {
+public class AmpShootCommand extends Command {
   ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
   ShooterSpeedAndAngle shooterSpeedAndAngle = new ShooterSpeedAndAngle(10, 50);
   ShooterSpeedAndAngle stopShooterSpeedAndAngle = new ShooterSpeedAndAngle(0, 50);
 
   /** Creates a new AmpShootCommand. */
   public AmpShootCommand() {
-    addCommands(
-        new InstantCommand(() -> shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle)),
-        new InstantCommand(() -> shooterSubsystem.setAmpBarPosition(7)),
-        new WaitUntilCommand(() -> shooterSubsystem.getAmpBarPosition() > 6),
+    
+  }
+  @Override
+  public  void initialize(){
+    shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle);
+     shooterSubsystem.setAmpBarPosition(7);
+   
+    // need to add something for Shooter to be at speed and in correct position?
+    // need to work the indexer?
 
-        // need to add something for Shooter to be at speed and in correct position
-        //?
-
-        // need to work the indexer
-        //?
-
-        new WaitCommand(0.2),
-        new InstantCommand(() -> shooterSubsystem.setAmpBarPosition(0)),
-        new InstantCommand(() -> shooterSubsystem.setSpeedAndAngle(stopShooterSpeedAndAngle)));
+  }
+  @Override
+  public void end(boolean interrupted) {
+      shooterSubsystem.setAmpBarPosition(0);
+      shooterSubsystem.setSpeedAndAngle(stopShooterSpeedAndAngle);
   }
 }

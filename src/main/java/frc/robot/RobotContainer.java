@@ -249,9 +249,9 @@ public class RobotContainer {
     // bring intake to home position
     operatorDpad.up().onTrue(new GroundToHomeCommand());
 
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
+  /*  new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
-
+*/
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
         .toggleOnTrue(new SetShooterSpeedCommand(5000))
         .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
@@ -279,6 +279,15 @@ public class RobotContainer {
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
         .onTrue(new ActivateClimberJoystickCommand());    
+
+
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
+    .toggleOnTrue(new AmpShootCommand());    
+/*
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
+    .toggleOnFalse(new AmpShootCommandPart2());    
+*/
+
 
     // NOT NEEDED. ActivateClimberJoystickCommand takes care of these
     // new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
@@ -315,7 +324,9 @@ public class RobotContainer {
      */
     SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
     SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
+    
     SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
+    // SmartDashboard.putData("AmpShootCommandPart2", new AmpShootCommandPart2());
 
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
