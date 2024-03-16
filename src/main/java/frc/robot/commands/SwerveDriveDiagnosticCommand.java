@@ -88,79 +88,86 @@ public class SwerveDriveDiagnosticCommand extends Command {
   @Override
   public void execute() {
     Color driveColor = colorOk;
+    if (driveMotorCurrents.size() > 0) {
+      List<Double> driveSpeeds = new ArrayList<>(driveMotorCurrents.size());
+      List<Double> driveCurrents = new ArrayList<>(driveMotorCurrents.size());
+      for (var nameAndCurrentStat : driveMotorCurrents.entrySet()) {
+        String name = nameAndCurrentStat.getKey();
+        SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
+        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveDriveMotors.get(name);
+        motor.set(power);
+
+        double velocity = motor.getEncoder().getVelocity();
+        SmartDashboard.putNumber("Diagnostics." + name + ".drive.speed", velocity);
+        driveSpeeds.add(velocity);
+
+        currentStat.addValue(motor.getOutputCurrent());
+        double mean = currentStat.getMean();
+        SmartDashboard.putNumber("Diagnostics." + name + ".drive.current", mean);
+        driveCurrents.add(mean);
+      }
+
+      double minDriveSpeed = Collections.min(driveSpeeds);
+      double maxDriveSpeed = Collections.max(driveSpeeds);
+      double minDriveCurrent = Collections.min(driveCurrents);
+      double maxDriveCurrent = Collections.max(driveCurrents);
+
+      if (minDriveSpeed / maxDriveSpeed < .9) {
+        driveColor = colorDriveBad;
+      }
+
+      if (minDriveCurrent / maxDriveCurrent < .9) {
+        driveColor = colorDriveBad;
+      }
+
+      if (maxDriveCurrent == 0 || maxDriveSpeed == 0) {
+        driveColor = colorZeroMotors;
+      }
+    } else {
+      driveColor = colorZeroMotors;
+
+    }
+    myPattern.setColor1(driveColor);
+
     Color aziColor = colorOk;
+    if (azimuthMotorCurrents.size() > 0) {
+      List<Double> aziSpeeds = new ArrayList<>(azimuthMotorCurrents.size());
+      List<Double> aziCurrents = new ArrayList<>(azimuthMotorCurrents.size());
+      for (var nameAndCurrentStat : azimuthMotorCurrents.entrySet()) {
+        String name = nameAndCurrentStat.getKey();
+        SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
+        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveAzimuthMotors.get(name);
+        motor.set(power);
 
-    List<Double> driveSpeeds = new ArrayList<>(driveMotorCurrents.size());
-    List<Double> driveCurrents = new ArrayList<>(driveMotorCurrents.size());
-    for (var nameAndCurrentStat : driveMotorCurrents.entrySet()) {
-      String name = nameAndCurrentStat.getKey();
-      SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
-      CANSparkBase motor = (CANSparkBase) RobotContainer.swerveDriveMotors.get(name);
-      motor.set(power);
+        double velocity = motor.getEncoder().getVelocity();
+        SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.speed", velocity);
+        aziSpeeds.add(velocity);
 
-      double velocity = motor.getEncoder().getVelocity();
-      SmartDashboard.putNumber("Diagnostics." + name + ".drive.speed", velocity);
-      driveSpeeds.add(velocity);
+        currentStat.addValue(motor.getOutputCurrent());
+        double mean = currentStat.getMean();
+        SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.current", mean);
+        aziCurrents.add(mean);
+      }
 
-      currentStat.addValue(motor.getOutputCurrent());
-      double mean = currentStat.getMean();
-      SmartDashboard.putNumber("Diagnostics." + name + ".drive.current", mean);
-      driveCurrents.add(mean);
-    }
+      double minAziSpeed = Collections.min(aziSpeeds);
+      double maxAziSpeed = Collections.max(aziSpeeds);
+      double minAziCurrent = Collections.min(aziCurrents);
+      double maxAziCurrent = Collections.max(aziCurrents);
 
-    double minDriveSpeed = Collections.min(driveSpeeds);
-    double maxDriveSpeed = Collections.max(driveSpeeds);
-    double minDriveCurrent = Collections.min(driveCurrents);
-    double maxDriveCurrent = Collections.max(driveCurrents);
+      if (minAziSpeed / maxAziSpeed < .9) {
+        aziColor = colorAziBad;
+      }
 
-    if (minDriveSpeed / maxDriveSpeed < .9) {
-      driveColor = colorDriveBad;
-    }
+      if (minAziCurrent / maxAziCurrent < .9) {
+        aziColor = colorAziBad;
+      }
 
-    if (minDriveCurrent / maxDriveCurrent < .9) {
-      driveColor = colorDriveBad;
-    }
-
-    List<Double> aziSpeeds = new ArrayList<>(azimuthMotorCurrents.size());
-    List<Double> aziCurrents = new ArrayList<>(azimuthMotorCurrents.size());
-    for (var nameAndCurrentStat : azimuthMotorCurrents.entrySet()) {
-      String name = nameAndCurrentStat.getKey();
-      SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
-      CANSparkBase motor = (CANSparkBase) RobotContainer.swerveAzimuthMotors.get(name);
-      motor.set(power);
-
-      double velocity = motor.getEncoder().getVelocity();
-      SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.speed", velocity);
-      driveSpeeds.add(velocity);
-
-      currentStat.addValue(motor.getOutputCurrent());
-      double mean = currentStat.getMean();
-      SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.current", mean);
-      driveCurrents.add(mean);
-    }
-
-    double minAziSpeed = Collections.min(aziSpeeds);
-    double maxAziSpeed = Collections.max(aziSpeeds);
-    double minAziCurrent = Collections.min(aziCurrents);
-    double maxAziCurrent = Collections.max(aziCurrents);
-
-    if (minAziSpeed / maxAziSpeed < .9) {
-      aziColor = colorAziBad;
-    }
-
-    if (minAziCurrent / maxAziCurrent < .9) {
-      aziColor = colorAziBad;
-    }
-
-    if (maxAziSpeed == 0 || maxAziCurrent == 0) {
+      if (maxAziSpeed == 0 || maxAziCurrent == 0) {
+        aziColor = colorZeroMotors;
+      }
+    } else {
       aziColor = colorZeroMotors;
     }
-
-    if (maxDriveCurrent == 0 || maxDriveSpeed == 0) {
-      driveColor = colorZeroMotors;
-    }
-
-    myPattern.setColor1(driveColor);
     myPattern.setColor2(aziColor);
 
     SmartDashboard.putString("Diagnostics.lightPattern", myPattern.toString());
