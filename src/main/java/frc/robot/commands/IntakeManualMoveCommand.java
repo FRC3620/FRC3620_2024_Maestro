@@ -6,10 +6,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class IntakeManualMove extends Command {
+public class IntakeManualMoveCommand extends Command {
   IntakeSubsystem subsystem = RobotContainer.intakeSubsystem;
 
-  public IntakeManualMove() {
+  public IntakeManualMoveCommand() {
     addRequirements(subsystem);
   }
 

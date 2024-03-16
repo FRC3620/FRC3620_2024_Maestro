@@ -254,8 +254,8 @@ public class RobotContainer {
     }
 
     // intake
-    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnTrue(new GroundPickupCommand());
-    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnFalse(new GroundToHomeCommand());
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnTrue(new SetIntakeLocationCommand(IntakeLocation.IntakeOut));
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnFalse(new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
 
     // well, shoot
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunRollersUntilGone(0.8));
@@ -264,7 +264,7 @@ public class RobotContainer {
     driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(-0.8));
 
     // bring intake to home position
-    operatorDpad.up().onTrue(new GroundToHomeCommand());
+    operatorDpad.up().onTrue(new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
 
   /*  new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
@@ -333,8 +333,9 @@ public class RobotContainer {
      * SmartDashboard.putData("PreclimbPosition", new
      * SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
      */
-    SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
-    SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
+    SmartDashboard.putData("HomeToGroundPosition", new SetIntakeLocationCommand(IntakeLocation.IntakeOut));
+    SmartDashboard.putData("GroundToHomePosition", new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
+    SmartDashboard.putData("IntakeManual", new IntakeManualMoveCommand());
     
     SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
     // SmartDashboard.putData("AmpShootCommandPart2", new AmpShootCommandPart2());
@@ -393,7 +394,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("PICKUP INTAKE POSITION", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8).withTimeout(3));
-    NamedCommands.registerCommand("LOAD OMEGA BEAM", new GroundToHomeCommand());
+    NamedCommands.registerCommand("LOAD OMEGA BEAM", new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
     NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
     NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
     NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
