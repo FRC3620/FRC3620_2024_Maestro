@@ -247,13 +247,13 @@ public class RobotContainer {
     driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(-0.8));
 
     driverJoystick.button(XBoxConstants.BUTTON_X, 99)
-      .onTrue(new InstantCommand(() -> drivebase.lock()));
+      .onTrue(new InstantCommand(() -> drivebase.lock(), drivebase));
 
     driverJoystick.button(XBoxConstants.BUTTON_Y,98)
-      .onTrue(new InstantCommand(() -> drivebase.alignModules(0)));
+      .whileTrue(new InstantCommand(() -> drivebase.alignModules(0), drivebase));
 
     driverJoystick.button(XBoxConstants.BUTTON_B,97)
-      .onTrue(new InstantCommand(() -> drivebase.alignModules(90)));
+      .whileTrue(new InstantCommand(() -> drivebase.alignModules(90), drivebase));
 
     // bring intake to home position
     operatorDpad.up().onTrue(new GroundToHomeCommand());
