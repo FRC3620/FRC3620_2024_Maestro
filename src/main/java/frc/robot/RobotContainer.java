@@ -344,24 +344,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("LockCamToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
 
-    SmartDashboard.putData("Manually position intake", new PositionIntakeManuallyCommand());
-
-    SmartDashboard.putData("Intake elevate to 0", new SetIntakeLocationCommand(new IntakeLocation(0)));
-    SmartDashboard.putData("Intake elevate to 10", new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate to 20", new SetIntakeLocationCommand(new IntakeLocation(20)));
-    SmartDashboard.putData("Intake elevate to 40", new SetIntakeLocationCommand(new IntakeLocation(40)));
-
-    SmartDashboard.putData("Intake elevate-extend-wrist to 10-0-0",
-        new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend-wrist to 10-0-4",
-        new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 10-2", new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 10-6", new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 10-8", new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 10-14",
-        new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 75-0", new SetIntakeLocationCommand(new IntakeLocation(75)));
-
     // test rollers
     SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected(0.8));
     SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone(-0.8));

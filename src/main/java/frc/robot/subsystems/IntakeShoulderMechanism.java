@@ -14,8 +14,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,9 +30,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   final double kFF = 0.0; // define FF
   // final double outputLimit = 0.5; // the limit that the power cannot exceed
 
-  // convert rotations to degree, run through a 75:1 gearbox, chain drive is 64 /
-  // 24;
-  final double positionConverionFactor = 360 * ( 1 / 75.0) * (24.0 / 64.0); 
+  final double positionConverionFactor = 1;
   final double velocityConverionFactor = positionConverionFactor;
 
   // Ingredients: Motor, Encoder, PID, and Timer
@@ -47,11 +43,14 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   // Robot is set to "not calibrated" by default
   boolean encoderCalibrated = false;
 
-  // saves the requested position
-  Double requestedPosition = null;
+  // saves the requested location
+  IntakeLocation requestedLocation = null;
 
-  // to save a requested position if encoder is not calibrated
-  Double requestedPositionWhileCalibrating = null;
+  // the requested pid setpoint
+  double requestedPIDSetpoint;
+
+  // in case we manually adjusting
+  Double manualPower = null;
 
   boolean disabledForDebugging = false;
 
@@ -77,25 +76,55 @@ public class IntakeShoulderMechanism implements HasTelemetry {
       if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
-            // If the robot is running, and the encoder is "not calibrated," run motor very
-            // slowly towards the stop
-            setPower(0.0);
-            if (calibrationTimer == null) {
-              // we need to calibrate and we have no timer. make one and start it
-              calibrationTimer = new Timer();
-              calibrationTimer.reset();
-              calibrationTimer.start();
-            } else {
-              // we have a timer, has the motor had power long enough to spin up
-              if (calibrationTimer.get() > 0.5) {
-                // motor should be moving if not against the stop
-                double velocity = motorEncoder.getVelocity();
-                if (Math.abs(velocity) < 2) {
-                  markCalibrated();
-                }
-              }
-            }
+            periodicWhileCalibrated();
+          } else {
+            periodicOnceCalibrated();
           }
+        }
+      }
+    }
+  }
+
+  void periodicOnceCalibrated() {
+    if (!disabledForDebugging) {
+      Double requestedPower = null;
+      if (manualPower != null) {
+        requestedPower = manualPower;
+      } else {
+        double currentPosition = getActualPosition();
+        if (requestedLocation == IntakeLocation.IntakeIn) {
+          if (currentPosition < requestedLocation.getIntakePositionSetpoint() + 0.5) {
+            requestedPower = -0.1;
+          }
+        } else {
+          if (currentPosition < requestedLocation.getIntakePositionSetpoint() - 0.5) {
+            requestedPower = +0.1;
+          }
+        }
+      }
+
+      if (requestedPower != null) {
+        setPower(requestedPower);
+      } // else the PID is driving
+    }
+  }
+
+  void periodicWhileCalibrated() {
+    // If the robot is running, and the encoder is "not calibrated," run motor very
+    // slowly towards the stop
+    setPower(0.0);
+    if (calibrationTimer == null) {
+      // we need to calibrate and we have no timer. make one and start it
+      calibrationTimer = new Timer();
+      calibrationTimer.reset();
+      calibrationTimer.start();
+    } else {
+      // we have a timer, has the motor had power long enough to spin up
+      if (calibrationTimer.get() > 0.5) {
+        // motor should be moving if not against the stop
+        double velocity = motorEncoder.getVelocity();
+        if (Math.abs(velocity) < 2) {
+          markCalibrated();
         }
       }
     }
@@ -107,43 +136,35 @@ public class IntakeShoulderMechanism implements HasTelemetry {
     encoderCalibrated = true;
     setPower(0.0);
     motorEncoder.setPosition(0);
-    setPosition(null);
+    setLocation(IntakeLocation.IntakeIn);
+  }
 
-    // If there was a requested position while we were calibrating, go there
-    if (requestedPositionWhileCalibrating != null) {
-      setPosition(requestedPositionWhileCalibrating);
-      requestedPositionWhileCalibrating = null;
-    }
+  public void setManualPower(Double power) {
+    this.manualPower = power;
   }
 
   public boolean isCalibrated() {
     return encoderCalibrated;
   }
 
+  public void setLocation(IntakeLocation location) {
+    this.requestedLocation = location;
+    setPositionSetpoint(location.getIntakePositionSetpoint());
+  }
+
+  public IntakeLocation getRequestedLocation() {
+    return requestedLocation;
+  }
+
   /**
    * Set the target position
    * 
-   * @param position units are ???, referenced from position 0 == ?????
+   * @param position units are ???, referenced from position 0 == in
    */
-  public void setPosition(Double position) {
-    // new Exception("who is doing this?").printStackTrace();
-    // logger.info ("Setting position to {}", position);
-    SmartDashboard.putNumber(name + ".requestedPosition", position != null ? position : 3620);
-    if (position != null) {
-      position = MathUtil.clamp(position, -40, 70);
-    }
-    requestedPosition = position;
-    if (encoderCalibrated) {
-      if (!disabledForDebugging) {
-        if (position != null) {
-          pid.setReference(position, ControlType.kPosition);
-        } else {
-          motor.stopMotor();
-        }
-      }
-    } else {
-      requestedPositionWhileCalibrating = position;
-    }
+  void setPositionSetpoint(double position) {
+    SmartDashboard.putNumber(name + ".requestedPosition", position);
+    requestedPIDSetpoint = position;
+    pid.setReference(position, ControlType.kPosition);
   }
 
   /**
@@ -151,8 +172,8 @@ public class IntakeShoulderMechanism implements HasTelemetry {
    * 
    * @return the last requested position, units as in setPosition()
    */
-  public Double getRequestedPosition() {
-    return requestedPosition;
+  public double getPositionSetpoint() {
+    return requestedPIDSetpoint;
   }
 
   /**
@@ -183,7 +204,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   public void updateTelemetry() {
     SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
 
-    SmartDashboard.putNumber(name + ".position", getActualPosition());
+    SmartDashboard.putString(name + ".requestedLocation", requestedLocation.toString());
 
     if (motor != null) {
       SmartDashboard.putNumber(name + ".current", motor.getOutputCurrent());

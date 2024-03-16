@@ -1,30 +1,15 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
+public enum IntakeLocation {
+  IntakeIn(0), IntakeOut(7);
 
-/** Add your docs here. */
-public class IntakeLocation {
-    public static IntakeLocation IntakeIn = new IntakeLocation(-17.6);
-    public static IntakeLocation IntakeOut = new IntakeLocation(5);
-   
+  private double intakePositionSetpoint;
 
-    Double shoulder;
+  IntakeLocation(double intakePositionsetpoint) {
+    this.intakePositionSetpoint = intakePositionsetpoint;
+  }
 
-    public IntakeLocation(double shoulder) {
-        this.shoulder = shoulder;
-    
-    }
-
-    public Double getShoulder() {
-        return shoulder;
-    }
-
-    @Override
-    public String toString() {
-        return "IntakeLocation [shoulder=" + shoulder +"]";
-    }
-
+  public double getIntakePositionSetpoint() {
+    return intakePositionSetpoint;
+  }
 }
