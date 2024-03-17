@@ -35,21 +35,22 @@ public class ShooterSpeedPIDZapper extends InstantCommand {
     }
   }
 
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     if (motor != null) {
-      Slot0Configs config = new Slot0Configs();
-      motor.getConfigurator().refresh(config);
-      config.kP = SmartDashboard.getNumber(prefix + ".pid.requested.kP", 0);
-      config.kI = SmartDashboard.getNumber(prefix + ".pid.requested.kI", 0);
-      config.kV = SmartDashboard.getNumber(prefix + ".pid.requested.kV", 0);
-      motor.getConfigurator().apply(config);
+    Slot0Configs config = new Slot0Configs();
+    motor.getConfigurator().refresh(config);
+    config.kP = SmartDashboard.getNumber(prefix + ".pid.requested.kP", 0);
+    config.kI = SmartDashboard.getNumber(prefix + ".pid.requested.kI", 0);
+    config.kV = SmartDashboard.getNumber(prefix + ".pid.requested.kV", 0);
+    motor.getConfigurator().apply(config);
 
-      motor.getConfigurator().refresh(config);
-      SmartDashboard.putNumber(prefix + ".pid.actual.kP", config.kP);
-      SmartDashboard.putNumber(prefix + ".pid.actual.kI", config.kI);
-      SmartDashboard.putNumber(prefix + ".pid.actual.kV", config.kV);
+    motor.getConfigurator().refresh(config);
+    SmartDashboard.putNumber(prefix + ".pid.actual.kP", config.kP);
+    SmartDashboard.putNumber(prefix + ".pid.actual.kI", config.kI);
+    SmartDashboard.putNumber(prefix + ".pid.actual.kV", config.kV);
     }
   }
 

@@ -24,17 +24,18 @@ public class IntakeAnglePIDZapper extends InstantCommand {
       SmartDashboard.putNumber("test.intake.angle.pid.requested.kI", pid.getI());
     }
   }
+  
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     if (subsystem.shoulder != null) {
-      double kP = SmartDashboard.getNumber("test.intake.angle.pid.requested.kP", 0);
-      double kI = SmartDashboard.getNumber("test.intake.angle.pid.requested.kI", 0);
-      pid.setP(kP);
-      pid.setI(kI);
-      SmartDashboard.putNumber("test.intake.angle.pid.actual.kP", pid.getP());
-      SmartDashboard.putNumber("test.intake.angle.pid.actual.kI", pid.getI());
+    double kP = SmartDashboard.getNumber("test.intake.angle.pid.requested.kP", 0);
+    double kI = SmartDashboard.getNumber("test.intake.angle.pid.requested.kI", 0);
+    pid.setP(kP);
+    pid.setI(kI);
+    SmartDashboard.putNumber("test.intake.angle.pid.actual.kP", pid.getP());
+    SmartDashboard.putNumber("test.intake.angle.pid.actual.kI", pid.getI());
     }
   }
 

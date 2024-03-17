@@ -34,7 +34,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
   // convert rotations to degree, run through a 75:1 gearbox, chain drive is 64 /
   // 24;
-  final double positionConverionFactor = 360 * (1 / 75.0) * (24.0 / 64.0);
+  final double positionConverionFactor = 360 * ( 1 / 75.0) * (24.0 / 64.0); 
   final double velocityConverionFactor = positionConverionFactor;
 
   // Ingredients: Motor, Encoder, PID, and Timer
@@ -76,7 +76,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
     if (motor != null) {
       if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
-          if (!encoderCalibrated) {
+          if (!encoderCalibrated) { 
             // If the robot is running, and the encoder is "not calibrated," run motor very
             // slowly towards the stop
             setPower(0.0);
@@ -162,7 +162,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
    */
   public double getActualPosition() {
     if (motorEncoder != null) {
-      return motorEncoder.getPosition();
+    return motorEncoder.getPosition();
     } else {
       return 0.0;
     }
