@@ -22,6 +22,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.BlinkySubsystem.LightSegment;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -407,6 +408,15 @@ public class RobotContainer {
 
     SmartDashboard.putData("CameraLockToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
     SmartDashboard.putData("SwerveDaignostics", new SwerveDriveDiagnosticCommand());
+
+    // indexer test
+    SmartDashboard.putData("Indexer Test", new FunctionalCommand(
+      () -> {}, // initialize()
+      () -> indexerSubsystem.setPower(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X)), // execute()
+      (b) -> indexerSubsystem.setPower(0.0), // end()
+      () -> false, // isFinished()
+      indexerSubsystem // requirements
+    ));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

@@ -9,6 +9,13 @@ import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
 
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -26,26 +33,18 @@ public class IndexerSubsystem extends SubsystemBase implements HasTelemetry {
 
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-  public CANSparkMaxSendable motor;
-  RelativeEncoder encoder;
-  SparkLimitSwitch limitSwitch;
+  public TalonFX motor;
 
   public IndexerSubsystem() {
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
     boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INDEXER, "Indexer")
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_INDEXER, "Indexer")
         || shouldMakeAllCANDevices) {
-      motor = new CANSparkMaxSendable(MOTORID_INDEXER, MotorType.kBrushless);
+      motor = new TalonFX(MOTORID_INDEXER);
       MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(motor);
       addChild("motor", motor);
-
-      encoder = motor.getEncoder();
-      encoder.setPositionConversionFactor(1);
-      encoder.setVelocityConversionFactor(1);
-
-      limitSwitch = motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
     }
   }
 
@@ -66,31 +65,39 @@ public class IndexerSubsystem extends SubsystemBase implements HasTelemetry {
     }
   }
 
+  HardwareLimitSwitchConfigs limitSwitchEnabled, limitSwitchDisabled;
+  {
+    limitSwitchDisabled = new HardwareLimitSwitchConfigs().withForwardLimitEnable(false);
+    limitSwitchEnabled = new HardwareLimitSwitchConfigs().withForwardLimitEnable(true);
+  }
+
   public void setLimitSwitchEnabled (boolean enabled) {
-    limitSwitch.enableLimitSwitch(enabled);
+    motor.getConfigurator().apply(enabled ? limitSwitchEnabled : limitSwitchDisabled);
   }
 
   public boolean gamePieceDetected() {
     if (motor != null ){
-      return limitSwitch.isPressed();
+      var ss = motor.getForwardLimit();
+      // TODO need to verify!
+      return ss.getValue() == ForwardLimitValue.ClosedToGround;
     }
     return false;
   }
 
   public double getVelocity() {
-    if (encoder == null)
+    if (motor == null)
       return 0;
-    return encoder.getVelocity();
+    return motor.getRotorVelocity().getValueAsDouble();
   }
 
   @Override
   public void updateTelemetry() {
     SmartDashboard.putBoolean(name + ".game_piece_detected", gamePieceDetected());
     if (motor != null) {
-      SmartDashboard.putNumber(name + ".motor_current", motor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".power", motor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".temperature", motor.getMotorTemperature());
-      SmartDashboard.putNumber(name + ".speed", encoder.getVelocity());
+      SmartDashboard.putNumber(name + ".motor_current", motor.getStatorCurrent().getValueAsDouble());
+      SmartDashboard.putNumber(name + ".power", motor.getDutyCycle().getValueAsDouble() / 100.0);
+      SmartDashboard.putNumber(name + ".temperature", motor.getDeviceTemp().getValueAsDouble());
+      SmartDashboard.putNumber(name + ".speed", motor.getRotorVelocity().getValueAsDouble());
     }
   }
   
