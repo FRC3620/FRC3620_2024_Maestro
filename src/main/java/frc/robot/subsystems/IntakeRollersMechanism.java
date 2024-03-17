@@ -103,7 +103,7 @@ public class IntakeRollersMechanism implements HasTelemetry {
     }
   }
 
-  public boolean gamePieceDetected() {
+  boolean gamePieceDetected() {
     if(gamePieceDetector != null){
       if (gamePieceDetector.isPressed()) {
         return true;

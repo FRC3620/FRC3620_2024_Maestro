@@ -16,6 +16,6 @@ public class RunRollersUntilDetected extends RunRollersCommand {
 
   @Override
   public boolean isFinished() {
-    return subsystem.gamePieceDetected();
+    return gamePieceDetected();
   }
 }

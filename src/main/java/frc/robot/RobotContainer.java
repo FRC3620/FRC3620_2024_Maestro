@@ -65,7 +65,10 @@ public class RobotContainer {
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
   public static VisionSubsystem visionSubsystem;
-  public static IntakeLocation intakeLocation;
+  public static IndexerSubsystem indexerSubsystem;
+
+  // huh?
+  //public static IntakeLocation intakeLocation;
 
   public static LightSegment lightSegment;
   public static HealthMonitorSubsystem healthMonitorSubsystem;
@@ -189,6 +192,9 @@ public class RobotContainer {
 
     shooterSubsystem = new ShooterSubsystem();
     addSubsystem(shooterSubsystem);
+
+    indexerSubsystem = new IndexerSubsystem();
+    addSubsystem(indexerSubsystem);
 
     blinkySubsystem = new BlinkySubsystem();
     addSubsystem(blinkySubsystem);

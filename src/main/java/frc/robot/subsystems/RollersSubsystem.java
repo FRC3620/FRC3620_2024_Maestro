@@ -22,8 +22,7 @@ public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
   public IntakeRollersMechanism intakeRollerMechanism;
 
   public CANSparkMaxSendable rollers;
-  public DigitalInput gamePieceObtained;
-
+  
   public RollersSubsystem() {
     setupMotors();
     intakeRollerMechanism = new IntakeRollersMechanism(rollers);
@@ -47,7 +46,12 @@ public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
     return intakeRollerMechanism.getPosition();
   }
 
-  public boolean gamePieceDetected() {
+  /*
+   * this was replaced by moving the game detector to the indexer. 
+   * keeping this here as a private to facilitate code changes in case
+   * we need to move it back!
+   */
+  private boolean gamePieceDetected() {
     return intakeRollerMechanism.gamePieceDetected();
   }
 
@@ -68,8 +72,6 @@ public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
       motorSetup.apply(rollers);
       addChild("roller", rollers);
     }
-
-    gamePieceObtained = new DigitalInput(9);
   }
 
   @Override

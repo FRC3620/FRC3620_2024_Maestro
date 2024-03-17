@@ -10,10 +10,13 @@ import org.usfirst.frc3620.logger.EventLogging;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.RollersSubsystem;
 
 public class RunRollersCommand extends Command {
-  RollersSubsystem subsystem = RobotContainer.rollersSubsystem;
+  RollersSubsystem rollersSubsystem = RobotContainer.rollersSubsystem;
+  IndexerSubsystem indexerSubsystem = RobotContainer.indexerSubsystem;
+
   Logger logger = EventLogging.getLogger(getClass());
 
   Double savedPower = null;
@@ -28,7 +31,7 @@ public class RunRollersCommand extends Command {
       SmartDashboard.putNumber("rollers.manual.input", 0);
     }
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(rollersSubsystem, indexerSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -47,19 +50,29 @@ public class RunRollersCommand extends Command {
       power = savedPower;
       // logger.info ("using savedPower: {}", power);
     }
-    subsystem.setRollerPower(power);
+    rollersSubsystem.setRollerPower(power);
+    indexerSubsystem.setPower(power);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    subsystem.setRollerPower(0);
+    rollersSubsystem.setRollerPower(0);
+    indexerSubsystem.setPower(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  boolean gamePieceDetected() {
+    return indexerSubsystem.gamePieceDetected();
+  }
+
+  void setLimitSwitchEnabled(boolean enabled) {
+    indexerSubsystem.setLimitSwitchEnabled(enabled);
   }
 
 }

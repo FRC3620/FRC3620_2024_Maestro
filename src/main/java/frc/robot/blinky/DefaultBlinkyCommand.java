@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.RollersSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.BlinkySubsystem.LightSegment;
 
 public class DefaultBlinkyCommand extends Command {
-  RollersSubsystem rollersSubsystem = RobotContainer.rollersSubsystem;
+  IndexerSubsystem indexerSubsystem = RobotContainer.indexerSubsystem;
   VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
 
   final Pattern patternReadyToShoot = new BlinkPattern().setColor(Color.kGreen);
@@ -44,7 +44,7 @@ public class DefaultBlinkyCommand extends Command {
         p = patternIdle;
       }
     } else {
-      if (rollersSubsystem.gamePieceDetected()) {
+      if (indexerSubsystem.gamePieceDetected()) {
         if (visionSubsystem.doIHaveShootingSolution()) {
           p = patternReadyToShoot;
         } else {
