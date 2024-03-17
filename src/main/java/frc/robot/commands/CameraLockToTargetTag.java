@@ -45,7 +45,7 @@ public class CameraLockToTargetTag extends Command {
   public void execute() {
     var camYaw_Speaker = vision.getCamYawToSpeaker();
     if (camYaw_Speaker != null) {
-      headingToTag = vision.getCamYawToSpeaker() + 6.5;
+      headingToTag = camYaw_Speaker + 6.5;
 
       double headingError = headingToTag - swerve.getHeading().getDegrees();
       // putting current robot heading and target heading
@@ -54,7 +54,7 @@ public class CameraLockToTargetTag extends Command {
       SmartDashboard.putNumber("vision.headingError", headingError);
 
       // turns by target heading
-      controller.turnTo(swerve, swerve.getHeading().getDegrees() + headingToTag);
+      controller.turnTo(swerve, headingToTag);
 
       // if heading is close enough, stop turning
       if (swerve.getHeading().getDegrees() < headingToTag + 2 && swerve.getHeading().getDegrees() > headingToTag - 2) {
@@ -81,5 +81,6 @@ public class CameraLockToTargetTag extends Command {
   @Override
   public boolean isFinished() {
     return finishedTurn;
+    
   }
 }
