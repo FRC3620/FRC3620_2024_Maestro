@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -51,7 +52,7 @@ public class VisionSubsystem extends SubsystemBase {
     static Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
     static Double angCamToApriltags = 22.0;// degrees, facing up
 
-    static Double APRILTAGCAM_FRONT_OFFSET = 0.3429 ;// change if neccessary, add to calculations
+    static Double APRILTAGCAM_FRONT_OFFSET = 0.3429;// change if neccessary, add to calculations
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
 
@@ -60,6 +61,10 @@ public class VisionSubsystem extends SubsystemBase {
     Double camYawToSpeaker;
 
     Double camDistToSpeakerTag;
+
+    // Set Target Speaker Positions
+    public static Translation2d blueSpeakerPos = new Translation2d(0.076, 5.547868);
+    public static Translation2d redSpeakerPos = new Translation2d(16.465042, 5.547868);
 
     public static final double targetWidth = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
 
@@ -99,16 +104,18 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults("");
-    
+
         if (results.targetingResults.targets_Fiducials.length > 0) {
             SmartDashboard.putString("Vision.DoIHaveTag", "got one");
-            
+
         }
         // vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
         LimelightHelpers.PoseEstimate limelightMeasurementBLUE = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
         LimelightHelpers.PoseEstimate limelightMeasurementRED = LimelightHelpers.getBotPoseEstimate_wpiRed("");
+
+        Pose2d currentPose;
 
         // if alliance is blue.
         int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
@@ -118,39 +125,49 @@ public class VisionSubsystem extends SubsystemBase {
             camYawToSpeaker = null;
             camDistToSpeakerTag = null;
         } else {
-            if(color.get() == Alliance.Blue){
-            
-            
-            SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getX()));
-            SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getY()));
-            }else{
-    
-                
-            SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementRED.pose.getX()));
-            SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementRED.pose.getY()));
-            }
-            
-            Pose3d camResults = desiredTarget.getCameraPose_TargetSpace();
-            var camRotation = camResults.getRotation();
-            camYawToSpeaker = Math.toDegrees(camRotation.getY());
-            //double camPitchToSpeaker = desiredTarget.ty + angCamToApriltags;
+            if (color.get() == Alliance.Blue) {
+                currentPose = limelightMeasurementBLUE.pose;
+                camDistToSpeakerTag = currentPose.getTranslation().getDistance(blueSpeakerPos);
+                camYawToSpeaker = currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees();
 
-           
+                SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getX()));
+                SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getY()));
+            } else {
+                currentPose = limelightMeasurementRED.pose;
+                camDistToSpeakerTag = currentPose.getTranslation().getDistance(redSpeakerPos);
+                camYawToSpeaker = currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees();
+
+                SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementRED.pose.getX()));
+                SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementRED.pose.getY()));
+            }
+
+            //Pose3d camResults = desiredTarget.getCameraPose_TargetSpace();
+            //var camRotation = camResults.getRotation();
+            //camYawToSpeaker = Math.toDegrees(camRotation.getY());
+            // double camPitchToSpeaker = desiredTarget.ty + angCamToApriltags;
             
-            
+            SmartDashboard.putNumber("Vision.DistToSpeakerTag", camDistToSpeakerTag);
+            SmartDashboard.putNumber("Vision.camDistToSpeakerTag_feet", Units.metersToFeet(camDistToSpeakerTag));
+            SmartDashboard.putNumber("Vision.camYawToSpeaker", camYawToSpeaker);
+
             SmartDashboard.putNumber("Vision.tx", desiredTarget.tx);
             SmartDashboard.putNumber("Vision.ty", desiredTarget.ty);
 
-            /*  SmartDashboard.putNumber("Vision.camRotationPitch", camPitchToSpeaker);
-            SmartDashboard.putNumber("Vision.camRotationYaw", camYawToSpeaker);*/ // don't need right now
-            //SmartDashboard.putNumber("Vision.TargetDistanceM", camDistToSpeakerTag);
-            //SmartDashboard.putNumber("Vision.TargetDistanceFt", Units.metersToFeet(camDistToSpeakerTag));
+            /*
+             * SmartDashboard.putNumber("Vision.camRotationPitch", camPitchToSpeaker);
+             * SmartDashboard.putNumber("Vision.camRotationYaw", camYawToSpeaker);
+             */ // don't need right now
+            // SmartDashboard.putNumber("Vision.TargetDistanceM", camDistToSpeakerTag);
+            // SmartDashboard.putNumber("Vision.TargetDistanceFt",
+            // Units.metersToFeet(camDistToSpeakerTag));
 
         }
 
     }
 
     public Double getCamYawToSpeaker() {
+
+        // NOTE: This method returns the heading angle which points to the robot toward the target. This is FIELD-RELATIVE
         return camYawToSpeaker;
     }
 
