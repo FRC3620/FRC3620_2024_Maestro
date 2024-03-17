@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -84,10 +85,14 @@ public class SwerveSubsystem extends SubsystemBase {
     
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(3.0), 100.0, 1.0);
 
+    // Setup PathPlanner Rotation Override
+    // PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try {
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
       swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
