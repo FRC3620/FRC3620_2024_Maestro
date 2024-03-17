@@ -12,11 +12,12 @@ import org.usfirst.frc3620.misc.MotorSetup;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
+  public final static int MOTORID_INTAKE_ROLLERS = 9;
+
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   public IntakeRollersMechanism intakeRollerMechanism;
@@ -55,11 +56,9 @@ public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
     return intakeRollerMechanism.gamePieceDetected();
   }
 
-  public SparkLimitSwitch getLimitSwitch() {
+  private SparkLimitSwitch getLimitSwitch() {
     return intakeRollerMechanism.gamePieceDetector;
   }
-
-  public final static int MOTORID_INTAKE_ROLLERS = 9;
 
   void setupMotors() {
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;

@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
+  public final static int MOTORID_INTAKE_ELEVATION = 13;
+
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   public IntakeShoulderMechanism intakeShoulderMechanism;
@@ -48,20 +50,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
   public double getActualShoulderElevation() {
     return intakeShoulderMechanism.getActualPosition();
   }
-
-  public void recalibrataePitch(boolean forward) {
-    recalibrataePitch(forward);
-  }
-
-  public SparkLimitSwitch getLimitSwitch() {
-    return gamePieceObtained;
-  }
-
-  public final static int MOTORID_INTAKE_ROLLERS = 9;
-  public final static int MOTORID_INTAKE_EXTEND = 10;
-  public final static int MOTORID_INTAKE_EXTEND2 = 11;
-  public final static int MOTORID_INTAKE_WRIST = 12;
-  public final static int MOTORID_INTAKE_ELEVATION = 13;
 
   void setupMotors() {
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;

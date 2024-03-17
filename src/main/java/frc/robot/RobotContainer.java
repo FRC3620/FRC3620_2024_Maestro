@@ -271,7 +271,7 @@ public class RobotContainer {
     driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(-0.8));
 
     // bring intake to home position
-    operatorDpad.up().onTrue(new GroundToHomeCommand());
+    operatorDpad.up().onTrue(new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
 
   /*  new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
@@ -324,22 +324,7 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand());
     SmartDashboard.putData("set shooter wheels power", new ShooterWheelPowerCommand());
-    SmartDashboard.putData("goInSixInches", new goInSixInchesCommand());
 
-   
-
-    /*
-     * SmartDashboard.putData("GroundPosition", new
-     * SetIntakeLocationCommand(IntakeLocation.groundPosition));
-     * SmartDashboard.putData("HomePosition", new
-     * SetIntakeLocationCommand(IntakeLocation.homePosition));
-     * SmartDashboard.putData("AmpPosition", new
-     * SetIntakeLocationCommand(IntakeLocation.ampPosition));
-     * SmartDashboard.putData("TrapPosition", new
-     * SetIntakeLocationCommand(IntakeLocation.trapPosition));
-     * SmartDashboard.putData("PreclimbPosition", new
-     * SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
-     */
     SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
     SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
     
