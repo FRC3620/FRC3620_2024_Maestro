@@ -21,6 +21,53 @@
 
 ***
 
+## JoeHann Return-to-Service Checklist
+
+### 1. Teleop Drive
+- [ ] Horatio Bar all wheel module
+- [ ] (On the Cart) Validate that basic drive functions work (translational and rotational)
+- [ ] (On the Cart) Eyeball azimuth motor PID values (does the module oscillate when rotating?)
+
+### 2. Intake Subsystem
+- [ ] Verify Intake "Down" and "Up" Encoder positions
+- [ ] Verify Intake Initialization / zero-position
+- [ ] Test Command to extend / retract intake
+- [ ] Test Intake Roller Command
+
+### 3. Indexer
+- [ ] Need to Merge MasonIndexer into MasonStart
+- [ ] Verify Indexer direction. Positive power should move note toward shooter.
+- [ ] ? Is Indexer running with Intake? How are we shutting off Indexer before shooting?
+- [ ] Create "Shoot" command to move the note from Indexer into Shooter
+
+### 4. Shooter
+- [ ] Validate that Shooter still spins up properly
+- [ ] Validate that the Shooter Elevation moves properly
+
+### 5. Climber
+- [ ] Validate that Climber re-zeroes properly during init
+- [ ] Check new "Up" and "Down" encoder positions & update command(s)
+
+### 6. Vision
+- [ ] Mount Camera to JoeHann
+- [ ] Update Limelight settings (Camera height, angle, position, etc...)
+- [ ] Place robot on field and validate that camDistToSpeakerTag returns the correct value
+- [ ] Validate that camYawtoSpeakerTag returns the correct value
+
+### 7. Putting it all together (Teleop)
+- [ ] Validate that we can pick up a note and hold it in the indexer
+- [ ] Validate that we can transfer a note from the indexer to the shooter
+- [ ] Validate that we can successfully shoot from the base of the subwoofer
+- [ ] Validate that the shooter elevation moves properly according to our distance from the speaker
+- [ ] Validate that our aimDrive accurately points our shooter towards the speaker
+
+### 8. Putting it all together (Auto)
+- [ ] Run our "Straight" path and validate PID for auto
+- [ ] Test our three note path and make sure the path itself is viable
+- [ ] Update the PickUpAndShoot commands to pick up and shoot all in one step as long as we have a solution
+
+
+
 ## Code tasks
 
 ### Path Planner
@@ -28,7 +75,7 @@
 Continue to do all work on branch PathPlannerRepeatabilityTests.
 
 - [ ] Stop using DoISeeSpeakerTag; do a canDistToSpeakerTag() and check for null.
-- [ ] Refine autonomous heading.
+- [X] Refine autonomous heading.
 - [ ] Develop more autonomous.
 
 ### Intake
@@ -36,8 +83,8 @@ Continue to do all work on branch PathPlannerRepeatabilityTests.
 Do all work on branch MasonIntake, start that branch from branch MasonStart.
 
 - [ ] Simplify IntakeLocation.
-- [ ] Remove all code related to the wrist (mechanism, commands)
-- [ ] Remove all code related to the extension (mechanism, commands)
+- [X] Remove all code related to the wrist (mechanism, commands)
+- [X] Remove all code related to the extension (mechanism, commands)
 - [ ] The intake will probably just have two positions; in and out.
 - [ ] Get rid of extra commands.
 - [ ] Update controller diagrams and README.md.
@@ -46,13 +93,13 @@ Do all work on branch MasonIntake, start that branch from branch MasonStart.
 
 Do all work on branch MasonVision, start that branch from branch MasonStart.
 
-- [ ] Remove PhotonVision dependency.
-- [ ] Add the code for Limelight.
+- [X] Remove PhotonVision dependency.
+- [X] Add the code for Limelight.
 - [ ] Load field map into Limelight.
 - [ ] Set 3D parameters for Limelight.
 - [ ] Determine if Limelight tells us where we are.
-- [ ] Get rid of DoISeeSpeakerTag.
-- [ ] Do all the speaker calculations in one method, and save the data. Call that method from periodic().
+- [X] Get rid of DoISeeSpeakerTag.
+- [X] Do all the speaker calculations in one method, and save the data. Call that method from periodic().
 All the other commands get the saved data.
 
 ### Shooter
