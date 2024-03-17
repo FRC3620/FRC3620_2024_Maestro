@@ -6,6 +6,7 @@ package frc.robot.subsystems.swervedrive;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
@@ -449,6 +450,14 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void lock() {
     swerveDrive.lockPose();
+  }
+
+  public void alignModules(double moduleHeading){
+    swerveDrive.alignModules(moduleHeading);
+  }
+  
+  public ChassisSpeeds getTargetSpeedsFromPreScaledInputs(double xInput, double yInput, Rotation2d angle){
+    return swerveDrive.swerveController.getTargetSpeeds(xInput, yInput, angle.getRadians(), getHeading().getRadians(), maximumSpeed);
   }
 
   /**
