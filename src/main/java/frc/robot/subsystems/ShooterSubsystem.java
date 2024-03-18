@@ -45,7 +45,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public CANSparkMaxSendable elevationMotor;
   RelativeEncoder elevationMotorEncoder, ampBarEncoder;
 
-  CANSparkMaxSendable ampBarMotor;
+  public CANSparkMaxSendable ampBarMotor;
 
   public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   private double requestedWheelSpeed = 0;
@@ -55,7 +55,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public final static int MOTORID_SHOOTER_ELEVATION = 16;
   public final static int MOTORID_AMP_BAR=61;//TODO this is a placeholder CHANGE IT
 
-  SparkPIDController ampBarPID;
+  public SparkPIDController ampBarPID;
   SparkPIDController elevationPid = null;
 
   // Robot is set to "not calibrated" by default

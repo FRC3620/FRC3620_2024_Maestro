@@ -327,6 +327,7 @@ public class RobotContainer {
     
     SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
     // SmartDashboard.putData("AmpShootCommandPart2", new AmpShootCommandPart2());
+    SmartDashboard.putData("AmpBarPidTuner", new AmpBarAnglePIDZapper());
 
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
