@@ -104,6 +104,7 @@ public class VisionSubsystem extends SubsystemBase {
         // vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
+        // TODO had to throw this in for simulation failure. Is this a good fix?
         if (color.isEmpty()) return;
 
         // if alliance is blue...
@@ -115,7 +116,8 @@ public class VisionSubsystem extends SubsystemBase {
             camDistToSpeakerTag = null;
         } else {
             Pose3d camResults = desiredTarget.getCameraPose_TargetSpace();
-            Pose3d targetResults = desiredTarget.getTargetPose_CameraSpace();
+            // not using this, save some time!
+            // Pose3d targetResults = desiredTarget.getTargetPose_CameraSpace();
             var camRotation = camResults.getRotation();
             camYawToSpeaker = Math.toDegrees(camRotation.getY());
             double camPitchToSpeaker = desiredTarget.ty + angCamToApriltags;
