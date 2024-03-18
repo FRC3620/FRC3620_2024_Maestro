@@ -98,8 +98,12 @@ public class TeleopDriveWithAimCommand extends Command {
       } else {
         //current heading
 
+        // TODO: Currently, this points the FRONT of the robot toward the apriltag.
+        // We'll need to modify this to point the rear of the robot to the AprilTag
+        // when we get JoeHann back.
+        
         double currentPosRotation = swerve.getHeading().getDegrees();
-        double targetHeading = currentPosRotation + headingToTag+6.5;
+        double targetHeading = headingToTag+6.5;
         //calculates angVelocity
         angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),
                                                   Units.degreesToRadians(targetHeading)) 

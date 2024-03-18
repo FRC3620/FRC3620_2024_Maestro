@@ -893,6 +893,22 @@ public class SwerveDrive
     kinematics.toSwerveModuleStates(new ChassisSpeeds());
   }
 
+  public void alignModules(double moduleHeading) {
+
+    for (SwerveModule swerveModule : swerveModules) {
+
+      SwerveModuleState desiredState = 
+        new SwerveModuleState(0,Rotation2d.fromDegrees(moduleHeading));
+
+      swerveModule.setDesiredState(desiredState, false, true);
+
+    }
+
+    // Update kinematics because we are not using setModuleStates
+    kinematics.toSwerveModuleStates(new ChassisSpeeds());
+
+  }
+
   /**
    * Get the swerve module poses and on the field relative to the robot.
    *
