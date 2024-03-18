@@ -104,6 +104,7 @@ public class VisionSubsystem extends SubsystemBase {
         // vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
+        if (color.isEmpty()) return;
 
         // if alliance is blue...
         int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;

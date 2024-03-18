@@ -27,6 +27,8 @@ public class IndexerSubsystem extends SubsystemBase implements HasTelemetry {
 
   public TalonFX motor;
 
+  double powerSetting = 0.0;
+
   public IndexerSubsystem() {
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
     boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
@@ -37,24 +39,19 @@ public class IndexerSubsystem extends SubsystemBase implements HasTelemetry {
       MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(motor);
       addChild("motor", motor);
+
+      setLimitSwitchEnabled(true);
     }
   }
 
   public void periodic() {
+    if (! disabledForDebugging && motor != null) {
+      motor.set(powerSetting);
+    }
   }
 
-  /**
-   * Sets the cannon to extend the arm to 'length' inches. Increasing
-   * length is a longer arm.
-   * "Extend" motor.
-   */
-
-  public void setPower(double speed) {
-    if (motor != null) {
-      if (!disabledForDebugging) {
-        motor.set(speed);
-      }
-    }
+  public void setPower(double power) {
+    this.powerSetting = power;
   }
 
   HardwareLimitSwitchConfigs limitSwitchEnabled, limitSwitchDisabled;
@@ -64,7 +61,9 @@ public class IndexerSubsystem extends SubsystemBase implements HasTelemetry {
   }
 
   public void setLimitSwitchEnabled (boolean enabled) {
-    motor.getConfigurator().apply(enabled ? limitSwitchEnabled : limitSwitchDisabled);
+    if (motor != null) {
+      motor.getConfigurator().apply(enabled ? limitSwitchEnabled : limitSwitchDisabled);
+    }
   }
 
   public boolean gamePieceDetected() {

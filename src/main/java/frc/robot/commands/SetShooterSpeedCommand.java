@@ -10,23 +10,22 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class SetShooterSpeedCommand extends Command {
   ShooterSubsystem shooter = RobotContainer.shooterSubsystem;
+  double speed;
   /** Creates a new SetShooterSpeedCommand. */
   public SetShooterSpeedCommand(double speed) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    //addRequirements(shooter);
+    this.speed = speed;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.setRequestedWheelSpeed(5000);
+    shooter.setRequestedWheelSpeed(speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    new RunRollersUntilGone(0.8);
-    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override

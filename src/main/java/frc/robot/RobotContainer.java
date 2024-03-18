@@ -265,10 +265,10 @@ public class RobotContainer {
     driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnFalse(new GroundToHomeCommand());
 
     // well, shoot
-    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunRollersUntilGone(0.8));
+    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
 
     // barf out a piece
-    driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(-0.8));
+    driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(() -> -0.8));
 
     // bring intake to home position
     operatorDpad.up().onTrue(new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
@@ -284,10 +284,12 @@ public class RobotContainer {
 
     // operator right joystick bumps the shoulder position
     // remember that Y-axis is inverted. pushing up makes a negative
+    /*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, -4));
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
+    */
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
@@ -302,7 +304,6 @@ public class RobotContainer {
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
         .onTrue(new ActivateClimberJoystickCommand());    
-
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
     .toggleOnTrue(new AmpShootCommand());    
@@ -327,7 +328,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
     SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
-    
+    SmartDashboard.putData("IntakeManual", new IntakeManualMoveCommand());
     SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
     // SmartDashboard.putData("AmpShootCommandPart2", new AmpShootCommandPart2());
 
@@ -336,27 +337,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("LockCamToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
 
-    SmartDashboard.putData("Manually position intake", new PositionIntakeManuallyCommand());
-
-    SmartDashboard.putData("Intake elevate to 0", new SetIntakeLocationCommand(new IntakeLocation(0)));
-    SmartDashboard.putData("Intake elevate to 10", new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate to 20", new SetIntakeLocationCommand(new IntakeLocation(20)));
-    SmartDashboard.putData("Intake elevate to 40", new SetIntakeLocationCommand(new IntakeLocation(40)));
-
-    SmartDashboard.putData("Intake elevate-extend-wrist to 10-0-0",
-        new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend-wrist to 10-0-4",
-        new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 10-2", new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 10-6", new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 10-8", new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 10-14",
-        new SetIntakeLocationCommand(new IntakeLocation(10)));
-    SmartDashboard.putData("Intake elevate-extend to 75-0", new SetIntakeLocationCommand(new IntakeLocation(75)));
-
-    // test rollers
-    SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected(0.8));
-    SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone(-0.8));
+    // test indexer and rollers
+    SmartDashboard.putData("Run Indexer and Rollers until slurped", new RunIndexerAndRollersUntilGamePieceDetectedCommand());
+    SmartDashboard.putData("Run Indexer until gone", new RunIndexerUntilGamePieceGoneCommand(() -> 0.2));
 
     // test Shooter
     SmartDashboard.putData("Test Shooter angle to 60",
@@ -395,23 +378,26 @@ public class RobotContainer {
     SmartDashboard.putData("SwerveDaignostics", new SwerveDriveDiagnosticCommand());
 
     // indexer test
-    SmartDashboard.putData("Indexer Test", new FunctionalCommand(
+    SmartDashboard.putData("Test index with joystick", new FunctionalCommand(
       () -> {}, // initialize()
       () -> indexerSubsystem.setPower(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X)), // execute()
       (b) -> indexerSubsystem.setPower(0.0), // end()
       () -> false, // isFinished()
       indexerSubsystem // requirements
     ));
+
+    SmartDashboard.putData("Test indexer until game piece detected", new RunIndexerUntilGamePieceDetectedCommand(() -> 0.1));
+    SmartDashboard.putData("Test indexer until game piece gone", new RunIndexerUntilGamePieceGoneCommand(() -> 0.1));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   
   public void setupAutonomousCommands() 
   {
-    NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunRollersUntilGone(0.8));
+    NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
     NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("PICKUP INTAKE POSITION", new AutoGroundPickupCommand());
-    NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8).withTimeout(3));
+    NamedCommands.registerCommand("SLURPY IN", new RunIndexerAndRollersUntilGamePieceDetectedCommand().withTimeout(3));
     NamedCommands.registerCommand("LOAD OMEGA BEAM", new GroundToHomeCommand());
     NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
     NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));

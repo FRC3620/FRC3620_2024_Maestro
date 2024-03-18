@@ -39,12 +39,16 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     intakeShoulderMechanism.periodic();
   }
 
+  public void setManualShoulderPower(Double power) {
+    intakeShoulderMechanism.setManualPower(power);
+  }
+
   public void setShoulderPosition(Double angle) {
-    intakeShoulderMechanism.setPosition(angle);
+    intakeShoulderMechanism.setPositionSetpoint(angle);
   }
 
   public Double getRequestedShoulderPosition() {
-    return intakeShoulderMechanism.getRequestedPosition();
+    return intakeShoulderMechanism.getPositionSetpoint();
   }
 
   public double getActualShoulderElevation() {
@@ -66,7 +70,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
 
   public void setLocation(IntakeLocation intakeLocation) {
     // logger.info ("Setting intake to {}", intakeLocation);
-    intakeShoulderMechanism.setPosition(intakeLocation.getShoulder());
+    intakeShoulderMechanism.setLocation(intakeLocation);
 
   }
 

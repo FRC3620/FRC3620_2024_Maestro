@@ -1,13 +1,11 @@
 package frc.robot.commands;
 
-public class RunRollersUntilGone extends RunRollersCommand {
+import java.util.function.DoubleSupplier;
 
-  public RunRollersUntilGone() {
-    super();
-  }
+public class RunIndexerUntilGamePieceGoneCommand extends RunIndexerCommand {
 
-  public RunRollersUntilGone(double power) {
-    super(power);
+  public RunIndexerUntilGamePieceGoneCommand(DoubleSupplier powerSupplier) {
+    super(powerSupplier);
   }
 
   @Override
