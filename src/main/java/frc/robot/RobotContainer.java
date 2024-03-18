@@ -397,6 +397,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Test indexer until game piece detected", new RunIndexerUntilGamePieceDetectedCommand(() -> 0.1));
     SmartDashboard.putData("Test indexer until game piece gone", new RunIndexerUntilGamePieceGoneCommand(() -> 0.1));
+    SmartDashboard.putData("IntakeOut", new SetIntakeLocationCommand(IntakeLocation.IntakeOut));
+    SmartDashboard.putData("IntakeIn", new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

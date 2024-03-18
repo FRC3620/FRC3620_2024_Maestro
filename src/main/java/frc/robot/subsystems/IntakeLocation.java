@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 public enum IntakeLocation {
-  IntakeIn(0), IntakeOut(7);
+  IntakeIn(0), IntakeOut(4.7);
 
   private double intakePositionSetpoint;
 

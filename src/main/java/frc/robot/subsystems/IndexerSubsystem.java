@@ -36,11 +36,11 @@ public class IndexerSubsystem extends SubsystemBase implements HasTelemetry {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_INDEXER, "Indexer")
         || shouldMakeAllCANDevices) {
       motor = new TalonFX(MOTORID_INDEXER);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(motor);
       addChild("motor", motor);
 
-      setLimitSwitchEnabled(true);
+      setLimitSwitchEnabled(false);
     }
   }
 

@@ -62,7 +62,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ELEVATION, "Intake Elevation")
         || shouldMakeAllCANDevices) {
       shoulder = new CANSparkMaxSendable(MOTORID_INTAKE_ELEVATION, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(shoulder);
       addChild("elevation", shoulder);
     }
