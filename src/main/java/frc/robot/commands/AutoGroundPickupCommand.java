@@ -22,11 +22,7 @@ public class AutoGroundPickupCommand extends SequentialCommandGroup {
   public AutoGroundPickupCommand() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      new SetIntakeLocationCommand(IntakeLocation.midGroundPositionForPickup),
-      new InstantCommand(() -> SmartDashboard.putString("SequentialGroupHappenings", "Waiting for extension goal")),
-      new WaitUntilCommand(() -> intakeSubsystem.getActualExtendPosition() > 8.2),
-      new SetIntakeLocationCommand(IntakeLocation.groundPosition)
+    addCommands(  
     );
   }
 }

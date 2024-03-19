@@ -21,6 +21,53 @@
 
 ***
 
+## JoeHann Return-to-Service Checklist
+
+### 1. Teleop Drive
+- [ ] Horatio Bar all wheel module
+- [ ] (On the Cart) Validate that basic drive functions work (translational and rotational)
+- [ ] (On the Cart) Eyeball azimuth motor PID values (does the module oscillate when rotating?)
+
+### 2. Intake Subsystem
+- [ ] Verify Intake "Down" and "Up" Encoder positions
+- [ ] Verify Intake Initialization / zero-position
+- [ ] Test Command to extend / retract intake
+- [ ] Test Intake Roller Command
+
+### 3. Indexer
+- [ ] Need to Merge MasonIndexer into MasonStart
+- [ ] Verify Indexer direction. Positive power should move note toward shooter.
+- [ ] ? Is Indexer running with Intake? How are we shutting off Indexer before shooting?
+- [ ] Create "Shoot" command to move the note from Indexer into Shooter
+
+### 4. Shooter
+- [ ] Validate that Shooter still spins up properly
+- [ ] Validate that the Shooter Elevation moves properly
+
+### 5. Climber
+- [ ] Validate that Climber re-zeroes properly during init
+- [ ] Check new "Up" and "Down" encoder positions & update command(s)
+
+### 6. Vision
+- [ ] Mount Camera to JoeHann
+- [ ] Update Limelight settings (Camera height, angle, position, etc...)
+- [ ] Place robot on field and validate that camDistToSpeakerTag returns the correct value
+- [ ] Validate that camYawtoSpeakerTag returns the correct value
+
+### 7. Putting it all together (Teleop)
+- [ ] Validate that we can pick up a note and hold it in the indexer
+- [ ] Validate that we can transfer a note from the indexer to the shooter
+- [ ] Validate that we can successfully shoot from the base of the subwoofer
+- [ ] Validate that the shooter elevation moves properly according to our distance from the speaker
+- [ ] Validate that our aimDrive accurately points our shooter towards the speaker
+
+### 8. Putting it all together (Auto)
+- [ ] Run our "Straight" path and validate PID for auto
+- [ ] Test our three note path and make sure the path itself is viable
+- [ ] Update the PickUpAndShoot commands to pick up and shoot all in one step as long as we have a solution
+
+
+
 ## Code tasks
 
 ### Path Planner
@@ -28,7 +75,7 @@
 Continue to do all work on branch PathPlannerRepeatabilityTests.
 
 - [ ] Stop using DoISeeSpeakerTag; do a canDistToSpeakerTag() and check for null.
-- [ ] Refine autonomous heading.
+- [X] Refine autonomous heading.
 - [ ] Develop more autonomous.
 
 ### Intake
@@ -36,8 +83,8 @@ Continue to do all work on branch PathPlannerRepeatabilityTests.
 Do all work on branch MasonIntake, start that branch from branch MasonStart.
 
 - [ ] Simplify IntakeLocation.
-- [ ] Remove all code related to the wrist (mechanism, commands)
-- [ ] Remove all code related to the extension (mechanism, commands)
+- [X] Remove all code related to the wrist (mechanism, commands)
+- [X] Remove all code related to the extension (mechanism, commands)
 - [ ] The intake will probably just have two positions; in and out.
 - [ ] Get rid of extra commands.
 - [ ] Update controller diagrams and README.md.
@@ -46,13 +93,13 @@ Do all work on branch MasonIntake, start that branch from branch MasonStart.
 
 Do all work on branch MasonVision, start that branch from branch MasonStart.
 
-- [ ] Remove PhotonVision dependency.
-- [ ] Add the code for Limelight.
+- [X] Remove PhotonVision dependency.
+- [X] Add the code for Limelight.
 - [ ] Load field map into Limelight.
 - [ ] Set 3D parameters for Limelight.
 - [ ] Determine if Limelight tells us where we are.
-- [ ] Get rid of DoISeeSpeakerTag.
-- [ ] Do all the speaker calculations in one method, and save the data. Call that method from periodic().
+- [X] Get rid of DoISeeSpeakerTag.
+- [X] Do all the speaker calculations in one method, and save the data. Call that method from periodic().
 All the other commands get the saved data.
 
 ### Shooter
@@ -112,15 +159,20 @@ Do all work on branch MasonCleanDeploy, start that brnach from branch MasonStart
 
 Do all work on branch MasonIndexer, start that brnach from branch MasonStart.
 
-- [ ] Write an indexer subsystem; it just needs to set up the indexer motor, and have a method on it to set the power.
+- [X] Write an indexer subsystem; it just needs to set up the indexer motor, and have a method on it to set the power.
 
 ### Intake
 
-- [ ] Need to write commands to bring the intake in and out. Commands will probably use PID to get the arm close to the end of travel, then just apply power to keep it there.
+- [X] Need to write commands to bring the intake in and out. Commands will probably use PID to get the arm close to the end of travel, then just apply power to keep it there.
 
 ### Bar
 
-- [ ] Need to write commands to bring the bar in and out. Commands will probably use PID to get the bar close to the end of travel, then just apply power to keep it there.
+- [X] Need to write commands to bring the bar in and out. Commands will probably use PID to get the bar close to the end of travel, then just apply power to keep it there.
+- [ ] BarAnglePIDZapper.
+
+### Dashboard
+
+- [ ] Competition dashboard (vision, autonomous, a tab for diagnostics, ???)
 
 ***
 
@@ -141,11 +193,24 @@ Do all work on branch MasonIndexer, start that brnach from branch MasonStart.
 
 ### Intake
 - [ ] Get intake going correct direction.
-- [ ] Find out what the intake readings are for the intake at the ends of it's travel, and fix the commands appropriately.
-- [ ] Tune PID.
+- [ ] Find out what the intake readings are for the intake at the ends of it's travel, and fix the IntakeSubsystem.periodic() method appropriately.
+- [ ] Tune PID (IntakeAnglePIDZapper)
 
 ### Climber
-- [ ] Make sure climber is working, and initial deployment position is correct.
+- [ ] Make sure climber is working, and initial deployment position is correct. Probably need to adjust source code.
 
 ### Indexer
-- [ ] Get indexer going correct direction.
+- [ ] Make sure beam break works (use dashboard indicator "indexer.game_piece_detected").
+- [ ] Get indexer going correct direction (use dashboard command "Test Indexer with joystick"). Make sure it stops when beam is broken.
+- [ ] Make sure that we RunIndexerUntilGamePieceGoneCommand works (see dashboard commands "Test indexer until game piece detected" and "Test indexer until game piece gone").
+
+### Swerve
+- [ ] Diagnostics
+- [ ] Horacio bar
+
+***
+
+## Driver Changes
+
+* The operator right stick Y axis no longer "bumps" the intake position.
+* The operator "retract intake" also shuts down the rollers and indexer.

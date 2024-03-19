@@ -81,14 +81,12 @@ public class TeleopDriveWithAimCommand extends Command {
     // see the right target?"
     
     
-    if(swerve.getAreWeAiming())
-  {
+    if(swerve.getAreWeAiming()){
       //grabs heading from vision subsystem
 
       // Turn Off Heading Correction
       //swerve.setHeadingCorrection(false);
 
-      vision.camYawToSpeaker();
       Double headingToTag = vision.getCamYawToSpeaker();
       //Note: headingToTag is a measurement of the yaw from the robot's perspective. 
       //we need to turn this into field orientation later
@@ -100,8 +98,12 @@ public class TeleopDriveWithAimCommand extends Command {
       } else {
         //current heading
 
+        // TODO: Currently, this points the FRONT of the robot toward the apriltag.
+        // We'll need to modify this to point the rear of the robot to the AprilTag
+        // when we get JoeHann back.
+        
         double currentPosRotation = swerve.getHeading().getDegrees();
-        double targetHeading = currentPosRotation + headingToTag+6.5;
+        double targetHeading = headingToTag+6.5;
         //calculates angVelocity
         angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),
                                                   Units.degreesToRadians(targetHeading)) 

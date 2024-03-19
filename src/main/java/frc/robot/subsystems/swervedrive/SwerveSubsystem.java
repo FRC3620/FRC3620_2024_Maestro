@@ -6,8 +6,10 @@ package frc.robot.subsystems.swervedrive;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -83,11 +85,15 @@ public class SwerveSubsystem extends SubsystemBase {
     
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(3.0), 100.0, 1.0);
 
+    // Setup PathPlanner Rotation Override
+    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
+      //swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
@@ -105,11 +111,10 @@ public class SwerveSubsystem extends SubsystemBase {
   public Optional<Rotation2d> getRotationTargetOverride(){
     
     // Some condition that should decide if we want to override rotation
-    
-    if(RobotContainer.visionSubsystem.doISeeSpeakerTag()) {
+    var camYawToSpeaker = RobotContainer.visionSubsystem.getCamYawToSpeaker();
+    if(camYawToSpeaker != null) {
 
-      double currentPosRotation = swerveDrive.getYaw().getDegrees();
-      double VisionTargetHeading = currentPosRotation + RobotContainer.visionSubsystem.getCamYawToSpeaker()+RotationOffsetVision;
+      double VisionTargetHeading = camYawToSpeaker + RotationOffsetVision;
       Rotation2d VisionToTarget = new Rotation2d(Units.degreesToRadians(VisionTargetHeading));
       
       SmartDashboard.putNumber("VisionSwerve.VisionTargetHeading",VisionTargetHeading);
@@ -449,6 +454,14 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void lock() {
     swerveDrive.lockPose();
+  }
+
+  public void alignModules(double moduleHeading){
+    swerveDrive.alignModules(moduleHeading);
+  }
+  
+  public ChassisSpeeds getTargetSpeedsFromPreScaledInputs(double xInput, double yInput, Rotation2d angle){
+    return swerveDrive.swerveController.getTargetSpeeds(xInput, yInput, angle.getRadians(), getHeading().getRadians(), maximumSpeed);
   }
 
   /**

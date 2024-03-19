@@ -176,10 +176,11 @@ public class Robot extends TimedRobot {
   public void testInit() {
     logCANBusIfNecessary();
 
+    /*
     if (RobotContainer.swerveMotorTestSubsystem == null) {
-          RobotContainer.swerveMotorTestSubsystem = new SwerveMotorTestSubsystem(RobotContainer.drivebase.getSwerveDrive(), 59);
-
+      RobotContainer.swerveMotorTestSubsystem = new SwerveMotorTestSubsystem(RobotContainer.drivebase.getSwerveDrive(), 59);
     }
+    */
 
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();

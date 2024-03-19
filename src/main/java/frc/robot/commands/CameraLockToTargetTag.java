@@ -43,16 +43,10 @@ public class CameraLockToTargetTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    vision.camYawToSpeaker();
-    if (vision.getCamYawToSpeaker() != null) {
-      headingToTag = vision.getCamYawToSpeaker() + 6.5;
-    } else {
-      headingToTag = null;
-    }
+    var camYaw_Speaker = vision.getCamYawToSpeaker();
+    if (camYaw_Speaker != null) {
+      headingToTag = camYaw_Speaker + 6.5;
 
-    if (headingToTag == null || !vision.doISeeSpeakerTag()) {
-      finishedTurn = true;
-    } else {
       double headingError = headingToTag - swerve.getHeading().getDegrees();
       // putting current robot heading and target heading
       SmartDashboard.putNumber("vision.currentHeading", swerve.getHeading().getDegrees());
@@ -60,7 +54,7 @@ public class CameraLockToTargetTag extends Command {
       SmartDashboard.putNumber("vision.headingError", headingError);
 
       // turns by target heading
-      controller.turnTo(swerve, swerve.getHeading().getDegrees() + headingToTag);
+      controller.turnTo(swerve, headingToTag);
 
       // if heading is close enough, stop turning
       if (swerve.getHeading().getDegrees() < headingToTag + 2 && swerve.getHeading().getDegrees() > headingToTag - 2) {
@@ -69,9 +63,13 @@ public class CameraLockToTargetTag extends Command {
         // if command isn't turning, return no
         finishedTurn = false;
       }
-
+    } else {
+      headingToTag = null;
+      finishedTurn = true;
     }
+
     SmartDashboard.putString("vision.IsCommandTurning?", finishedTurn ? "no" : "yes");
+
   }
 
   // Called once the command ends or is interrupted.
@@ -83,5 +81,6 @@ public class CameraLockToTargetTag extends Command {
   @Override
   public boolean isFinished() {
     return finishedTurn;
+    
   }
 }

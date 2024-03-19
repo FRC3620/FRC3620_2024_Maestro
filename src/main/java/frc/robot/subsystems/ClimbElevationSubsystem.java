@@ -41,7 +41,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   //public static ClimbElevationSubsystem climbPosition = setPosition();
 
   // Ingredients: Motor, Encoder, PID, and Timer
-  CANSparkMaxSendable motor;
+  public CANSparkMaxSendable motor;
   RelativeEncoder motorEncoder;
   DigitalInput limitSwitch;
   Timer calibrationTimer;
@@ -75,7 +75,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
     this.limitSwitch = new DigitalInput(8);
     
     if (motor != null) {
-      MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(80);
+      MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(80).setInverted(true);
       motorSetup.apply(motor);
       motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
