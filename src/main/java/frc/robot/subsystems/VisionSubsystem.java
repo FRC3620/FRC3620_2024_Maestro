@@ -49,7 +49,7 @@ public class VisionSubsystem extends SubsystemBase {
     static Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
     static Double angCamToApriltags = 22.0;// degrees, facing up
 
-    static Double APRILTAGCAM_FRONT_OFFSET = .30734;// change if neccessary, add to calculations
+    static Double APRILTAGCAM_FRONT_OFFSET = .286;// change if neccessary, add to calculations
     Double NOTEDETECTCAM_Y_OFFSET = 0.0;
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
@@ -122,8 +122,8 @@ public class VisionSubsystem extends SubsystemBase {
             camYawToSpeaker = Math.toDegrees(camRotation.getY());
             double camPitchToSpeaker = desiredTarget.ty + angCamToApriltags;
 
-            camDistToSpeakerTag = (1.45 - camHeight)
-                    / Math.tan(Units.degreesToRadians(camPitchToSpeaker));
+            camDistToSpeakerTag = ((1.45 - camHeight)
+                    / Math.tan(Units.degreesToRadians(camPitchToSpeaker)));
             
             
             SmartDashboard.putNumber("Vision.tx", desiredTarget.tx);
