@@ -295,11 +295,14 @@ public class RobotContainer {
 
    
 
-    // operator right joystick bumps the shoulder position
+    // operator right joystick bumps the amp bar position
     // remember that Y-axis is inverted. pushing up makes a negative
-    /*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.1)
-      .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, -4));
+    .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(-0.1)));
+    // remember that Y-axis is inverted. pushing up makes a negative
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
+    .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(0.1)));
+    /*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
     */

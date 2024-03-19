@@ -25,13 +25,13 @@ public class TestAmpBarCommand extends Command {
   @Override
   public  void initialize(){
     // shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle);
-     shooterSubsystem.setAmpBarPosition(shooterSubsystem.AmpBarUp);
+     shooterSubsystem.setAmpBarPosition(ShooterSubsystem.AmpBarPosition.UP);
    
 
   }
   @Override
   public void end(boolean interrupted) {
-      shooterSubsystem.setAmpBarPosition(shooterSubsystem.AmpBarHome);
+      shooterSubsystem.setAmpBarPosition(ShooterSubsystem.AmpBarPosition.HOME);
       // shooterSubsystem.setSpeedAndAngle(stopShooterSpeedAndAngle);
   }
 }

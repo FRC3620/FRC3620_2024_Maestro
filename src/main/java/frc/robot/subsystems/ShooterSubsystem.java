@@ -50,12 +50,17 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   private double requestedWheelSpeed = 0;
 
+  public enum AmpBarPosition {
+    HOME, UP
+  }
   public static double AmpBarHome=2;
   public static double AmpBarUp=6.25;
+  AmpBarPosition currentAmpBarPosition;
+
   public final static int MOTORID_SHOOTER_BOTTOM = 14;
   public final static int MOTORID_SHOOTER_TOP = 15;
   public final static int MOTORID_SHOOTER_ELEVATION = 16;
-  public final static int MOTORID_AMP_BAR=11;//TODO this is a placeholder CHANGE IT
+  public final static int MOTORID_AMP_BAR=11;
 
   SparkPIDController ampBarPID;
   SparkPIDController elevationPid = null;
@@ -252,10 +257,25 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     manuallySetPower = p;
   }
 
-  public void setAmpBarPosition(double position) {
+  public void setAmpBarPosition(AmpBarPosition ampBarPosition) {
+    currentAmpBarPosition= ampBarPosition;
+    SmartDashboard.putString(name + ".ampbar.request_position_t", currentAmpBarPosition.toString());
+    double position;
+    if (ampBarPosition == AmpBarPosition.HOME) {
+      position = AmpBarHome;
+    }else{//Up
+      position= AmpBarUp;
+    }
     SmartDashboard.putNumber (name + ".ampbar.requested_position", position);
     if (ampBarPID != null) {
       ampBarPID.setReference(position, ControlType.kPosition);
+    }
+  }
+
+  public void bumpAmpBar(double bump){
+    if(currentAmpBarPosition== AmpBarPosition.UP){
+      AmpBarUp+=bump;
+      setAmpBarPosition(AmpBarPosition.UP);
     }
   }
 
@@ -317,7 +337,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
                   setElevationPower(0.0);
                   elevationMotorEncoder.setPosition(64);
                   setElevationPosition(64);
-                  setAmpBarPosition(AmpBarHome);
+                  setAmpBarPosition(AmpBarPosition.HOME);
 
                   // If there was a requested position while we were calibrating, go there
                   if (requestedPositionWhileCalibrating != null) {
