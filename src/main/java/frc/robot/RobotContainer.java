@@ -319,7 +319,7 @@ public class RobotContainer {
         .onTrue(new ActivateClimberJoystickCommand());    
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
-    .toggleOnTrue(new TestAmpBarCommand());    
+    .toggleOnTrue(new AmpShootCommand());    
 /*
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
     .toggleOnFalse(new AmpShootCommandPart2());    
