@@ -13,18 +13,18 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class AmpShootCommand extends Command {
+public class TestAmpBarCommand extends Command {
   ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
   ShooterSpeedAndAngle shooterSpeedAndAngle = new ShooterSpeedAndAngle(1500, 54);
   ShooterSpeedAndAngle stopShooterSpeedAndAngle = new ShooterSpeedAndAngle(0, 54);
 
   /** Creates a new AmpShootCommand. */
-  public AmpShootCommand() {
+  public TestAmpBarCommand() {
     
   }
   @Override
   public  void initialize(){
-    shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle);
+    // shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle);
      shooterSubsystem.setAmpBarPosition(shooterSubsystem.AmpBarUp);
    
 
@@ -32,6 +32,6 @@ public class AmpShootCommand extends Command {
   @Override
   public void end(boolean interrupted) {
       shooterSubsystem.setAmpBarPosition(shooterSubsystem.AmpBarHome);
-      shooterSubsystem.setSpeedAndAngle(stopShooterSpeedAndAngle);
+      // shooterSubsystem.setSpeedAndAngle(stopShooterSpeedAndAngle);
   }
 }
