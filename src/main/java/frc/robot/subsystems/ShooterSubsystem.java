@@ -276,6 +276,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     if(currentAmpBarPosition== AmpBarPosition.UP){
       AmpBarUp+=bump;
       setAmpBarPosition(AmpBarPosition.UP);
+      logger.info("amp bar bumped to {}", AmpBarUp);
     }
   }
 
