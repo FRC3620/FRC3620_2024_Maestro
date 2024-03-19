@@ -44,7 +44,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   boolean encoderCalibrated = false;
 
   // saves the requested location
-  IntakeLocation requestedLocation = null;
+  IntakeLocation requestedLocation = IntakeLocation.IntakeIn;
 
   // the requested pid setpoint
   double requestedPIDSetpoint;
@@ -62,7 +62,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
       pid.setI(kI); //
       pid.setD(kD); //
       pid.setFF(kFF); //
-      pid.setOutputRange(-0.6, 0.9);
+      pid.setOutputRange(-0.4, 0.4);
 
       this.motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
@@ -93,11 +93,21 @@ public class IntakeShoulderMechanism implements HasTelemetry {
       } else {
         double currentPosition = getActualPosition();
         if (requestedLocation == IntakeLocation.IntakeIn) {
-          if (currentPosition < requestedLocation.getIntakePositionSetpoint() + 0.5) {
-            requestedPower = -0.1;
+          //Up
+          if (currentPosition < requestedLocation.getIntakePositionSetpoint() + 2) {
+            //Close
+            requestedPower = -0.05;
+          } else {
+            //Not Close
+            requestedPower = -0.2;
           }
         } else {
-          if (currentPosition < requestedLocation.getIntakePositionSetpoint() - 0.5) {
+          //Down
+          if (currentPosition > requestedLocation.getIntakePositionSetpoint() - 1) {
+            //Close
+            requestedPower = +0.01;
+          } else {
+            //Not Close
             requestedPower = +0.1;
           }
         }

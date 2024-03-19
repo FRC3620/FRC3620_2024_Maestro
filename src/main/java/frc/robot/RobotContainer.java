@@ -22,6 +22,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.BlinkySubsystem.LightSegment;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -65,7 +66,10 @@ public class RobotContainer {
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
   public static VisionSubsystem visionSubsystem;
-  public static IntakeLocation intakeLocation;
+  public static IndexerSubsystem indexerSubsystem;
+
+  // huh?
+  //public static IntakeLocation intakeLocation;
 
   public static LightSegment lightSegment;
   public static HealthMonitorSubsystem healthMonitorSubsystem;
@@ -190,6 +194,9 @@ public class RobotContainer {
     shooterSubsystem = new ShooterSubsystem();
     addSubsystem(shooterSubsystem);
 
+    indexerSubsystem = new IndexerSubsystem();
+    addSubsystem(indexerSubsystem);
+
     blinkySubsystem = new BlinkySubsystem();
     addSubsystem(blinkySubsystem);
 
@@ -254,14 +261,14 @@ public class RobotContainer {
     }
 
     // intake
-    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnTrue(new SetIntakeLocationCommand(IntakeLocation.IntakeOut));
-    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnFalse(new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnTrue(new GroundPickupCommand());
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnFalse(new GroundToHomeCommand());
 
     // well, shoot
-    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunRollersUntilGone(0.8));
+    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
 
     // barf out a piece
-    driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(-0.8));
+    driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(() -> -0.8));
 
     driverJoystick.button(XBoxConstants.BUTTON_X, 99)
       .onTrue(new InstantCommand(() -> drivebase.lock(), drivebase));
@@ -286,10 +293,12 @@ public class RobotContainer {
 
     // operator right joystick bumps the shoulder position
     // remember that Y-axis is inverted. pushing up makes a negative
+    /*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, -4));
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
+    */
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
@@ -304,7 +313,6 @@ public class RobotContainer {
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
         .onTrue(new ActivateClimberJoystickCommand());    
-
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
     .toggleOnTrue(new AmpShootCommand());    
@@ -326,26 +334,10 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand());
     SmartDashboard.putData("set shooter wheels power", new ShooterWheelPowerCommand());
-    SmartDashboard.putData("goInSixInches", new goInSixInchesCommand());
 
-   
-
-    /*
-     * SmartDashboard.putData("GroundPosition", new
-     * SetIntakeLocationCommand(IntakeLocation.groundPosition));
-     * SmartDashboard.putData("HomePosition", new
-     * SetIntakeLocationCommand(IntakeLocation.homePosition));
-     * SmartDashboard.putData("AmpPosition", new
-     * SetIntakeLocationCommand(IntakeLocation.ampPosition));
-     * SmartDashboard.putData("TrapPosition", new
-     * SetIntakeLocationCommand(IntakeLocation.trapPosition));
-     * SmartDashboard.putData("PreclimbPosition", new
-     * SetIntakeLocationCommand(IntakeLocation.preclimbPosition));
-     */
-    SmartDashboard.putData("HomeToGroundPosition", new SetIntakeLocationCommand(IntakeLocation.IntakeOut));
-    SmartDashboard.putData("GroundToHomePosition", new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
+    SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
+    SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
     SmartDashboard.putData("IntakeManual", new IntakeManualMoveCommand());
-    
     SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
     // SmartDashboard.putData("AmpShootCommandPart2", new AmpShootCommandPart2());
 
@@ -354,9 +346,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("LockCamToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
 
-    // test rollers
-    SmartDashboard.putData("Run Rollers until slurped", new RunRollersUntilDetected(0.8));
-    SmartDashboard.putData("Run Rollers until gone", new RunRollersUntilGone(-0.8));
+    // test indexer and rollers
+    SmartDashboard.putData("Run Indexer and Rollers until slurped", new RunIndexerAndRollersUntilGamePieceDetectedCommand());
+    SmartDashboard.putData("Run Indexer until gone", new RunIndexerUntilGamePieceGoneCommand(() -> 0.2));
 
     // test Shooter
     SmartDashboard.putData("Test Shooter angle to 60",
@@ -393,17 +385,31 @@ public class RobotContainer {
 
     SmartDashboard.putData("CameraLockToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
     SmartDashboard.putData("SwerveDaignostics", new SwerveDriveDiagnosticCommand());
+
+    // indexer test
+    SmartDashboard.putData("Test index with joystick", new FunctionalCommand(
+      () -> {}, // initialize()
+      () -> indexerSubsystem.setPower(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X)), // execute()
+      (b) -> indexerSubsystem.setPower(0.0), // end()
+      () -> false, // isFinished()
+      indexerSubsystem // requirements
+    ));
+
+    SmartDashboard.putData("Test indexer until game piece detected", new RunIndexerUntilGamePieceDetectedCommand(() -> 0.1));
+    SmartDashboard.putData("Test indexer until game piece gone", new RunIndexerUntilGamePieceGoneCommand(() -> 0.1));
+    SmartDashboard.putData("IntakeOut", new SetIntakeLocationCommand(IntakeLocation.IntakeOut));
+    SmartDashboard.putData("IntakeIn", new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   
   public void setupAutonomousCommands() 
   {
-    NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunRollersUntilGone(0.8));
+    NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
     NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("PICKUP INTAKE POSITION", new AutoGroundPickupCommand());
-    NamedCommands.registerCommand("SLURPY IN", new RunRollersUntilDetected(0.8).withTimeout(3));
-    NamedCommands.registerCommand("LOAD OMEGA BEAM", new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
+    NamedCommands.registerCommand("SLURPY IN", new RunIndexerAndRollersUntilGamePieceDetectedCommand().withTimeout(3));
+    NamedCommands.registerCommand("LOAD OMEGA BEAM", new GroundToHomeCommand());
     NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
     NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
     NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));

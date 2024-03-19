@@ -12,18 +12,18 @@ import org.usfirst.frc3620.misc.MotorSetup;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
+  public final static int MOTORID_INTAKE_ROLLERS = 9;
+
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   public IntakeRollersMechanism intakeRollerMechanism;
 
   public CANSparkMaxSendable rollers;
-  public DigitalInput gamePieceObtained;
-
+  
   public RollersSubsystem() {
     setupMotors();
     intakeRollerMechanism = new IntakeRollersMechanism(rollers);
@@ -47,15 +47,18 @@ public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
     return intakeRollerMechanism.getPosition();
   }
 
-  public boolean gamePieceDetected() {
+  /*
+   * this was replaced by moving the game detector to the indexer. 
+   * keeping this here as a private to facilitate code changes in case
+   * we need to move it back!
+   */
+  private boolean gamePieceDetected() {
     return intakeRollerMechanism.gamePieceDetected();
   }
 
-  public SparkLimitSwitch getLimitSwitch() {
+  private SparkLimitSwitch getLimitSwitch() {
     return intakeRollerMechanism.gamePieceDetector;
   }
-
-  public final static int MOTORID_INTAKE_ROLLERS = 9;
 
   void setupMotors() {
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
@@ -68,8 +71,6 @@ public class RollersSubsystem extends SubsystemBase implements HasTelemetry {
       motorSetup.apply(rollers);
       addChild("roller", rollers);
     }
-
-    gamePieceObtained = new DigitalInput(9);
   }
 
   @Override

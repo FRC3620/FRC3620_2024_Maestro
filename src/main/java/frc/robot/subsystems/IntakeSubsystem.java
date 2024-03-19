@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
+  public final static int MOTORID_INTAKE_ELEVATION = 13;
+
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   public IntakeShoulderMechanism intakeShoulderMechanism;
@@ -53,20 +55,6 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     return intakeShoulderMechanism.getActualPosition();
   }
 
-  public void recalibrataePitch(boolean forward) {
-    recalibrataePitch(forward);
-  }
-
-  public SparkLimitSwitch getLimitSwitch() {
-    return gamePieceObtained;
-  }
-
-  public final static int MOTORID_INTAKE_ROLLERS = 9;
-  public final static int MOTORID_INTAKE_EXTEND = 10;
-  public final static int MOTORID_INTAKE_EXTEND2 = 11;
-  public final static int MOTORID_INTAKE_WRIST = 12;
-  public final static int MOTORID_INTAKE_ELEVATION = 13;
-
   void setupMotors() {
     CANDeviceFinder canDeviceFinder = RobotContainer.canDeviceFinder;
     boolean shouldMakeAllCANDevices = RobotContainer.shouldMakeAllCANDevices();
@@ -74,7 +62,7 @@ public class IntakeSubsystem extends SubsystemBase implements HasTelemetry {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_INTAKE_ELEVATION, "Intake Elevation")
         || shouldMakeAllCANDevices) {
       shoulder = new CANSparkMaxSendable(MOTORID_INTAKE_ELEVATION, MotorType.kBrushless);
-      MotorSetup motorSetup = new MotorSetup().setInverted(false).setCurrentLimit(40).setCoast(false);
+      MotorSetup motorSetup = new MotorSetup().setInverted(true).setCurrentLimit(40).setCoast(false);
       motorSetup.apply(shoulder);
       addChild("elevation", shoulder);
     }

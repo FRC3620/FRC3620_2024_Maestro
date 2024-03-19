@@ -159,15 +159,20 @@ Do all work on branch MasonCleanDeploy, start that brnach from branch MasonStart
 
 Do all work on branch MasonIndexer, start that brnach from branch MasonStart.
 
-- [ ] Write an indexer subsystem; it just needs to set up the indexer motor, and have a method on it to set the power.
+- [X] Write an indexer subsystem; it just needs to set up the indexer motor, and have a method on it to set the power.
 
 ### Intake
 
-- [ ] Need to write commands to bring the intake in and out. Commands will probably use PID to get the arm close to the end of travel, then just apply power to keep it there.
+- [X] Need to write commands to bring the intake in and out. Commands will probably use PID to get the arm close to the end of travel, then just apply power to keep it there.
 
 ### Bar
 
-- [ ] Need to write commands to bring the bar in and out. Commands will probably use PID to get the bar close to the end of travel, then just apply power to keep it there.
+- [X] Need to write commands to bring the bar in and out. Commands will probably use PID to get the bar close to the end of travel, then just apply power to keep it there.
+- [ ] BarAnglePIDZapper.
+
+### Dashboard
+
+- [ ] Competition dashboard (vision, autonomous, a tab for diagnostics, ???)
 
 ***
 
@@ -188,11 +193,24 @@ Do all work on branch MasonIndexer, start that brnach from branch MasonStart.
 
 ### Intake
 - [ ] Get intake going correct direction.
-- [ ] Find out what the intake readings are for the intake at the ends of it's travel, and fix the commands appropriately.
-- [ ] Tune PID.
+- [ ] Find out what the intake readings are for the intake at the ends of it's travel, and fix the IntakeSubsystem.periodic() method appropriately.
+- [ ] Tune PID (IntakeAnglePIDZapper)
 
 ### Climber
-- [ ] Make sure climber is working, and initial deployment position is correct.
+- [ ] Make sure climber is working, and initial deployment position is correct. Probably need to adjust source code.
 
 ### Indexer
-- [ ] Get indexer going correct direction.
+- [ ] Make sure beam break works (use dashboard indicator "indexer.game_piece_detected").
+- [ ] Get indexer going correct direction (use dashboard command "Test Indexer with joystick"). Make sure it stops when beam is broken.
+- [ ] Make sure that we RunIndexerUntilGamePieceGoneCommand works (see dashboard commands "Test indexer until game piece detected" and "Test indexer until game piece gone").
+
+### Swerve
+- [ ] Diagnostics
+- [ ] Horacio bar
+
+***
+
+## Driver Changes
+
+* The operator right stick Y axis no longer "bumps" the intake position.
+* The operator "retract intake" also shuts down the rollers and indexer.
