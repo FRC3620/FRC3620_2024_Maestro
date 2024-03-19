@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -306,13 +307,13 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
 
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
+    /*new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
         .onTrue(new TrapShootCommand()
                 .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
-                .andThen(new ActivateClimberJoystickCommand()));
+                .andThen(new ActivateClimberJoystickCommand()));*/
 
-    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
-      //  .onTrue(new ActivateClimberJoystickCommand());    
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
+        .onTrue(new ActivateClimberJoystickCommand());    
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
     .toggleOnTrue(new AmpShootCommand());    
