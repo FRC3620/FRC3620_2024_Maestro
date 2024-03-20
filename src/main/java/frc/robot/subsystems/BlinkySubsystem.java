@@ -73,7 +73,7 @@ public class BlinkySubsystem extends SubsystemBase {
     public void setPattern(Pattern pattern) {
       if (pattern == currentPattern)
         return;
-      logger.info ("{} pattern set to {}", getName(), pattern.toString());
+      // logger.info ("{} pattern set to {}", getName(), pattern.toString());
       patternChanged = true;
       if (currentPattern != null) {
         currentPattern.done(this);

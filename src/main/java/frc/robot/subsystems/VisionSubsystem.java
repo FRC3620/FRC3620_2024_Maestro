@@ -62,6 +62,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     LimelightHelpers.LimelightResults lastLimelightResults = null;
     Pose2d lastPose = null;
+    LimelightTarget_Fiducial lastTargetFiducial = null;
+    Double lastFPGATime = null;
 
     Double lastTimestamp = null;
 
@@ -112,7 +114,10 @@ public class VisionSubsystem extends SubsystemBase {
         if (lastTimestamp == null || lastTimestamp != results.targetingResults.timestamp_LIMELIGHT_publish) {
             lastTimestamp = results.targetingResults.timestamp_LIMELIGHT_publish;
             // fill in what time we received this
-            results.targetingResults.timestamp_RIOFPGA_capture = RobotController.getFPGATime();
+            lastFPGATime = results.targetingResults.timestamp_RIOFPGA_capture = RobotController.getFPGATime();
+        } else {
+            // has the same timestamp as the last one we saw, so use the same FPGA time
+            results.targetingResults.timestamp_RIOFPGA_capture = lastFPGATime;
         }
 
         // Maybe can skip this if it's not a new sample?
@@ -137,6 +142,7 @@ public class VisionSubsystem extends SubsystemBase {
         // if alliance is blue.
         int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
         var desiredTarget = findTargetInResults(results, desiredTargetId);
+        lastTargetFiducial = desiredTarget;
 
         if (desiredTarget == null) {
             lastPose = null;
@@ -191,6 +197,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     public LimelightHelpers.LimelightResults getLastLimelightResults() {
         return lastLimelightResults;
+    }
+
+    public LimelightTarget_Fiducial getLastTargetFiducial() {
+        return lastTargetFiducial;
     }
 
     public Pose2d getLastPose2d() {
