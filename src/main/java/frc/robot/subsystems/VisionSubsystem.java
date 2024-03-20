@@ -7,12 +7,16 @@ package frc.robot.subsystems;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.usfirst.frc3620.misc.Utilities;
+
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
 //import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -24,6 +28,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.TurnToCommand;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -45,12 +50,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     static Optional<Alliance> color;
 
-    static Double camHeight = 0.546;// meters, change accordingly
+    static Double camHeight = 0.6604;// meters, change accordingly
     static Double angCamToObject = 30.0;// Degrees, change accordingly, facing down
     static Double angCamToApriltags = 22.0;// degrees, facing up
 
-    static Double APRILTAGCAM_FRONT_OFFSET = .286;// change if neccessary, add to calculations
-    Double NOTEDETECTCAM_Y_OFFSET = 0.0;
+    static Double APRILTAGCAM_FRONT_OFFSET = 0.3048;// change if neccessary, add to calculations
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
 
@@ -59,6 +63,10 @@ public class VisionSubsystem extends SubsystemBase {
     Double camYawToSpeaker;
 
     Double camDistToSpeakerTag;
+
+    // Set Target Speaker Positions
+    public static Translation2d blueSpeakerPos = new Translation2d(0.076, 5.547868);
+    public static Translation2d redSpeakerPos = new Translation2d(16.465042, 5.547868);
 
     public static final double targetWidth = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
 
@@ -98,16 +106,20 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults("");
+
         if (results.targetingResults.targets_Fiducials.length > 0) {
             SmartDashboard.putString("Vision.DoIHaveTag", "got one");
+
         }
         // vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
-        // TODO had to throw this in for simulation failure. Is this a good fix?
-        if (color.isEmpty()) return;
+        LimelightHelpers.PoseEstimate limelightMeasurementBLUE = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
+        LimelightHelpers.PoseEstimate limelightMeasurementRED = LimelightHelpers.getBotPoseEstimate_wpiRed("");
 
-        // if alliance is blue...
+        Pose2d currentPose;
+
+        // if alliance is blue.
         int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
         var desiredTarget = findTargetInResults(results, desiredTargetId);
 
@@ -115,29 +127,36 @@ public class VisionSubsystem extends SubsystemBase {
             camYawToSpeaker = null;
             camDistToSpeakerTag = null;
         } else {
-            Pose3d camResults = desiredTarget.getCameraPose_TargetSpace();
-            // not using this, save some time!
-            // Pose3d targetResults = desiredTarget.getTargetPose_CameraSpace();
-            var camRotation = camResults.getRotation();
-            camYawToSpeaker = Math.toDegrees(camRotation.getY());
-            double camPitchToSpeaker = desiredTarget.ty + angCamToApriltags;
+            if (color.get() == Alliance.Blue) {
+                currentPose = limelightMeasurementBLUE.pose;
+                camDistToSpeakerTag = currentPose.getTranslation().getDistance(blueSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
+                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees());
 
-            camDistToSpeakerTag = ((1.45 - camHeight)
-                    / Math.tan(Units.degreesToRadians(camPitchToSpeaker)));
-            
-            
+                SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getX()));
+                SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getY()));
+            } else {
+                currentPose = limelightMeasurementBLUE.pose;
+                camDistToSpeakerTag = currentPose.getTranslation().getDistance(redSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
+                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()-180);
+
+                SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementRED.pose.getX()));
+                SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementRED.pose.getY()));
+            }
+
+            SmartDashboard.putNumber("Vision.DistToSpeakerTag", Units.metersToFeet(camDistToSpeakerTag));
+            //SmartDashboard.putNumber("Vision.camDistToSpeakerTag_feet", Units.metersToFeet(camDistToSpeakerTag));
+            SmartDashboard.putNumber("Vision.camYawToSpeaker", camYawToSpeaker);
+
             SmartDashboard.putNumber("Vision.tx", desiredTarget.tx);
             SmartDashboard.putNumber("Vision.ty", desiredTarget.ty);
-            /*  SmartDashboard.putNumber("Vision.camRotationPitch", camPitchToSpeaker);
-            SmartDashboard.putNumber("Vision.camRotationYaw", camYawToSpeaker);*/ // don't need right now
-            SmartDashboard.putNumber("Vision.TargetDistanceM", camDistToSpeakerTag);
-            SmartDashboard.putNumber("Vision.TargetDistanceFt", Units.metersToFeet(camDistToSpeakerTag));
 
         }
 
     }
 
     public Double getCamYawToSpeaker() {
+
+        // NOTE: This method returns the heading angle which points to the robot toward the target. This is FIELD-RELATIVE
         return camYawToSpeaker;
     }
 

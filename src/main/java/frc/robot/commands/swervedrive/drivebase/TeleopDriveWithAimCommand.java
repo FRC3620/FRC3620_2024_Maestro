@@ -103,7 +103,7 @@ public class TeleopDriveWithAimCommand extends Command {
         // when we get JoeHann back.
         
         double currentPosRotation = swerve.getHeading().getDegrees();
-        double targetHeading = headingToTag+6.5;
+        double targetHeading = headingToTag;
         //calculates angVelocity
         angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),
                                                   Units.degreesToRadians(targetHeading)) 
