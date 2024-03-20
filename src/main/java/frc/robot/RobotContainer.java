@@ -287,16 +287,23 @@ public class RobotContainer {
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 */
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
-        .toggleOnTrue(new SetShooterSpeedCommand(5000))
-        .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+        .toggleOnTrue(new SetShooterSpeedCommand(5000));
+        
+        //.toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
+        .toggleOnTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ampShot));
 
    
 
-    // operator right joystick bumps the shoulder position
+    // operator right joystick bumps the amp bar position
     // remember that Y-axis is inverted. pushing up makes a negative
-    /*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.1)
-      .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, -4));
+    .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(-0.1)));
+    // remember that Y-axis is inverted. pushing up makes a negative
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
+    .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(0.1)));
+    /*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
     */
@@ -340,7 +347,7 @@ public class RobotContainer {
     SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
     SmartDashboard.putData("IntakeManual", new IntakeManualMoveCommand());
     SmartDashboard.putData("AmpShootCommand", new AmpShootCommand());
-    // SmartDashboard.putData("AmpShootCommandPart2", new AmpShootCommandPart2());
+    SmartDashboard.putData("TestAmpShootCommand", new TestAmpBarCommand());
 
     SmartDashboard.putData("Climber to 0", new SetClimberPositionCommand(0));
     SmartDashboard.putData("Climber to 2", new SetClimberPositionCommand(2));
