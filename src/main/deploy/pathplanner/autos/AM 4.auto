@@ -12,39 +12,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "CHARGE SUBWOOF OMEGA BEAM"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 2.0
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "FIRE OMEGA BEAM"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "AM to 4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DISABLE OMEGA BEAM"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "LOAD OMEGA BEAM"
           }
         },
         {
