@@ -38,7 +38,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   RelativeEncoder motorEncoder;
   Timer calibrationTimer;
 
-  SparkPIDController pid = null;
+  //SparkPIDController pid = null;
 
   // Robot is set to "not calibrated" by default
   boolean encoderCalibrated = false;
@@ -57,12 +57,14 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   public IntakeShoulderMechanism(CANSparkMax motor) { // The constructor
     this.motor = motor;
     if (motor != null) {
+      /*
       pid = motor.getPIDController();
       pid.setP(kP); //
       pid.setI(kI); //
       pid.setD(kD); //
       pid.setFF(kFF); //
       pid.setOutputRange(-0.4, 0.4);
+      */
 
       this.motorEncoder = motor.getEncoder();
       motorEncoder.setPositionConversionFactor(positionConverionFactor);
@@ -94,21 +96,21 @@ public class IntakeShoulderMechanism implements HasTelemetry {
         double currentPosition = getActualPosition();
         if (requestedLocation == IntakeLocation.IntakeIn) {
           //Up
-          if (currentPosition < requestedLocation.getIntakePositionSetpoint() + 2) {
+          if (currentPosition < 2.5) {
             //Close
             requestedPower = -0.05;
           } else {
             //Not Close
-            requestedPower = -0.2;
+            requestedPower = -0.35;
           }
         } else {
           //Down
-          if (currentPosition > requestedLocation.getIntakePositionSetpoint() - 1) {
+          if (currentPosition > 1) {
             //Close
             requestedPower = +0.01;
           } else {
             //Not Close
-            requestedPower = +0.1;
+            requestedPower = +0.35;
           }
         }
       }
@@ -174,7 +176,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   void setPositionSetpoint(double position) {
     SmartDashboard.putNumber(name + ".requestedPosition", position);
     requestedPIDSetpoint = position;
-    pid.setReference(position, ControlType.kPosition);
+    //pid.setReference(position, ControlType.kPosition);
   }
 
   /**
