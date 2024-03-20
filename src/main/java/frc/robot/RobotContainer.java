@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.*;
 
+import javax.print.attribute.standard.MediaSize.NA;
+
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
@@ -411,18 +413,19 @@ public class RobotContainer {
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   
-  public void setupAutonomousCommands() 
-  {
+  public void setupAutonomousCommands() {
+    //Command to extend, aim, intake all at the same time to run with path in parallel or with event markers
     NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
-    NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
+    //NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("PICKUP INTAKE POSITION", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("SLURPY IN", new RunIndexerAndRollersUntilGamePieceDetectedCommand().withTimeout(3));
     NamedCommands.registerCommand("LOAD OMEGA BEAM", new GroundToHomeCommand());
     NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
     NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
     NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
-    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(2));
-    NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+    //NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(2));
+    //NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+    NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand());
 
     chooser = AutoBuilder.buildAutoChooser();
 
