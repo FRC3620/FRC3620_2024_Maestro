@@ -4,7 +4,6 @@
         <Console name="Console">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <!--
         <Routing name="File">
             <TimeIsSetFilter/>
             <Routes pattern="">
@@ -15,6 +14,7 @@
                 </Route>
             </Routes>
         </Routing>
+        <!--
         <DriverStation name="DS">
             <PatternLayout pattern="%c{1.} - %msg%n"/>
         </DriverStation>
@@ -22,8 +22,8 @@
     </Appenders>
     <Loggers>
         <ASyncRoot level="trace">
+        <AppenderRef ref="File"/>
         <!--
-            <AppenderRef ref="File"/>
             <AppenderRef ref="DS"/>
             -->
             <AppenderRef ref="Console"/>
