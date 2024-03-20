@@ -264,7 +264,8 @@ public class RobotContainer {
     driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnFalse(new GroundToHomeCommand());
 
     // well, shoot
-    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
+    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(
+      new RunIndexerUntilGamePieceGoneCommand(() -> 0.8).alongWith(new InstantCommand(() -> visionSubsystem.takeSnapshot())));
 
     // barf out a piece
     driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(() -> -0.8));

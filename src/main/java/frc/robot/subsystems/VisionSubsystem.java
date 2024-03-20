@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -61,6 +62,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     LimelightHelpers.LimelightResults lastLimelightResults = null;
     Pose2d lastPose = null;
+
+    Double lastTimestamp = null;
 
     // Set Target Speaker Positions
     public static Translation2d blueSpeakerPos = new Translation2d(0.076, 5.547868);
@@ -105,6 +108,14 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
         LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults("");
         lastLimelightResults = results;
+
+        if (lastTimestamp == null || lastTimestamp != results.targetingResults.timestamp_LIMELIGHT_publish) {
+            lastTimestamp = results.targetingResults.timestamp_LIMELIGHT_publish;
+            // fill in what time we received this
+            results.targetingResults.timestamp_RIOFPGA_capture = RobotController.getFPGATime();
+        }
+
+        // Maybe can skip this if it's not a new sample?
 
         if (results.targetingResults.targets_Fiducials.length > 0) {
             SmartDashboard.putString("Vision.DoIHaveTag", "got one");
@@ -193,5 +204,9 @@ public class VisionSubsystem extends SubsystemBase {
             return true;
         }
         return false;
+    }
+
+    public void takeSnapshot() {
+        // TODO write this!
     }
 }

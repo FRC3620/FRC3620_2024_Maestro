@@ -3,29 +3,28 @@ package frc.robot;
 import java.util.EnumSet;
 
 import org.usfirst.frc3620.logger.DataLogger;
+import org.usfirst.frc3620.logger.DataLoggerPrelude;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.Utilities;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkBase;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
-import swervelib.SwerveDrive;
-import swervelib.SwerveModule;
 
 public class RobotDataLogger {
-  PowerDistribution powerDistribution = null;
-  Runtime runtime = null;
+  PowerDistribution powerDistribution = RobotContainer.powerDistribution;
+  Runtime runtime = Runtime.getRuntime();
+  OdometryGatherer odometryGatherer = new OdometryGatherer();
 
   public RobotDataLogger(DataLogger dataLogger, CANDeviceFinder canDeviceFinder) {
     dataLogger.addDataProvider("matchTime", () -> DataLogger.f2(DriverStation.getMatchTime()));
     dataLogger.addDataProvider("robotMode", () -> Robot.getCurrentRobotMode().toString());
     dataLogger.addDataProvider("robotModeInt", () -> Robot.getCurrentRobotMode().ordinal());
     dataLogger.addDataProvider("batteryVoltage", () -> DataLogger.f2(RobotController.getBatteryVoltage()));
-
-    powerDistribution = RobotContainer.powerDistribution;
 
     if (powerDistribution != null) {
       dataLogger.addDataProvider("pdp.totalCurrent", () -> DataLogger.f2(powerDistribution.getTotalCurrent()));
@@ -59,6 +58,11 @@ public class RobotDataLogger {
       dataLogger.addDataProvider("shooter.top.velocity",
           () -> RobotContainer.shooterSubsystem.bottomMotor.getVelocity());
     }
+
+    dataLogger.addPrelude(odometryGatherer);
+    dataLogger.addDataProvider ("vision.poseX", () -> odometryGatherer.visionPoseX());
+    dataLogger.addDataProvider ("vision.poseY", () -> odometryGatherer.visionPoseY());
+    dataLogger.addDataProvider ("vision.age", () -> odometryGatherer.getVisionAge());
   }
 
   void addSwerveDataLoggers(DataLogger dataLogger) {
@@ -80,7 +84,6 @@ public class RobotDataLogger {
   }
 
   void addMotorProviders(DataLogger dataLogger, String name, Object motor, EnumSet<MotorFields> fields) {
-    dataLogger.addDataProvider(name + ".object", () -> motor.toString());
     if (motor instanceof CANSparkBase) {
       CANSparkBase m = (CANSparkBase) motor;
       if (fields.contains(MotorFields.TEMPERATURE))
@@ -102,6 +105,35 @@ public class RobotDataLogger {
 
   enum MotorFields {
     TEMPERATURE, CURRENT, OUTPUT
+  }
+
+  class OdometryGatherer implements DataLoggerPrelude {
+    LimelightHelpers.LimelightResults limelightResults;
+    Pose2d visionPose2d;
+    long now;
+
+    @Override
+    public void dataLoggerPrelude() {
+      limelightResults = RobotContainer.visionSubsystem.getLastLimelightResults();
+      visionPose2d = RobotContainer.visionSubsystem.getLastPose2d();
+      now = RobotController.getFPGATime();
+    }
+
+    public String visionPoseX() {
+      if (visionPose2d == null) return "";
+      return DataLogger.f2(visionPose2d.getX());
+    }
+    
+    public String visionPoseY() {
+      if (visionPose2d == null) return "";
+      return DataLogger.f2(visionPose2d.getY());
+    }
+
+    public String getVisionAge() {
+      if (limelightResults == null) return "";
+      return DataLogger.f2(now - limelightResults.targetingResults.timestamp_RIOFPGA_capture);
+    }
+    
   }
 
 }
