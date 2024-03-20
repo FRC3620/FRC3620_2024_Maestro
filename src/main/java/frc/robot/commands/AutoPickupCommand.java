@@ -31,8 +31,8 @@ public class AutoPickupCommand extends ParallelCommandGroup {
     //
 
       new GroundPickupCommand(),
-      new WaitUntilCommand(0)
-      //new WaitUntilCommand(() -> intakeSubsystem.gamePieceObtained)
+      new WaitUntilCommand(() -> indexerSubsystem.gamePieceDetected()),
+      new RunIndexerUntilGamePieceGoneCommand(() -> 0.8)
       //new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem)
       );
   }
