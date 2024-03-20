@@ -25,15 +25,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.LimelightHelpers;
-import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
-import frc.robot.LimelightHelpers.PoseEstimate;
-import frc.robot.commands.TurnToCommand;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers;
 //import frc.robot.FieldLayout;
 ////
 
@@ -63,6 +58,9 @@ public class VisionSubsystem extends SubsystemBase {
     Double camYawToSpeaker;
 
     Double camDistToSpeakerTag;
+
+    LimelightHelpers.LimelightResults lastLimelightResults = null;
+    Pose2d lastPose = null;
 
     // Set Target Speaker Positions
     public static Translation2d blueSpeakerPos = new Translation2d(0.076, 5.547868);
@@ -106,6 +104,7 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults("");
+        lastLimelightResults = results;
 
         if (results.targetingResults.targets_Fiducials.length > 0) {
             SmartDashboard.putString("Vision.DoIHaveTag", "got one");
@@ -114,6 +113,11 @@ public class VisionSubsystem extends SubsystemBase {
         // vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
+
+        // added this to handle case where color is not yet set, otherwise we blow up in the simulator
+        if (color.isEmpty()) return;
+
+        // TODO only do this when needed, it's expensive!
         LimelightHelpers.PoseEstimate limelightMeasurementBLUE = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
         LimelightHelpers.PoseEstimate limelightMeasurementRED = LimelightHelpers.getBotPoseEstimate_wpiRed("");
 
@@ -124,18 +128,19 @@ public class VisionSubsystem extends SubsystemBase {
         var desiredTarget = findTargetInResults(results, desiredTargetId);
 
         if (desiredTarget == null) {
+            lastPose = null;
             camYawToSpeaker = null;
             camDistToSpeakerTag = null;
         } else {
             if (color.get() == Alliance.Blue) {
-                currentPose = limelightMeasurementBLUE.pose;
+                lastPose = currentPose = limelightMeasurementBLUE.pose;
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(blueSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
                 camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees());
 
                 SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getX()));
                 SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getY()));
             } else {
-                currentPose = limelightMeasurementBLUE.pose;
+                lastPose = currentPose = limelightMeasurementBLUE.pose;
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(redSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
                 camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()-180);
 
@@ -160,7 +165,7 @@ public class VisionSubsystem extends SubsystemBase {
         return camYawToSpeaker;
     }
 
-    LimelightTarget_Fiducial findTargetInResults(LimelightResults limelightResults, int id) {
+    public static LimelightTarget_Fiducial findTargetInResults(LimelightResults limelightResults, int id) {
         for (var target : limelightResults.targetingResults.targets_Fiducials) {
             if (target.fiducialID == id) {
                 return target;
@@ -170,9 +175,15 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Double getCamDistToSpeaker() {
-
         return camDistToSpeakerTag;
+    }
 
+    public LimelightHelpers.LimelightResults getLastLimelightResults() {
+        return lastLimelightResults;
+    }
+
+    public Pose2d getLastPose2d() {
+        return lastPose;
     }
 
     public boolean doIHaveShootingSolution() {

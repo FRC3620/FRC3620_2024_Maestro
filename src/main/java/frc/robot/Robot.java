@@ -35,6 +35,8 @@ public class Robot extends TimedRobot {
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
+  public static RobotDataLogger robotDataLogger;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -75,10 +77,10 @@ public class Robot extends TimedRobot {
 
     // get data logging going
     printMemoryStatus("setting up data logger");
-    DataLogger robotDataLogger = new DataLogger();
-    new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
-    robotDataLogger.setInterval(0.25);
-    robotDataLogger.start();
+    DataLogger genericDataLogger = new DataLogger();
+    robotDataLogger = new RobotDataLogger(genericDataLogger, RobotContainer.canDeviceFinder);
+    genericDataLogger.setInterval(0.25);
+    genericDataLogger.start();
 
     FileSaver.add("networktables.ini");
 

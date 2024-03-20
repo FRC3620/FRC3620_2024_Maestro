@@ -136,8 +136,7 @@ public class RobotContainer {
 
     setupSmartDashboardCommands();
 
-    // TODO put this back
-    // setupAutonomousCommands();
+    setupAutonomousCommands();
 
     SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase,
         superSwerveController,
