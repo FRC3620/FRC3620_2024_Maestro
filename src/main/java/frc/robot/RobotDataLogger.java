@@ -59,7 +59,7 @@ public class RobotDataLogger {
       dataLogger.addDataProvider("shooter.top.velocity",
           () -> RobotContainer.shooterSubsystem.bottomMotor.getVelocity());
     }
-    dataLogger.addDataProvider("shooter.elevation.position.requested", RobotContainer.shooterSubsystem.getRequestedShoulderPosition());
+    //dataLogger.addDataProvider("shooter.elevation.position.requested", RobotContainer.shooterSubsystem.getRequestedShoulderPosition());
     dataLogger.addDataProvider("shooter.elevation.position.adjustment", () -> RobotContainer.shooterSubsystem.getElevationAdjustment());
     dataLogger.addDataProvider("shooter.elevation.position.actual", () -> RobotContainer.shooterSubsystem.getActualElevationPosition());
 
