@@ -86,7 +86,7 @@ public class SwerveSubsystem extends SubsystemBase {
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(3.0), 100.0, 1.0);
 
     // Setup PathPlanner Rotation Override
-    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+    //PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.

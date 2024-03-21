@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 
 public class RunIndexerAndRollersUntilGamePieceDetectedCommand extends ParallelDeadlineGroup {
   static double defaultIndexerPower = 0.7;
-  static double defaultRollerPower = 0.9;
+  static double defaultRollerPower = 1.0;
   public RunIndexerAndRollersUntilGamePieceDetectedCommand () {
     this (() -> defaultIndexerPower, () -> defaultRollerPower);
 
