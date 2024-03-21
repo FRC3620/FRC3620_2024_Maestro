@@ -152,7 +152,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem);
+   /*  if(visionSubsystem != null && shooterSubsystem != null){
+      new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem);
+    } */
   }
 
   @Override
