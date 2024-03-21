@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     HOME, UP
   }
   public static double AmpBarHome=2;
-  public static double AmpBarUp=6.25;
+  public static double AmpBarUp=6.65;
   AmpBarPosition currentAmpBarPosition;
 
   public final static int MOTORID_SHOOTER_BOTTOM = 14;
@@ -136,7 +136,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     final double aD = 0;
     final double aFF = 0;
     final double aIMaxAccum = 0.0;
-    final double aNegOutputLimit = -0.1;
+    final double aNegOutputLimit = -0.3;
     final double aPosOutputLimit = 0.2;
 
     // was 9.44 before we swapped out 3:1/5:1 for a 5:1/5:1

@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.File;
 import java.util.*;
 
-import javax.print.attribute.standard.MediaSize.NA;
-
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
@@ -273,6 +271,7 @@ public class RobotContainer {
     // barf out a piece
     driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(() -> -0.8));
 
+    /*
     driverJoystick.button(XBoxConstants.BUTTON_X, 99)
       .onTrue(new InstantCommand(() -> drivebase.lock(), drivebase));
 
@@ -281,6 +280,7 @@ public class RobotContainer {
 
     driverJoystick.button(XBoxConstants.BUTTON_B,97)
       .whileTrue(new InstantCommand(() -> drivebase.alignModules(90), drivebase));
+      */
 
     // bring intake to home position
     operatorDpad.up().onTrue(new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
@@ -299,11 +299,11 @@ public class RobotContainer {
 
     // operator right joystick bumps the amp bar position
     // remember that Y-axis is inverted. pushing up makes a negative
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.1)
-    .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(-0.1)));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.3)
+      .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(-0.2)));
     // remember that Y-axis is inverted. pushing up makes a negative
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
-    .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(0.1)));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.3)
+      .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(0.2)));
     /*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
