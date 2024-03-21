@@ -83,6 +83,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
   boolean areWeShooting = false;
 
+  double elevationAdjustment = 0;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     topConfig.Voltage.PeakForwardVoltage = 12;
@@ -209,6 +211,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     
     topSpeedStats = new SlidingWindowStats(100);
     bottomSpeedStats = new SlidingWindowStats(100);
+
+    updateDashboardElevationAdjustment();
   }
 
   void configMotor(String motorName, TalonFX motor, TalonFXConfiguration configuration) {
@@ -316,6 +320,14 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       }
     }
 
+    double newElevationAdjustment = readDashboardElevationAdjustment();
+    if (newElevationAdjustment != elevationAdjustment) {
+      elevationAdjustment = newElevationAdjustment;
+      if (encoderCalibrated && ! disabledForDebugging) {
+        elevationPid.setReference(requestedPosition + elevationAdjustment, ControlType.kPosition);
+      }
+    }
+
     // only do something if we actually have a motor
     if (elevationMotor != null) {
       if (elevationMotorEncoder != null) { // if there is an encoder, display these
@@ -358,22 +370,23 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public void setElevationPosition(double position) {
     position = MathUtil.clamp(position, 17, 63); // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
-    double oldPosition = requestedPosition;
     requestedPosition = position;
     if (encoderCalibrated) {
       if (!disabledForDebugging) {
-        if (oldPosition < 45 && requestedPosition > 55) {
-          // elevationPid.setIAccum(0);
-        }
-        elevationPid.setReference(position, ControlType.kPosition);
+        elevationPid.setReference(position + elevationAdjustment, ControlType.kPosition);
       }
     } else {
       requestedPositionWhileCalibrating = position;
     }
   }
 
-  public double getElevationPosition() {
-    return elevationMotorEncoder.getPosition();
+  public double getRequestedShooterElevation() {
+    return requestedPosition;
+  }
+
+  public double getActualElevationPosition() {
+    if (elevationMotorEncoder != null) return elevationMotorEncoder.getPosition();
+    return 0;
   }
 
   void setElevationPower(double power) {
@@ -439,6 +452,18 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       SmartDashboard.putNumber(name + "." + motorName + ".sliding.stdev", slidingWindowStats.getStdDev());
       SmartDashboard.putNumber(name + "." + motorName + ".sliding.flyers", slidingWindowStats.getFlyers());
     }
+  }
+
+  void updateDashboardElevationAdjustment() {
+    SmartDashboard.putNumber(name + ".elevationAdjustment", elevationAdjustment);
+  }
+
+  double readDashboardElevationAdjustment() {
+    return SmartDashboard.getNumber(name + ".elevationAdjustment", elevationAdjustment);
+  }
+
+  public double getElevationAdjustment() {
+    return elevationAdjustment;
   }
 
 }

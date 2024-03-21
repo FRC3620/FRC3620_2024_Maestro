@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.DataLoggerPrelude;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
-import org.usfirst.frc3620.misc.Utilities;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkBase;
@@ -60,6 +59,9 @@ public class RobotDataLogger {
       dataLogger.addDataProvider("shooter.top.velocity",
           () -> RobotContainer.shooterSubsystem.bottomMotor.getVelocity());
     }
+    dataLogger.addDataProvider("shooter.elevation.position.requested", RobotContainer.shooterSubsystem.getRequestedShoulderPosition());
+    dataLogger.addDataProvider("shooter.elevation.position.adjustment", () -> RobotContainer.shooterSubsystem.getElevationAdjustment());
+    dataLogger.addDataProvider("shooter.elevation.position.actual", () -> RobotContainer.shooterSubsystem.getActualElevationPosition());
 
     dataLogger.addPrelude(odometryGatherer);
     // dataLogger.addDataProvider("vision.now", () -> odometryGatherer.getFPGATime());
