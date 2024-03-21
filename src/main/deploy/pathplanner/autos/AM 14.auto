@@ -12,15 +12,15 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 2.0
+            "pathName": "AM to 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AM to 4"
+            "pathName": "1 to 4"
           }
         },
         {

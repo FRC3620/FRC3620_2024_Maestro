@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.5692064546522255,
-        "y": 7.133434209888363
+        "x": 2.797392261451189,
+        "y": 6.969716047694203
       },
       "prevControl": {
-        "x": 3.0897461225121883,
-        "y": 6.8527745032698055
+        "x": 2.3179319293111518,
+        "y": 6.689056341075646
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,34 +36,10 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.1,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "EXTEND OMEGA BEAM"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "SLURPY IN"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

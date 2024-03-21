@@ -348,8 +348,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
                   // motor is not moving, hopefully it's against the stop
                   encoderCalibrated = true;
                   setElevationPower(0.0);
-                  elevationMotorEncoder.setPosition(64);
-                  setElevationPosition(64);
+                  elevationMotorEncoder.setPosition(69);
+                  setElevationPosition(69);
                   setAmpBarPosition(AmpBarPosition.HOME);
 
                   // If there was a requested position while we were calibrating, go there
@@ -368,7 +368,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   }
 
   public void setElevationPosition(double position) {
-    position = MathUtil.clamp(position, 17, 63); // high end is a little short of the stop
+    position = MathUtil.clamp(position, 17, 69); // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {

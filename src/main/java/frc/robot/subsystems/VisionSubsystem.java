@@ -152,14 +152,14 @@ public class VisionSubsystem extends SubsystemBase {
             if (color.get() == Alliance.Blue) {
                 lastPose = currentPose = limelightMeasurementBLUE.pose;
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(blueSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
-                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees());
+                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees())+3;//change offset yaw by changing 2
 
                 SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getX()));
                 SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getY()));
             } else {
                 lastPose = currentPose = limelightMeasurementBLUE.pose;
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(redSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
-                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()-180);
+                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()-180+3);
 
                 SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementRED.pose.getX()));
                 SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementRED.pose.getY()));

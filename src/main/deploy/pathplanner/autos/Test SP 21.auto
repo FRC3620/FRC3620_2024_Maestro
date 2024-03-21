@@ -2,49 +2,55 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7158327706968803,
-      "y": 4.373613761472538
+      "x": 1.3473171105886368,
+      "y": 5.5430292057165325
     },
-    "rotation": -60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "CHARGE SUBWOOF OMEGA BEAM"
+            "pathName": "SP to 2"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FIRE OMEGA BEAM"
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SC to 8"
+            "pathName": "2 to 1"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "DISABLE OMEGA BEAM"
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "8 back"
+            "pathName": "1 to 4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 back"
           }
         }
       ]

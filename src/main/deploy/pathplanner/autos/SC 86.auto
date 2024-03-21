@@ -2,31 +2,43 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6924444618120005,
-      "y": 6.735832958845405
+      "x": 0.7158327706968803,
+      "y": 4.373613761472538
     },
-    "rotation": 60.0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "SC to 8"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "8 to shoot"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AM to 4"
+            "pathName": "Shoot to 6"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4 back"
+            "pathName": "6 to shoot"
           }
         }
       ]

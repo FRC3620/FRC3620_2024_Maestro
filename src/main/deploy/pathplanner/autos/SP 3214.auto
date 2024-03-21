@@ -2,50 +2,19 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7392210795817603,
-      "y": 4.373613761472538
+      "x": 1.3473171105886368,
+      "y": 5.5430292057165325
     },
-    "rotation": -60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "CHARGE SUBWOOF OMEGA BEAM"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.15
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FIRE OMEGA BEAM"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "SC to 3"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": []
+            "pathName": "SP to 3"
           }
         },
         {
@@ -55,27 +24,45 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "FIRE OMEGA BEAM"
+            "pathName": "3 to 2"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.25
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DISABLE OMEGA BEAM"
+            "waitTime": 0.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3 to 6"
+            "pathName": "2 to 1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 to 4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 back"
           }
         }
       ]
