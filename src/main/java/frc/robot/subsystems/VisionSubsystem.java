@@ -114,10 +114,7 @@ public class VisionSubsystem extends SubsystemBase {
         // vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
         color = DriverStation.getAlliance();
-        LimelightHelpers.PoseEstimate limelightMeasurementBLUE = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
-        LimelightHelpers.PoseEstimate limelightMeasurementRED = LimelightHelpers.getBotPoseEstimate_wpiRed("");
-
-        Pose2d currentPose;
+        Pose2d currentPose = RobotContainer.drivebase.getPose();
 
         // if alliance is blue.
         int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
@@ -128,23 +125,14 @@ public class VisionSubsystem extends SubsystemBase {
             camDistToSpeakerTag = null;
         } else {
             if (color.get() == Alliance.Blue) {
-                currentPose = limelightMeasurementBLUE.pose;
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(blueSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
                 camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees());
-
-                SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getX()));
-                SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getY()));
             } else {
-                currentPose = limelightMeasurementBLUE.pose;
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(redSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
-                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()-180);
-
-                SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementRED.pose.getX()));
-                SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementRED.pose.getY()));
+                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees());
             }
-
+            
             SmartDashboard.putNumber("Vision.DistToSpeakerTag", Units.metersToFeet(camDistToSpeakerTag));
-            //SmartDashboard.putNumber("Vision.camDistToSpeakerTag_feet", Units.metersToFeet(camDistToSpeakerTag));
             SmartDashboard.putNumber("Vision.camYawToSpeaker", camYawToSpeaker);
 
             SmartDashboard.putNumber("Vision.tx", desiredTarget.tx);
