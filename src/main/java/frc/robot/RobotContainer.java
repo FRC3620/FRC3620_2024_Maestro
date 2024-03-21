@@ -266,7 +266,7 @@ public class RobotContainer {
 
     // well, shoot
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(
-      new RunIndexerUntilGamePieceGoneCommand(() -> 0.8).alongWith(new InstantCommand(() -> visionSubsystem.takeSnapshot())));
+      new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
 
     // barf out a piece
     driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(() -> -0.8));
@@ -411,6 +411,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("AmpBar bump +", new InstantCommand(()->shooterSubsystem.bumpAmpBar(+0.1)));
     SmartDashboard.putData("AmpBar bump -", new InstantCommand(()->shooterSubsystem.bumpAmpBar(-0.1)));
+
+    SmartDashboard.putData("Snapshot", new InstantCommand(() -> visionSubsystem.takeSnapshot()));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

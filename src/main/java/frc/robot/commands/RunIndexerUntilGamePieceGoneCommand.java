@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import frc.robot.RobotContainer;
+
 public class RunIndexerUntilGamePieceGoneCommand extends RunIndexerCommand {
 
   public RunIndexerUntilGamePieceGoneCommand(DoubleSupplier powerSupplier) {
@@ -12,6 +14,7 @@ public class RunIndexerUntilGamePieceGoneCommand extends RunIndexerCommand {
   public void initialize() {
     super.initialize();
     setLimitSwitchEnabled(false);
+    RobotContainer.visionSubsystem.takeSnapshot();
   }
 
   @Override
