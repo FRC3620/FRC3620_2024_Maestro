@@ -98,19 +98,19 @@ public class RobotDataLogger {
     if (motor instanceof CANSparkBase) {
       CANSparkBase m = (CANSparkBase) motor;
       if (fields.contains(MotorFields.TEMPERATURE))
-        dataLogger.addDataProvider(name + ".temperature", () -> m.getMotorTemperature());
+        dataLogger.addDataProvider(name + ".temperature", () -> DataLogger.f2(m.getMotorTemperature()));
       if (fields.contains(MotorFields.CURRENT))
-        dataLogger.addDataProvider(name + ".current", () -> m.getOutputCurrent());
+        dataLogger.addDataProvider(name + ".current", () -> DataLogger.f2(m.getOutputCurrent()));
       if (fields.contains(MotorFields.OUTPUT))
-        dataLogger.addDataProvider(name + ".output", () -> m.getAppliedOutput());
+        dataLogger.addDataProvider(name + ".output", () -> DataLogger.f2(m.getAppliedOutput()));
     } else if (motor instanceof TalonFX) {
       TalonFX m = (TalonFX) motor;
       if (fields.contains(MotorFields.TEMPERATURE))
-        dataLogger.addDataProvider(name + ".temperature", () -> m.getDeviceTemp());
+        dataLogger.addDataProvider(name + ".temperature", () -> DataLogger.f2(m.getDeviceTemp().getValueAsDouble()));
       if (fields.contains(MotorFields.CURRENT))
-        dataLogger.addDataProvider(name + ".current", () -> m.getStatorCurrent());
+        dataLogger.addDataProvider(name + ".current", () -> DataLogger.f2(m.getStatorCurrent().getValueAsDouble()));
       if (fields.contains(MotorFields.OUTPUT))
-        dataLogger.addDataProvider(name + ".output", () -> m.getDutyCycle().getValue());
+        dataLogger.addDataProvider(name + ".output", () -> DataLogger.f2(m.getDutyCycle().getValue()));
     }
   }
 
