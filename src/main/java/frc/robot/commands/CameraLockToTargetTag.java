@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.RobotDataLogger;
 import frc.robot.SuperSwerveController;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -45,7 +47,7 @@ public class CameraLockToTargetTag extends Command {
   public void execute() {
     var camYaw_Speaker = vision.getCamYawToSpeaker();
     if (camYaw_Speaker != null) {
-      headingToTag = camYaw_Speaker + 6.5;
+      headingToTag = camYaw_Speaker;
 
       double headingError = headingToTag - swerve.getHeading().getDegrees();
       // putting current robot heading and target heading
@@ -53,11 +55,17 @@ public class CameraLockToTargetTag extends Command {
       SmartDashboard.putNumber("vision.headingToApril", headingToTag);
       SmartDashboard.putNumber("vision.headingError", headingError);
 
+      RobotContainer.logger.info("navX heading", swerve.getHeading().getDegrees());
+      RobotContainer.logger.info("heading to april tag", headingToTag);
+      RobotContainer.logger.info("heading error", headingError);
+      RobotContainer.logger.info("yaw to speaker", camYaw_Speaker);
+
+
       // turns by target heading
       controller.turnTo(swerve, headingToTag);
 
       // if heading is close enough, stop turning
-      if (swerve.getHeading().getDegrees() < headingToTag + 2 && swerve.getHeading().getDegrees() > headingToTag - 2) {
+      if (swerve.getHeading().getDegrees() < headingToTag + 2.5 && swerve.getHeading().getDegrees() > headingToTag - 2.5) {
         finishedTurn = true;
       } else {
         // if command isn't turning, return no
