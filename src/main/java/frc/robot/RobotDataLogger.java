@@ -76,6 +76,12 @@ public class RobotDataLogger {
     dataLogger.addDataProvider("vision.targetID", () -> odometryGatherer.getTargetID());
     dataLogger.addDataProvider("vision.targetTx", () -> odometryGatherer.getTargetTx());
     dataLogger.addDataProvider("vision.targetTy", () -> odometryGatherer.getTargetTy());
+    dataLogger.addDataProvider("red.poseX", () -> odometryGatherer.getRedPoseX());
+    dataLogger.addDataProvider("red.poseY", () -> odometryGatherer.getRedPoseY());
+    dataLogger.addDataProvider("red.poseRot", () -> odometryGatherer.getRedPoseRotation());
+    dataLogger.addDataProvider("blue.poseX", () -> odometryGatherer.getBluePoseX());
+    dataLogger.addDataProvider("blue.poseY", () -> odometryGatherer.getBluePoseY());
+    dataLogger.addDataProvider("blue.poseRot",() -> odometryGatherer.getBluePoseRotation());
   }
 
   void addSwerveDataLoggers(DataLogger dataLogger) {
@@ -124,6 +130,8 @@ public class RobotDataLogger {
     Pose2d visionPose2d, odometryPose2d;
     Rotation2d odometryHeading;
     long fpgaTime;
+    LimelightHelpers.PoseEstimate red;
+    LimelightHelpers.PoseEstimate blue;
 
     @Override
     public void dataLoggerPrelude() {
@@ -134,6 +142,9 @@ public class RobotDataLogger {
 
       odometryPose2d = RobotContainer.drivebase.getPose();
       odometryHeading = RobotContainer.drivebase.getHeading();
+
+      red = RobotContainer.visionSubsystem.lastLimelightMeasurementRED;
+      blue = RobotContainer.visionSubsystem.lastLimelightMeasurementBLUE;
     }
 
     public String visionPoseX() {
@@ -144,6 +155,36 @@ public class RobotDataLogger {
     public String visionPoseY() {
       if (visionPose2d == null) return "";
       return DataLogger.f2(visionPose2d.getY());
+    }
+
+    public String getRedPoseX() {
+      if (red == null) return "";
+      return DataLogger.f2(red.pose.getX());
+    }
+    
+    public String getRedPoseY() {
+      if (red == null) return "";
+      return DataLogger.f2(red.pose.getY());
+    }
+
+    public String getRedPoseRotation() {
+      if (red == null) return "";
+      return DataLogger.f2(red.pose.getRotation().getDegrees());
+    }
+
+    public String getBluePoseX() {
+      if (blue == null) return "";
+      return DataLogger.f2(blue.pose.getX());
+    }
+    
+    public String getBluePoseY() {
+      if (blue == null) return "";
+      return DataLogger.f2(blue.pose.getY());
+    }
+
+    public String getBluePoseRotation() {
+      if (blue == null) return "";
+      return DataLogger.f2(blue.pose.getRotation().getDegrees());
     }
 
     public String getVisionAge() {
