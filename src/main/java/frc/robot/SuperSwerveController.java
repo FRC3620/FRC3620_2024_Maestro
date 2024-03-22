@@ -80,7 +80,8 @@ public class SuperSwerveController {
     public void turnTo(SwerveSubsystem swerve, double targetHeading) {
         double targetOmega = 0;
         if (headingSetpoint != null) {
-            targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), targetHeading);
+            //targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), targetHeading);
+            targetOmega = headingPID.calculate(drivebase.getPose().getRotation().getDegrees(), targetHeading);
             targetOmega = MathUtil.clamp(targetOmega, -4, 4);
             headingSetpoint = targetHeading;
         }

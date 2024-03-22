@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7275269251393202,
-      "y": 4.373613761472538
+      "x": 0.77430354290908,
+      "y": 4.420390379242297
     },
     "rotation": -60.0
   },
@@ -44,6 +44,12 @@
                 "data": {
                   "pathName": "SC to 3"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "INIT OMEGA BEAM"
+                }
               }
             ]
           }
@@ -53,9 +59,21 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "CENTER OMEGA BEAM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PITCH OMEGA BEAM"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.75
+                  "waitTime": 0.25
                 }
               },
               {
@@ -81,9 +99,16 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "6 back"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "6 back"
+                }
+              }
+            ]
           }
         },
         {
@@ -114,7 +139,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.25
           }
         },
         {

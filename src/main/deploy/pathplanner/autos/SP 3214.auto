@@ -44,6 +44,12 @@
                 "data": {
                   "pathName": "SP to 3"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "INIT OMEGA BEAM"
+                }
               }
             ]
           }
@@ -67,7 +73,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.25
                 }
               },
               {

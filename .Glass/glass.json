@@ -11,10 +11,48 @@
     },
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/AmpBar bump +": "Command",
+      "/SmartDashboard/AmpBar bump -": "Command",
+      "/SmartDashboard/AmpShootCommand": "Command",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auto mode": "String Chooser",
+      "/SmartDashboard/CameraLockToTarget": "Command",
+      "/SmartDashboard/Climber to 0": "Command",
+      "/SmartDashboard/Climber to 2": "Command",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/navX-Sensor[1]": "Gyro"
+      "/SmartDashboard/GroundToHomePosition": "Command",
+      "/SmartDashboard/HomeToGroundPosition": "Command",
+      "/SmartDashboard/IntakeIn": "Command",
+      "/SmartDashboard/IntakeManual": "Command",
+      "/SmartDashboard/IntakeOut": "Command",
+      "/SmartDashboard/LockCamToTarget": "Command",
+      "/SmartDashboard/Run Indexer and Rollers until slurped": "Command",
+      "/SmartDashboard/Run Indexer until gone": "Command",
+      "/SmartDashboard/ShooterVisionAngleCommand": "Command",
+      "/SmartDashboard/SwerveDaignostics": "Command",
+      "/SmartDashboard/Test Intake Angle PID Zapper": "Command",
+      "/SmartDashboard/Test Shooter Angle PID zapper": "Command",
+      "/SmartDashboard/Test Shooter Bottom PID zapper": "Command",
+      "/SmartDashboard/Test Shooter Speed to 0": "Command",
+      "/SmartDashboard/Test Shooter Speed to 3000": "Command",
+      "/SmartDashboard/Test Shooter Speed to 4500": "Command",
+      "/SmartDashboard/Test Shooter Speed to 500": "Command",
+      "/SmartDashboard/Test Shooter Speed to 5000": "Command",
+      "/SmartDashboard/Test Shooter Top PID zapper": "Command",
+      "/SmartDashboard/Test Shooter angle to 25": "Command",
+      "/SmartDashboard/Test Shooter angle to 27.5": "Command",
+      "/SmartDashboard/Test Shooter angle to 30": "Command",
+      "/SmartDashboard/Test Shooter angle to 35": "Command",
+      "/SmartDashboard/Test Shooter angle to 60": "Command",
+      "/SmartDashboard/Test index with joystick": "Command",
+      "/SmartDashboard/Test indexer until game piece detected": "Command",
+      "/SmartDashboard/Test indexer until game piece gone": "Command",
+      "/SmartDashboard/TestAmpShootCommand": "Command",
+      "/SmartDashboard/navX-Sensor[1]": "Gyro",
+      "/SmartDashboard/set shooter #1": "Command",
+      "/SmartDashboard/set shooter #2": "Command",
+      "/SmartDashboard/set shooter wheels power": "Command",
+      "/SmartDashboard/set variable shooter speed": "Command"
     },
     "windows": {
       "/FMSInfo": {
@@ -42,6 +80,9 @@
   },
   "NetworkTables Info": {
     "Clients": {
+      "open": true
+    },
+    "Connections": {
       "open": true
     },
     "Server": {
