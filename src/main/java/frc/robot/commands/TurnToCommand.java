@@ -35,7 +35,7 @@ public class TurnToCommand extends Command {
   public void execute() {
     controller.turnTo(swerve, targetHeading);
 
-    if(swerve.getHeading().getDegrees() < targetHeading + 2 && swerve.getHeading().getDegrees() > targetHeading - 2) {
+    if(swerve.getPose().getRotation().getDegrees() < targetHeading + 2 && swerve.getPose().getRotation().getDegrees() > targetHeading - 2) {
       finishedTurn = true;
     }
   }
