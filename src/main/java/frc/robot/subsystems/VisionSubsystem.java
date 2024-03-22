@@ -74,6 +74,9 @@ public class VisionSubsystem extends SubsystemBase {
     Pose2d lastPose = null;
     LimelightTarget_Fiducial lastTargetFiducial = null;
     Double lastFPGATime = null;
+    public LimelightHelpers.PoseEstimate lastLimelightMeasurementBLUE;
+    public LimelightHelpers.PoseEstimate lastLimelightMeasurementRED;
+
 
     Double lastTimestamp = null;
 
@@ -144,8 +147,9 @@ public class VisionSubsystem extends SubsystemBase {
         if (color.isEmpty()) return;
 
         // TODO only do this when needed, it's expensive!
-        LimelightHelpers.PoseEstimate limelightMeasurementBLUE = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
-        LimelightHelpers.PoseEstimate limelightMeasurementRED = LimelightHelpers.getBotPoseEstimate_wpiRed("");
+        LimelightHelpers.PoseEstimate limelightMeasurementBLUE = lastLimelightMeasurementBLUE = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
+        LimelightHelpers.PoseEstimate limelightMeasurementRED = lastLimelightMeasurementRED = LimelightHelpers.getBotPoseEstimate_wpiRed("");
+    
 
         Pose2d currentPose;
 
