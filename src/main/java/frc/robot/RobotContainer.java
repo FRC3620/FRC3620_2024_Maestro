@@ -431,7 +431,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(2));
     NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
     NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand().withTimeout(1.5));
-    NamedCommands.registerCommand("INIT OMEGA BEAM", new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 37)));
+    NamedCommands.registerCommand("INIT OMEGA BEAM", new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 37)).withTimeout(1));
 
     chooser = AutoBuilder.buildAutoChooser();
 
