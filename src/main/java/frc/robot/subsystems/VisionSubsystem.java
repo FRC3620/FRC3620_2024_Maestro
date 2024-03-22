@@ -5,9 +5,17 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.LoggingMaster;
 import org.usfirst.frc3620.misc.Utilities;
+
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,12 +36,14 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.RobotContainer;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 //import frc.robot.FieldLayout;
 ////
 
 public class VisionSubsystem extends SubsystemBase {
+    Logger logger = EventLogging.getLogger(getClass());
 
     // private PhotonCamera cam = new PhotonCamera("Microsoft_LifeCam_HD-3000"); one
     // to two inches off from around 60 inches, 2-3 inches off mid field, 3-4 inches
@@ -216,7 +226,53 @@ public class VisionSubsystem extends SubsystemBase {
         return false;
     }
 
+    ObjectMapper objectMapper = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, Visibility.PUBLIC_ONLY);
+
     public void takeSnapshot() {
-        // TODO write this!
+        try {
+            SnapshotData s = new SnapshotData();
+            s.timestamp = LoggingMaster.convertTimestampToString(new Date());
+
+            LimelightHelpers.takeSnapshot("", s.timestamp);
+
+            var lastTargetFiducial = getLastTargetFiducial();
+            var visionPose2d = getLastPose2d();
+
+            var odometryPose2d = RobotContainer.drivebase.getPose();
+            var odometryHeading = RobotContainer.drivebase.getHeading();
+
+            if (lastTargetFiducial != null) {
+                s.tx = lastTargetFiducial.tx;
+                s.ty = lastTargetFiducial.ty;
+                s.id = (int) lastTargetFiducial.fiducialID;
+            }
+
+            if (visionPose2d != null) {
+                s.visionTranslation = visionPose2d.getTranslation();
+            }
+
+            if (odometryPose2d != null) s.odometryTranslation = odometryPose2d.getTranslation();
+            if (odometryHeading != null) s.odometryHeading = odometryHeading.getDegrees();
+
+            s.actualShooterPosition = RobotContainer.shooterSubsystem.getActualElevationPosition();
+            s.requestedShooterPosition = RobotContainer.shooterSubsystem.getRequestedShooterElevation();
+
+            String ss = objectMapper.writeValueAsString(s);
+            logger.info ("Shooting: {}", ss);
+        } catch (Exception ex) {
+            logger.error ("takeSnapshot() didn't work: {}", ex.getMessage());
+        }
+    }
+
+    public static class SnapshotData {
+        public String timestamp;
+        public Double tx, ty;
+        public Integer id;
+        public Translation2d odometryTranslation;
+        public Double odometryHeading;
+        public Translation2d visionTranslation;
+        public Double visionHeading;
+        public Double requestedShooterPosition, actualShooterPosition;
+
     }
 }
