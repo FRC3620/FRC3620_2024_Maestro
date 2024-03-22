@@ -325,6 +325,9 @@ public class RobotContainer {
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
     .toggleOnTrue(new AmpShootCommand());    
+
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
+    .onTrue(new RunRollersCommand(() -> -0.9).withTimeout(1.5));
 /*
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
     .toggleOnFalse(new AmpShootCommandPart2());    
@@ -393,7 +396,7 @@ public class RobotContainer {
     SmartDashboard.putData("ShooterVisionAngleCommand", new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
 
     SmartDashboard.putData("CameraLockToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
-    SmartDashboard.putData("SwerveDaignostics", new SwerveDriveDiagnosticCommand());
+    SmartDashboard.putData("SwerveDiagnostics", new SwerveDriveDiagnosticCommand());
 
     // indexer test
     SmartDashboard.putData("Test index with joystick", new FunctionalCommand(
@@ -420,14 +423,14 @@ public class RobotContainer {
     NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
     //NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("PICKUP INTAKE POSITION", new AutoGroundPickupCommand());
-    NamedCommands.registerCommand("SLURPY IN", new RunIndexerAndRollersUntilGamePieceDetectedCommand().withTimeout(3));
+    NamedCommands.registerCommand("SLURPY IN", new GroundPickupCommand().withTimeout(3));
     NamedCommands.registerCommand("NO MORE SLURPY", new GroundToHomeCommand());
     NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
     NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
     NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
     NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(2));
     NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
-    NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand());
+    NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand().withTimeout(1.5));
     NamedCommands.registerCommand("INIT OMEGA BEAM", new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 37)));
 
     chooser = AutoBuilder.buildAutoChooser();
