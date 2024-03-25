@@ -88,9 +88,9 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     topConfig.Voltage.PeakForwardVoltage = 12;
-    topConfig.Voltage.PeakReverseVoltage = 0;
+    topConfig.Voltage.PeakReverseVoltage = 12;
     bottomConfig.Voltage.PeakForwardVoltage = 12;
-    bottomConfig.Voltage.PeakReverseVoltage = 0;
+    bottomConfig.Voltage.PeakReverseVoltage = 12;
     /*
      * Voltage-based velocity requires a feed forward to account for the back-emf of
      * the motor
@@ -107,7 +107,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
     // Peak output
     topConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
-    topConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+    topConfig.TorqueCurrent.PeakReverseTorqueCurrent = 20;
     topConfig.CurrentLimits.StatorCurrentLimit = 40;
     topConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
@@ -115,7 +115,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
     // Peak output
     bottomConfig.TorqueCurrent.PeakForwardTorqueCurrent = 20;
-    bottomConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+    bottomConfig.TorqueCurrent.PeakReverseTorqueCurrent = 20;
     bottomConfig.CurrentLimits.StatorCurrentLimit = 50;
     bottomConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
@@ -348,8 +348,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
                   // motor is not moving, hopefully it's against the stop
                   encoderCalibrated = true;
                   setElevationPower(0.0);
-                  elevationMotorEncoder.setPosition(69);
-                  setElevationPosition(69);
+                  elevationMotorEncoder.setPosition(68.5);
+                  setElevationPosition(68.5);
                   setAmpBarPosition(AmpBarPosition.HOME);
 
                   // If there was a requested position while we were calibrating, go there
@@ -368,7 +368,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   }
 
   public void setElevationPosition(double position) {
-    position = MathUtil.clamp(position, 17, 69); // high end is a little short of the stop
+    position = MathUtil.clamp(position, 20, 68.5); // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
