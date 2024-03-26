@@ -30,15 +30,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
-              },
               {
                 "type": "path",
                 "data": {
@@ -48,7 +42,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "INIT OMEGA BEAM"
+                  "name": "SLURPY IN"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PITCH OMEGA BEAM FOREVER"
                 }
               }
             ]
@@ -62,12 +62,6 @@
                 "type": "named",
                 "data": {
                   "name": "CENTER OMEGA BEAM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PITCH OMEGA BEAM"
                 }
               },
               {
