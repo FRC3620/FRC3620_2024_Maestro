@@ -53,21 +53,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "CENTER OMEGA BEAM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PITCH OMEGA BEAM"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.25
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "CENTER OMEGA BEAM"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "PITCH OMEGA BEAM"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -103,15 +104,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "CENTER OMEGA BEAM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PITCH OMEGA BEAM"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "CENTER OMEGA BEAM"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "PITCH OMEGA BEAM"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -147,15 +155,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "CENTER OMEGA BEAM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PITCH OMEGA BEAM"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "CENTER OMEGA BEAM"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "PITCH OMEGA BEAM"
+                      }
+                    }
+                  ]
                 }
               },
               {

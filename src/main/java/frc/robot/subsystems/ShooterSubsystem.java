@@ -122,7 +122,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // shooter angle PID parameters and encoder conversion factors
-    final double kP = 0.015; //0.02
+    final double kP = 0.0175; //0.02
     final double kI = 0.0; //0.00007
     final double kD = 0;
     final double kFF = 0;
