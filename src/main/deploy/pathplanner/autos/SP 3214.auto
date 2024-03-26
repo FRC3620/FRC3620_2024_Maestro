@@ -44,12 +44,6 @@
                 "data": {
                   "pathName": "SP to 3"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "INIT OMEGA BEAM"
-                }
               }
             ]
           }

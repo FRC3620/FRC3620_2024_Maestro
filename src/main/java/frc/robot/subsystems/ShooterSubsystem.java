@@ -53,14 +53,14 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public enum AmpBarPosition {
     HOME, UP
   }
-  public static double AmpBarHome=2;
-  public static double AmpBarUp=6.65;
+  public static double AmpBarHome = 2;
+  public static double AmpBarUp = 6.65;
   AmpBarPosition currentAmpBarPosition;
 
   public final static int MOTORID_SHOOTER_BOTTOM = 14;
   public final static int MOTORID_SHOOTER_TOP = 15;
   public final static int MOTORID_SHOOTER_ELEVATION = 16;
-  public final static int MOTORID_AMP_BAR=11;
+  public final static int MOTORID_AMP_BAR = 11;
 
   public SparkPIDController ampBarPID;
   SparkPIDController elevationPid = null;
@@ -122,8 +122,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // shooter angle PID parameters and encoder conversion factors
-    final double kP = 0.02;
-    final double kI = 0.00007;
+    final double kP = 0.015; //0.02
+    final double kI = 0.0; //0.00007
     final double kD = 0;
     final double kFF = 0;
     final double kIMaxAccum = 0.04;

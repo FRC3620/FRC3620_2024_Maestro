@@ -42,14 +42,19 @@ public class AutoShooterVisionAngleAdjustmentCommand extends Command {
       SmartDashboard.putString("shooterVision.doIHaveTarget", "no");
     }else{
       ShooterSpeedAndAngle angle= ShooterCalcutlaiter.CalculaiteAngleM(distance);
+      double desiredElevationPosition = angle.getPosition();
       shooter.setElevationPosition(angle.getPosition());
       SmartDashboard.putNumber("shooterVision.Angle", angle.getPosition());
       SmartDashboard.putString("shooterVision.doIHaveTarget", "yes");
       SmartDashboard.putNumber("shooterVision.Distance", distance);
       SmartDashboard.putNumber("shooterVision.DistanceFt", Units.metersToFeet(distance));
       SmartDashboard.putNumber("shooterVision.Yaw", vision.getCamYawToSpeaker());
+      double actualElevationPosition = shooter.getActualElevationPosition();
+
+      SmartDashboard.putNumber("shooterVision.desiredPosition", desiredElevationPosition);
+      SmartDashboard.putNumber("shooterVision.actualPosition", actualElevationPosition);
       
-      if (shooter.getActualElevationPosition() > (ShooterCalcutlaiter.CalculaiteAngleM(distance).getPosition() - 1) && shooter.getActualElevationPosition() < (ShooterCalcutlaiter.CalculaiteAngleM(distance).getPosition() + 1)) {
+      if (Math.abs(actualElevationPosition - desiredElevationPosition) < 2) {
         isFinished = true;
       }
     }
