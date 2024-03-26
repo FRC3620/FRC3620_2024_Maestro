@@ -54,7 +54,7 @@ public class AutoShooterVisionAngleAdjustmentCommand extends Command {
       SmartDashboard.putNumber("shooterVision.desiredPosition", desiredElevationPosition);
       SmartDashboard.putNumber("shooterVision.actualPosition", actualElevationPosition);
       
-      if (Math.abs(actualElevationPosition - desiredElevationPosition) < 1) {
+      if (Math.abs(actualElevationPosition - desiredElevationPosition) < 2) {
         isFinished = true;
       }
     }
