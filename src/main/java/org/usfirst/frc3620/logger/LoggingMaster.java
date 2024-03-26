@@ -4,9 +4,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class LoggingMaster {
-    private final static long SOME_TIME_AFTER_1970 = 523980000000L;
+import edu.wpi.first.wpilibj.RobotController;
 
+public class LoggingMaster {
     private static Date _timestamp = null;
 
     private static File _logDirectory = null;
@@ -19,9 +19,7 @@ public class LoggingMaster {
                                         // synchonized)
             synchronized (LoggingMaster.class) {
                 if (_timestamp == null) { // Double checked
-                    long now = System.currentTimeMillis();
-                    
-                    if (now > SOME_TIME_AFTER_1970) {
+                    if (RobotController.isSystemTimeValid()) {
                         _timestamp = new Date();
                         String logMessage = String.format(
                                 "timestamp for logs is %s\n",convertTimestampToString(_timestamp));
