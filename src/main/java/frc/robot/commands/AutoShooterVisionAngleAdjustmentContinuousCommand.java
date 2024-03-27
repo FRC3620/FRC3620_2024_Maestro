@@ -9,15 +9,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ShooterCalcutlaiter;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterElevationSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class AutoShooterVisionAngleAdjustmentContinuousCommand extends Command {
   private final VisionSubsystem vision;
-  private final ShooterSubsystem shooter;
+  private final ShooterElevationSubsystem shooter;
 
   /** Creates a new ShooterVisionAngleAdjustmentCommand. */
-  public AutoShooterVisionAngleAdjustmentContinuousCommand(VisionSubsystem vision, ShooterSubsystem shooter) {
+  public AutoShooterVisionAngleAdjustmentContinuousCommand(VisionSubsystem vision, ShooterElevationSubsystem shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.vision = vision;
     this.shooter = shooter;

@@ -319,6 +319,8 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
 
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).onTrue(new SourcePickupCommand());
+
     /*new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
         .onTrue(new TrapShootCommand()
                 .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
@@ -438,7 +440,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
     NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(1.5));
     NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
-    NamedCommands.registerCommand("PITCH OMEGA BEAM FOREVER", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+    NamedCommands.registerCommand("PITCH OMEGA BEAM FOREVER", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
     NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand().withTimeout(1.5));
     NamedCommands.registerCommand("INIT OMEGA BEAM", new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 37)).withTimeout(1));
 
