@@ -141,7 +141,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
     if (azimuthMotorCurrents.size() > 0) {
       List<Double> aziSpeeds = new ArrayList<>(azimuthMotorCurrents.size());
       List<Double> aziCurrents = new ArrayList<>(azimuthMotorCurrents.size());
-      List<Double> aziEncoderPos = new ArrayList<>(azimuthMotorCurrents.size());
+      List<Double> aziRelEncoderPos = new ArrayList<>(azimuthMotorCurrents.size());
       List<Double> aziAbsEncoderPos = new ArrayList<>(azimuthMotorCurrents.size());
       for (var nameAndCurrentStat : azimuthMotorCurrents.entrySet()) {
         String name = nameAndCurrentStat.getKey();
@@ -149,7 +149,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
         CANSparkBase motor = (CANSparkBase) RobotContainer.swerveAzimuthMotors.get(name);
         motor.set(power);
 
-        SmartDashboard.putString("Diagnotics.name", name);
+        SmartDashboard.putString("Diagnostics.name", name);
 
         double velocity = motor.getEncoder().getVelocity();
         SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.speed", velocity);
@@ -161,9 +161,9 @@ public class SwerveDriveDiagnosticCommand extends Command {
         aziCurrents.add(mean);
 
         double encoderValue = SmartDashboard.getNumber("Module[" + name + "] Raw Angle Encoder", 0);
-        aziEncoderPos.add(encoderValue);
+        aziRelEncoderPos.add(encoderValue);
 
-        double absEncoderValue = SmartDashboard.getNumber("Module[" + name + "] Adjusted Absolute Encoder", 0);
+        double absEncoderValue = SmartDashboard.getNumber("Module[" + name + "] Adjusted Absolute Encoder", 0); //May need to be raw
         aziAbsEncoderPos.add(absEncoderValue);
       }
 
@@ -171,8 +171,8 @@ public class SwerveDriveDiagnosticCommand extends Command {
       double maxAziSpeed = Collections.max(aziSpeeds);
       double minAziCurrent = Collections.min(aziCurrents);
       double maxAziCurrent = Collections.max(aziCurrents);
-      double relEncoderVal = Collections.max(aziEncoderPos);
-      double absEncoderVal = Collections.max(aziAbsEncoderPos);
+      double relEncoderPos = Collections.max(aziRelEncoderPos);
+      double absEncoderPos = Collections.max(aziAbsEncoderPos);
 
       if (minAziSpeed / maxAziSpeed < .9) {
         aziColor = colorAziBad;
@@ -186,7 +186,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
         aziColor = colorZeroMotors;
       }
 
-      if (Math.abs(relEncoderVal - absEncoderVal) > 5) {
+      if (Math.abs(relEncoderPos - absEncoderPos) > 5) { //Arbitrary number. May need changing.
         aziColor = colorAziEncoderBad;
       }
 
