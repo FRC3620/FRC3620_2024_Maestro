@@ -6,24 +6,28 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.ShooterElevationSubsystem;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem;
 
 public class SetShooterSpeedAndAngleCommand extends Command {
-  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
+  ShooterWheelsAndAmpBarSubsystem shooterWheelAndAmpBarSubsystem = RobotContainer.shooterWheelsAndAmpBarSubsystem;
+  ShooterElevationSubsystem shooterElevationSubsystem = RobotContainer.shooterElevationSubsystem;
+
   ShooterSpeedAndAngle speedAndAngle;
 
   /** Creates a new setShooterSpeedCommand. */
   public SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle speedAndAngle) {
     this.speedAndAngle = speedAndAngle;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterSubsystem);
+    addRequirements(shooterWheelAndAmpBarSubsystem, shooterElevationSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setSpeedAndAngle(speedAndAngle);
+    shooterWheelAndAmpBarSubsystem.setRequestedWheelSpeed(speedAndAngle);
+    shooterElevationSubsystem.setElevationPosition(speedAndAngle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

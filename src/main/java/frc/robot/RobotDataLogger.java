@@ -52,16 +52,17 @@ public class RobotDataLogger {
     dataLogger.addDataProvider("doWeHaveATarget", () -> RobotContainer.visionSubsystem.getCamYawToSpeaker() != null);
     // requested vs actual headings
     // shooter motor velocities
-    if (RobotContainer.shooterSubsystem.topMotor != null) {
-      dataLogger.addDataProvider("shooter.top.velocity", () -> RobotContainer.shooterSubsystem.topMotor.getVelocity());
-    }
-    if (RobotContainer.shooterSubsystem.bottomMotor != null) {
+    if (RobotContainer.shooterWheelsAndAmpBarSubsystem.topMotor != null) {
       dataLogger.addDataProvider("shooter.top.velocity",
-          () -> RobotContainer.shooterSubsystem.bottomMotor.getVelocity());
+        () -> RobotContainer.shooterWheelsAndAmpBarSubsystem.topMotor.getVelocity());
+    }
+    if (RobotContainer.shooterWheelsAndAmpBarSubsystem.bottomMotor != null) {
+      dataLogger.addDataProvider("shooter.top.velocity",
+        () -> RobotContainer.shooterWheelsAndAmpBarSubsystem.bottomMotor.getVelocity());
     }
     //dataLogger.addDataProvider("shooter.elevation.position.requested", RobotContainer.shooterSubsystem.getRequestedShoulderPosition());
-    dataLogger.addDataProvider("shooter.elevation.position.adjustment", () -> RobotContainer.shooterSubsystem.getElevationAdjustment());
-    dataLogger.addDataProvider("shooter.elevation.position.actual", () -> RobotContainer.shooterSubsystem.getActualElevationPosition());
+    dataLogger.addDataProvider("shooter.elevation.position.adjustment", () -> RobotContainer.shooterElevationSubsystem.getElevationAdjustment());
+    dataLogger.addDataProvider("shooter.elevation.position.actual", () -> RobotContainer.shooterElevationSubsystem.getActualElevationPosition());
 
     dataLogger.addPrelude(odometryGatherer);
     // dataLogger.addDataProvider("vision.now", () -> odometryGatherer.getFPGATime());

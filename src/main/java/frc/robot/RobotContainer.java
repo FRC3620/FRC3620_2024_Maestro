@@ -62,7 +62,8 @@ public class RobotContainer {
   public static IntakeSubsystem intakeSubsystem;
   public static RollersSubsystem rollersSubsystem;
   public static ClimbElevationSubsystem climbElevationSubsystem;
-  public static ShooterSubsystem shooterSubsystem;
+  public static ShooterElevationSubsystem shooterElevationSubsystem;
+  public static ShooterWheelsAndAmpBarSubsystem shooterWheelsAndAmpBarSubsystem;
   /* public static */ BlinkySubsystem blinkySubsystem;
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
@@ -191,8 +192,11 @@ public class RobotContainer {
     climbElevationSubsystem = new ClimbElevationSubsystem();
     addSubsystem(climbElevationSubsystem);
 
-    shooterSubsystem = new ShooterSubsystem();
-    addSubsystem(shooterSubsystem);
+    shooterElevationSubsystem = new ShooterElevationSubsystem();
+    addSubsystem(shooterElevationSubsystem);
+
+    shooterWheelsAndAmpBarSubsystem = new ShooterWheelsAndAmpBarSubsystem();
+    addSubsystem(shooterWheelsAndAmpBarSubsystem);
 
     indexerSubsystem = new IndexerSubsystem();
     addSubsystem(indexerSubsystem);
@@ -290,7 +294,7 @@ public class RobotContainer {
 */
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
         .toggleOnTrue(new SetShooterSpeedCommand(5000))
-        .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+        .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
         .toggleOnTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ampShot));
@@ -300,10 +304,10 @@ public class RobotContainer {
     // operator right joystick bumps the amp bar position
     // remember that Y-axis is inverted. pushing up makes a negative
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.3)
-      .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(-0.2)));
+      .onTrue(new InstantCommand(()->shooterWheelsAndAmpBarSubsystem.bumpAmpBar(-0.2)));
     // remember that Y-axis is inverted. pushing up makes a negative
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.3)
-      .onTrue(new InstantCommand(()->shooterSubsystem.bumpAmpBar(0.2)));
+      .onTrue(new InstantCommand(()->shooterWheelsAndAmpBarSubsystem.bumpAmpBar(0.2)));
     /*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
@@ -376,9 +380,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("Test Shooter Angle PID zapper", new ShooterAnglePIDZapper());
     SmartDashboard.putData("Test Shooter Top PID zapper",
-        new ShooterSpeedPIDZapper(shooterSubsystem.topMotor, "test.shooter.top"));
+        new ShooterSpeedPIDZapper(shooterWheelsAndAmpBarSubsystem.topMotor, "test.shooter.top"));
     SmartDashboard.putData("Test Shooter Bottom PID zapper",
-        new ShooterSpeedPIDZapper(shooterSubsystem.bottomMotor, "test.shooter.bottom"));
+        new ShooterSpeedPIDZapper(shooterWheelsAndAmpBarSubsystem.bottomMotor, "test.shooter.bottom"));
 
     SmartDashboard.putData("Test Shooter Speed to 0",
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 60)));
@@ -393,7 +397,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Test Intake Angle PID Zapper", new IntakeAnglePIDZapper());
 
-    SmartDashboard.putData("ShooterVisionAngleCommand", new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+    SmartDashboard.putData("ShooterVisionAngleCommand", new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
 
     SmartDashboard.putData("CameraLockToTarget", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController));
     SmartDashboard.putData("SwerveDiagnostics", new SwerveDriveDiagnosticCommand());
@@ -414,8 +418,8 @@ public class RobotContainer {
     SmartDashboard.putData("IntakeOut", new SetIntakeLocationCommand(IntakeLocation.IntakeOut));
     SmartDashboard.putData("IntakeIn", new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
 
-    SmartDashboard.putData("AmpBar bump +", new InstantCommand(()->shooterSubsystem.bumpAmpBar(+0.1)));
-    SmartDashboard.putData("AmpBar bump -", new InstantCommand(()->shooterSubsystem.bumpAmpBar(-0.1)));
+    SmartDashboard.putData("AmpBar bump +", new InstantCommand(()->shooterWheelsAndAmpBarSubsystem.bumpAmpBar(+0.1)));
+    SmartDashboard.putData("AmpBar bump -", new InstantCommand(()->shooterWheelsAndAmpBarSubsystem.bumpAmpBar(-0.1)));
 
     SmartDashboard.putData("Snapshot", new InstantCommand(() -> visionSubsystem.takeSnapshot()));
   }
@@ -432,8 +436,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
     NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
     NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
-    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(1.15));
-    NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
+    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(1.5));
+    NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
     NamedCommands.registerCommand("PITCH OMEGA BEAM FOREVER", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem));
     NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand().withTimeout(1.5));
     NamedCommands.registerCommand("INIT OMEGA BEAM", new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 37)).withTimeout(1));

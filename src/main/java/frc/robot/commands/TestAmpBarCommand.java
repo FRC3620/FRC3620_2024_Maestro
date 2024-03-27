@@ -5,33 +5,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterSpeedAndAngle;
-import frc.robot.subsystems.ShooterSubsystem;
+//import frc.robot.subsystems.ShooterSpeedAndAngle;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem;
 
 public class TestAmpBarCommand extends Command {
-  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
-  ShooterSpeedAndAngle shooterSpeedAndAngle = new ShooterSpeedAndAngle(1500, 54);
-  ShooterSpeedAndAngle stopShooterSpeedAndAngle = new ShooterSpeedAndAngle(0, 54);
+  ShooterWheelsAndAmpBarSubsystem shooterSubsystem = RobotContainer.shooterWheelsAndAmpBarSubsystem;
+  //ShooterSpeedAndAngle shooterSpeedAndAngle = new ShooterSpeedAndAngle(1500, 54);
+  //ShooterSpeedAndAngle stopShooterSpeedAndAngle = new ShooterSpeedAndAngle(0, 54);
 
   /** Creates a new AmpShootCommand. */
   public TestAmpBarCommand() {
+    addRequirements(shooterSubsystem);
     
   }
   @Override
   public  void initialize(){
-    // shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle);
-     shooterSubsystem.setAmpBarPosition(ShooterSubsystem.AmpBarPosition.UP);
-   
-
+    shooterSubsystem.setAmpBarPosition(ShooterWheelsAndAmpBarSubsystem.AmpBarPosition.UP);
   }
+
   @Override
   public void end(boolean interrupted) {
-      shooterSubsystem.setAmpBarPosition(ShooterSubsystem.AmpBarPosition.HOME);
-      // shooterSubsystem.setSpeedAndAngle(stopShooterSpeedAndAngle);
+      shooterSubsystem.setAmpBarPosition(ShooterWheelsAndAmpBarSubsystem.AmpBarPosition.HOME);
   }
 }

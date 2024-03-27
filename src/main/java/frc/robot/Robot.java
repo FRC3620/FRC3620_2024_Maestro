@@ -19,9 +19,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.AutoShooterVisionAngleAdjustmentCommand;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.SwerveMotorTestSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**
@@ -35,9 +32,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private Logger logger;
-
-  private VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
-  private ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
