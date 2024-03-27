@@ -427,7 +427,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("FIRE OMEGA BEAM", new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
     //NamedCommands.registerCommand("EXTEND OMEGA BEAM", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("PICKUP INTAKE POSITION", new AutoGroundPickupCommand());
-    NamedCommands.registerCommand("SLURPY IN", new GroundPickupCommand().withTimeout(3));
+    NamedCommands.registerCommand("SLURPY IN", new GroundPickupCommand().withTimeout(4));
     NamedCommands.registerCommand("NO MORE SLURPY", new GroundToHomeCommand());
     NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
     NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
