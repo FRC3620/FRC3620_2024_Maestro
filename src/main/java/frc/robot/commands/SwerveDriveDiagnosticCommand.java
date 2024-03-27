@@ -22,10 +22,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.blinky.BlinkPattern;
 import frc.robot.subsystems.BlinkySubsystem.LightSegment;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import swervelib.SwerveModule;
+import swervelib.encoders.SwerveAbsoluteEncoder;
+import swervelib.motors.SwerveMotor;
 
 public class SwerveDriveDiagnosticCommand extends Command {
   final int slidingWindowSize = 100; // 50 samples a second, so 2 seconds
   LightSegment lightSegment;
+  SwerveSubsystem drivebase;
+  //SwerveAbsoluteEncoder absoluteEncoder = SwerveModule.absoluteEncoder;
+  //SwerveMotor angleMotor = 
   Logger logger = EventLogging.getLogger(getClass());
 
   Map<String, SlidingWindowStats> driveMotorCurrents = new HashMap<>();
@@ -36,6 +43,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
   Color colorOk = Color.kGreen;
   Color colorDriveBad = Color.kPink;
   Color colorAziBad = Color.kBlue;
+  Color colorAziEncoderBad = Color.kPurple;
   Color colorZeroMotors = Color.kYellow;
 
   BlinkPattern myPattern = new BlinkPattern().setColor1(Color.kBlack).setColor2(Color.kBlack).setBlinkTime(0.5);
@@ -133,11 +141,15 @@ public class SwerveDriveDiagnosticCommand extends Command {
     if (azimuthMotorCurrents.size() > 0) {
       List<Double> aziSpeeds = new ArrayList<>(azimuthMotorCurrents.size());
       List<Double> aziCurrents = new ArrayList<>(azimuthMotorCurrents.size());
+      List<Double> aziEncoderPos = new ArrayList<>(azimuthMotorCurrents.size());
+      List<Double> aziAbsEncoderPos = new ArrayList<>(azimuthMotorCurrents.size());
       for (var nameAndCurrentStat : azimuthMotorCurrents.entrySet()) {
         String name = nameAndCurrentStat.getKey();
         SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
         CANSparkBase motor = (CANSparkBase) RobotContainer.swerveAzimuthMotors.get(name);
         motor.set(power);
+
+        SmartDashboard.putString("Diagnotics.name", name);
 
         double velocity = motor.getEncoder().getVelocity();
         SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.speed", velocity);
@@ -147,12 +159,20 @@ public class SwerveDriveDiagnosticCommand extends Command {
         double mean = currentStat.getMean();
         SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.current", mean);
         aziCurrents.add(mean);
+
+        double encoderValue = SmartDashboard.getNumber("Module[" + name + "] Raw Angle Encoder", 0);
+        aziEncoderPos.add(encoderValue);
+
+        double absEncoderValue = SmartDashboard.getNumber("Module[" + name + "] Adjusted Absolute Encoder", 0);
+        aziAbsEncoderPos.add(absEncoderValue);
       }
 
       double minAziSpeed = Collections.min(aziSpeeds);
       double maxAziSpeed = Collections.max(aziSpeeds);
       double minAziCurrent = Collections.min(aziCurrents);
       double maxAziCurrent = Collections.max(aziCurrents);
+      double relEncoderVal = Collections.max(aziEncoderPos);
+      double absEncoderVal = Collections.max(aziAbsEncoderPos);
 
       if (minAziSpeed / maxAziSpeed < .9) {
         aziColor = colorAziBad;
@@ -165,6 +185,11 @@ public class SwerveDriveDiagnosticCommand extends Command {
       if (maxAziSpeed == 0 || maxAziCurrent == 0) {
         aziColor = colorZeroMotors;
       }
+
+      if (Math.abs(relEncoderVal - absEncoderVal) > 5) {
+        aziColor = colorAziEncoderBad;
+      }
+
     } else {
       aziColor = colorZeroMotors;
     }
