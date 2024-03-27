@@ -8,14 +8,20 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.HasTelemetry;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.ChameleonController.ControllerType;
+
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -23,6 +29,7 @@ import frc.robot.commands.AutoShooterVisionAngleAdjustmentCommand;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveMotorTestSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -145,6 +152,23 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
+      if (m_autonomousCommand instanceof PathPlannerAuto){
+        PathPlannerAuto pathPlannerAuto = (PathPlannerAuto) m_autonomousCommand;
+        String autoName = pathPlannerAuto.getName();
+        Pose2d startingPose = PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+        Rotation2d startingRotation = startingPose.getRotation();
+        double startingDeg = startingRotation.getDegrees();
+        var color = DriverStation.getAlliance();
+        if(color.isPresent()){
+          if(color.get()==Alliance.Red){
+            startingDeg = -startingDeg;
+          }
+        }
+        SmartDashboard.putString("autoName", autoName);
+        SmartDashboard.putNumber("startingDeg", startingDeg);
+        logger.info("Running Auto Name {}, starting gyro = {}", autoName, startingDeg);
+        RobotContainer.drivebase.setGyro(-startingDeg);
+      }
       m_autonomousCommand.schedule();
     }
 

@@ -418,6 +418,10 @@ public class RobotContainer {
     SmartDashboard.putData("AmpBar bump -", new InstantCommand(()->shooterSubsystem.bumpAmpBar(-0.1)));
 
     SmartDashboard.putData("Snapshot", new InstantCommand(() -> visionSubsystem.takeSnapshot()));
+
+    SmartDashboard.putData("Zero Gyro", new InstantCommand(()->drivebase.zeroGyro()));
+    SmartDashboard.putData("30 Gyro", new InstantCommand(()->drivebase.setGyro(30)));
+    SmartDashboard.putData("-30 Gyro", new InstantCommand(()->drivebase.setGyro(-30)));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
