@@ -267,8 +267,8 @@ public class VisionSubsystem extends SubsystemBase {
             if (odometryPose2d != null) s.odometryTranslation = odometryPose2d.getTranslation();
             if (odometryHeading != null) s.odometryHeading = odometryHeading.getDegrees();
 
-            s.actualShooterPosition = RobotContainer.shooterSubsystem.getActualElevationPosition();
-            s.requestedShooterPosition = RobotContainer.shooterSubsystem.getRequestedShooterElevation();
+            s.actualShooterPosition = RobotContainer.shooterElevationSubsystem.getActualElevationPosition();
+            s.requestedShooterPosition = RobotContainer.shooterElevationSubsystem.getRequestedShooterElevation();
 
             String ss = objectMapper.writeValueAsString(s);
             logger.info ("Shooting: {}", ss);

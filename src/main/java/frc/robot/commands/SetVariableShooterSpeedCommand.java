@@ -5,11 +5,13 @@ import org.usfirst.frc3620.misc.Utilities.SlidingWindowStats;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.ShooterElevationSubsystem;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem;
 
 public class SetVariableShooterSpeedCommand extends Command {
-  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
+  ShooterWheelsAndAmpBarSubsystem shooterWheelsAndAmpBarSubsystem = RobotContainer.shooterWheelsAndAmpBarSubsystem;
+  ShooterElevationSubsystem shooterElevationSubsystem = RobotContainer.shooterElevationSubsystem;
 
   SlidingWindowStats topSpeed, bottomSpeed;
 
@@ -22,7 +24,7 @@ public class SetVariableShooterSpeedCommand extends Command {
     bottomSpeed = new SlidingWindowStats(100);
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterSubsystem);
+    addRequirements(shooterWheelsAndAmpBarSubsystem, shooterElevationSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -36,13 +38,13 @@ public class SetVariableShooterSpeedCommand extends Command {
   @Override
   public void execute() {
     double speed = SmartDashboard.getNumber("shooter.manual.speed", 0);
-    double position= SmartDashboard.getNumber("shooter.manual.angle", 90);
-    ShooterSpeedAndAngle shooterSpeedAndAngle= new ShooterSpeedAndAngle(speed, position);
-    shooterSubsystem.setSpeedAndAngle(shooterSpeedAndAngle);
+    double position = SmartDashboard.getNumber("shooter.manual.angle", 90);
+    shooterWheelsAndAmpBarSubsystem.setRequestedWheelSpeed(speed);
+    shooterElevationSubsystem.setElevationPosition(position);
 
-    double s = shooterSubsystem.getTopMotorVelocity();
+    double s = shooterWheelsAndAmpBarSubsystem.getTopMotorVelocity();
     topSpeed.addValue(s);
-    s = shooterSubsystem.getBottomMotorVelocity();
+    s = shooterWheelsAndAmpBarSubsystem.getBottomMotorVelocity();
     bottomSpeed.addValue(s);
     putStats("top", topSpeed);
     putStats("bottom", bottomSpeed);
@@ -58,7 +60,8 @@ public class SetVariableShooterSpeedCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setRequestedWheelSpeed(0);
+    shooterWheelsAndAmpBarSubsystem.setRequestedWheelSpeed(0);
+    // leave the shooter positioned wherever...
   }
 
   // Returns true when the command should end.
