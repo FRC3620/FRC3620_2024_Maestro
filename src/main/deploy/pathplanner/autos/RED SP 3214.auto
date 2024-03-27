@@ -142,7 +142,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 to 1"
+                  "pathName": "RED 2 to 1"
                 }
               }
             ]
@@ -186,7 +186,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1 to 4"
+                  "pathName": "RED 1 to 4"
                 }
               }
             ]
@@ -199,28 +199,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "PITCH OMEGA BEAM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "CENTER OMEGA BEAM"
-                }
-              }
-            ]
+            "name": "PITCH OMEGA BEAM"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "EVERYTHING BAGEL"
+            "name": "FIRE OMEGA BEAM"
           }
         },
         {
