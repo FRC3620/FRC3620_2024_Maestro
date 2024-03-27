@@ -152,7 +152,7 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      if (m_autonomousCommand instanceof PathPlannerAuto){
+      if (false && m_autonomousCommand instanceof PathPlannerAuto){
         PathPlannerAuto pathPlannerAuto = (PathPlannerAuto) m_autonomousCommand;
         String autoName = pathPlannerAuto.getName();
         Pose2d startingPose = PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
