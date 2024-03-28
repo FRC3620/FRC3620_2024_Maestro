@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.3119350569185464,
+        "y": 2.5142432051245875
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.8498661612707834,
+        "y": 3.473163869404662
+      },
+      "isLocked": false,
+      "linkedName": "SC Shoot"
+    },
+    {
+      "anchor": {
+        "x": 8.094844223876482,
+        "y": 2.362219197372869
+      },
+      "prevControl": {
+        "x": 6.72662815411101,
+        "y": 2.9469269194948655
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "6"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -34.07719528013077,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
