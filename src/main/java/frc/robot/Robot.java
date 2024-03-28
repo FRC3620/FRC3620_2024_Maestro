@@ -146,7 +146,7 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      if (false && m_autonomousCommand instanceof PathPlannerAuto){
+      if (m_autonomousCommand instanceof PathPlannerAuto){
         PathPlannerAuto pathPlannerAuto = (PathPlannerAuto) m_autonomousCommand;
         String autoName = pathPlannerAuto.getName();
         Pose2d startingPose = PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
@@ -154,19 +154,33 @@ public class Robot extends TimedRobot {
         double startingDeg = startingRotation.getDegrees();
         var color = DriverStation.getAlliance();
         if(color.isPresent()){
-          if(color.get()==Alliance.Red){
-            startingDeg = -startingDeg;
-          }
+          //if(color.get()==Alliance.Red){
+            //startingDeg = -startingDeg;
+          //}
         }
         SmartDashboard.putString("autoName", autoName);
         SmartDashboard.putNumber("startingDeg", startingDeg);
         logger.info("Running Auto Name {}, starting gyro = {}", autoName, startingDeg);
         RobotContainer.drivebase.setGyro(-startingDeg);
+        RobotContainer.drivebase.resetOdometry(startingPose);
       }
       m_autonomousCommand.schedule();
     }
 
     setupDriverController();
+  }
+  @Override
+  public void autonomousExit() {
+    var color = DriverStation.getAlliance();
+        if(color.isPresent()){
+          if(color.get()==Alliance.Red){
+            var pose = RobotContainer.drivebase.getPose();
+            var rotation = pose.getRotation();
+            rotation = rotation.plus(Rotation2d.fromDegrees(180));
+            var newPose = new Pose2d(pose.getTranslation(), rotation);
+            RobotContainer.drivebase.resetOdometry(newPose);
+          }
+        }
   }
 
   /** This function is called periodically during autonomous. */
