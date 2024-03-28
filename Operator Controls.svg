@@ -109,6 +109,25 @@
          clip-rule="evenodd"
          id="path2814" />
     </clipPath>
+    <marker
+       style="overflow:visible"
+       id="DartArrow-5"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Dart arrow"
+       markerWidth="2"
+       markerHeight="2"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         transform="scale(-0.5)"
+         id="path6-5" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="namedview1316"
@@ -121,8 +140,8 @@
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
      inkscape:zoom="1"
-     inkscape:cx="756"
-     inkscape:cy="508.5"
+     inkscape:cx="573"
+     inkscape:cy="383.5"
      inkscape:window-width="1584"
      inkscape:window-height="861"
      inkscape:window-x="0"
@@ -1279,7 +1298,8 @@
          id="path2014" />
     </g>
     <g
-       id="g2016">
+       id="g2016"
+       style="display:inline">
       <path
          d="M 756.32001,467.84 920,440"
          style="fill:none;stroke:#000000;stroke-width:0.96;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -1322,20 +1342,21 @@
     </g>
     <g
        id="g2278"
-       transform="translate(953.91998,311.35999)">
+       transform="translate(953.91998,311.35999)"
+       style="display:inline">
       <text
          xml:space="preserve"
-         style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;inline-size:170.666;fill:#000000;stroke-width:2.016"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;inline-size:170.666;fill:#000000;stroke-width:2.016"
          x="-37.726559"
          y="-15.181757"
          id="text3155"
          transform="translate(2.3048892,-6.9146673)"><tspan
            x="-37.726559"
            y="-15.181757"
-           id="tspan16">Amp/Trap </tspan><tspan
+           id="tspan3">Source </tspan><tspan
            x="-37.726559"
            y="18.151617"
-           id="tspan17">Position</tspan></text>
+           id="tspan4">Pickup</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;inline-size:135.748;fill:#000000;stroke-width:2.016"
@@ -1345,10 +1366,11 @@
          transform="matrix(1.0455712,0,0,1,-0.79570028,-5.7622229)"><tspan
            x="-33.116756"
            y="126.56895"
-           id="tspan18">Home </tspan><tspan
+           id="tspan5">Climb
+</tspan><tspan
            x="-33.116756"
            y="159.90232"
-           id="tspan19">Arm</tspan></text>
+           id="tspan6">Position</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';fill:#000000;stroke-width:2.016"
@@ -1814,12 +1836,12 @@
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;shape-inside:url(#rect3047);fill:#000000;stroke-width:2.016"><tspan
          x="76.060547"
          y="356.16767"
-         id="tspan20"> </tspan><tspan
+         id="tspan7"> </tspan><tspan
          x="76.060547"
          y="390.73993"
-         id="tspan22"><tspan
+         id="tspan9"><tspan
            dx="0 14.826679 14.106667 9.6266823 15.039993 16.480026 16.400009 6.9333496 16.853355 6.8799973 6.8799896 24.93335 6.9333496 17.040024 11.013351 24.93335"
-           id="tspan21">Extend Clim Arma</tspan></tspan></text>
+           id="tspan8">Extend Clim Arma</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';fill:#000000;stroke-width:2.016"
@@ -1857,7 +1879,7 @@
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;shape-inside:url(#rect3137);fill:#000000;stroke-width:2.016"><tspan
          x="122.1582"
          y="161.40399"
-         id="tspan23">Amp Shot</tspan></text>
+         id="tspan10">Amp Shot</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;inline-size:233.097;fill:#000000;stroke-width:2.016"
@@ -1867,10 +1889,10 @@
        transform="translate(-36.878227,16.134224)"><tspan
          x="285.80627"
          y="91.043098"
-         id="tspan24">Sub Woofer Shot </tspan><tspan
+         id="tspan11">Sub Woofer Shot </tspan><tspan
          x="285.80627"
          y="124.37647"
-         id="tspan25">(against speaker)</tspan></text>
+         id="tspan12">(against speaker)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;inline-size:214.669;fill:#000000;stroke-width:2.016"
@@ -1880,10 +1902,10 @@
        transform="translate(-5.7622229,-40.33556)"><tspan
          x="798.6441"
          y="102.56755"
-         id="tspan26">Safe Zone (stage </tspan><tspan
+         id="tspan13">Safe Zone (stage </tspan><tspan
          x="798.6441"
          y="135.90093"
-         id="tspan27">pillar) Shot</tspan></text>
+         id="tspan14">pillar) Shot</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';fill:#000000;stroke-width:2.016"
@@ -1893,7 +1915,11 @@
          sodipodi:role="line"
          id="tspan3149"
          x="881.62012"
-         y="189.0009">Target</tspan></text>
+         y="189.0009">Climb</tspan><tspan
+         sodipodi:role="line"
+         x="881.62012"
+         y="222.33427"
+         id="tspan1">position</tspan></text>
     <g
        id="g2016-0"
        transform="matrix(0.59802929,0,0,1.8531174,370.58009,-449.91212)">
@@ -1919,10 +1945,10 @@
        transform="translate(-11.524446,-23.048892)"><tspan
          x="928.8703"
          y="383.76401"
-         id="tspan28">Climb </tspan><tspan
+         id="tspan15">Climb </tspan><tspan
          x="928.8703"
          y="417.09738"
-         id="tspan29">Position</tspan></text>
+         id="tspan16">Position</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#DartArrow)"
        d="m 925,591.99998 c -224,-41 -224,-41 -224,-41"
@@ -1936,22 +1962,43 @@
        transform="translate(-12.524446,199.95111)"><tspan
          x="928.8703"
          y="383.76401"
-         id="tspan30">Manually
+         id="tspan17">Manually
 </tspan><tspan
          x="928.8703"
          y="417.09738"
-         id="tspan31">move </tspan><tspan
+         id="tspan18">move </tspan><tspan
          x="928.8703"
          y="450.43076"
-         id="tspan32">intake </tspan><tspan
+         id="tspan19">intake </tspan><tspan
          x="928.8703"
          y="483.76413"
-         id="tspan33">(while </tspan><tspan
+         id="tspan20">(while </tspan><tspan
          x="928.8703"
          y="517.09751"
-         id="tspan34">command </tspan><tspan
+         id="tspan21">command </tspan><tspan
          x="928.8703"
          y="550.43085"
-         id="tspan35">is running)</tspan></text>
+         id="tspan22">is running)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:26.6667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';white-space:pre;inline-size:142.713;fill:#000000;stroke-width:2.016"
+       x="928.8703"
+       y="383.76401"
+       id="text7"
+       transform="translate(-452.52445,247.95111)"><tspan
+         x="928.8703"
+         y="383.76401"
+         id="tspan23">Manually
+</tspan><tspan
+         x="928.8703"
+         y="417.09738"
+         id="tspan24">bump amp </tspan><tspan
+         x="928.8703"
+         y="450.43076"
+         id="tspan25">bar</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#DartArrow-5)"
+       d="m 806.29573,675.01805 c -224,-41 -224,-41 -224,-41"
+       id="path1-9" />
   </g>
 </svg>

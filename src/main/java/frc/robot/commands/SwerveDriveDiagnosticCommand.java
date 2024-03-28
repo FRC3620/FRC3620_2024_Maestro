@@ -22,10 +22,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.blinky.BlinkPattern;
 import frc.robot.subsystems.BlinkySubsystem.LightSegment;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import swervelib.SwerveModule;
+import swervelib.encoders.SwerveAbsoluteEncoder;
+import swervelib.motors.SwerveMotor;
 
 public class SwerveDriveDiagnosticCommand extends Command {
   final int slidingWindowSize = 100; // 50 samples a second, so 2 seconds
   LightSegment lightSegment;
+  SwerveSubsystem drivebase;
+  //SwerveAbsoluteEncoder absoluteEncoder = SwerveModule.absoluteEncoder;
+  //SwerveMotor angleMotor = 
   Logger logger = EventLogging.getLogger(getClass());
 
   Map<String, SlidingWindowStats> driveMotorCurrents = new HashMap<>();
@@ -36,6 +43,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
   Color colorOk = Color.kGreen;
   Color colorDriveBad = Color.kPink;
   Color colorAziBad = Color.kBlue;
+  Color colorAziEncoderBad = Color.kPurple;
   Color colorZeroMotors = Color.kYellow;
 
   BlinkPattern myPattern = new BlinkPattern().setColor1(Color.kBlack).setColor2(Color.kBlack).setBlinkTime(0.5);
@@ -50,7 +58,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
     this.lightSegment = RobotContainer.lightSegment;
 
     for (var nameAndMotor : RobotContainer.swerveDriveMotors.entrySet()) {
-      if (nameAndMotor.getValue() instanceof CANSparkBase) {
+      if (nameAndMotor.getValue().getMotor() instanceof CANSparkBase) {
         driveMotorCurrents.put(nameAndMotor.getKey(), new SlidingWindowStats(slidingWindowSize));
       } else {
         logger.error("Swerve Drive Motor {} is not a CANSparkBase, it is a {}", nameAndMotor.getKey(),
@@ -59,7 +67,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
     }
 
     for (var nameAndMotor : RobotContainer.swerveAzimuthMotors.entrySet()) {
-      if (nameAndMotor.getValue() instanceof CANSparkBase) {
+      if (nameAndMotor.getValue().getMotor() instanceof CANSparkBase) {
         azimuthMotorCurrents.put(nameAndMotor.getKey(), new SlidingWindowStats(slidingWindowSize));
       } else {
         logger.error("Swerve Azimuth Motor {} is not a CANSparkBase, it is a {}", nameAndMotor.getKey(),
@@ -94,7 +102,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
       for (var nameAndCurrentStat : driveMotorCurrents.entrySet()) {
         String name = nameAndCurrentStat.getKey();
         SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
-        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveDriveMotors.get(name);
+        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveDriveMotors.get(name).getMotor();
         motor.set(power);
 
         double velocity = motor.getEncoder().getVelocity();
@@ -133,11 +141,15 @@ public class SwerveDriveDiagnosticCommand extends Command {
     if (azimuthMotorCurrents.size() > 0) {
       List<Double> aziSpeeds = new ArrayList<>(azimuthMotorCurrents.size());
       List<Double> aziCurrents = new ArrayList<>(azimuthMotorCurrents.size());
+      List<Double> aziRelEncoderPos = new ArrayList<>(azimuthMotorCurrents.size());
+      List<Double> aziAbsEncoderPos = new ArrayList<>(azimuthMotorCurrents.size());
       for (var nameAndCurrentStat : azimuthMotorCurrents.entrySet()) {
         String name = nameAndCurrentStat.getKey();
         SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
-        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveAzimuthMotors.get(name);
+        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveAzimuthMotors.get(name).getMotor();
         motor.set(power);
+
+        SmartDashboard.putString("Diagnostics.name", name);
 
         double velocity = motor.getEncoder().getVelocity();
         SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.speed", velocity);
@@ -147,12 +159,25 @@ public class SwerveDriveDiagnosticCommand extends Command {
         double mean = currentStat.getMean();
         SmartDashboard.putNumber("Diagnostics." + name + ".azimuth.current", mean);
         aziCurrents.add(mean);
+
+        double encoderValue = SmartDashboard.getNumber("Module[" + name + "] Raw Angle Encoder", 0);
+        aziRelEncoderPos.add(encoderValue);
+
+        double absEncoderValue = SmartDashboard.getNumber("Module[" + name + "] Adjusted Absolute Encoder", 0); //May need to be raw
+        aziAbsEncoderPos.add(absEncoderValue);
       }
 
       double minAziSpeed = Collections.min(aziSpeeds);
       double maxAziSpeed = Collections.max(aziSpeeds);
       double minAziCurrent = Collections.min(aziCurrents);
       double maxAziCurrent = Collections.max(aziCurrents);
+      for(int i = 0; i < aziAbsEncoderPos.size(); i++) {
+        double absEncoderPos = aziAbsEncoderPos.get(i);
+        double relEncoderPos = aziRelEncoderPos.get(i);
+        if (Math.abs(relEncoderPos - absEncoderPos) > 15) { //Arbitrary number. May need changing.
+        aziColor = colorAziEncoderBad;
+      }
+      }
 
       if (minAziSpeed / maxAziSpeed < .9) {
         aziColor = colorAziBad;

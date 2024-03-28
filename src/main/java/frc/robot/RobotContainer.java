@@ -1,10 +1,10 @@
 package frc.robot;
 
-import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveModule;
-
+import swervelib.encoders.SwerveAbsoluteEncoder;
+import swervelib.motors.SwerveMotor;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -64,7 +64,7 @@ public class RobotContainer {
   public static ClimbElevationSubsystem climbElevationSubsystem;
   public static ShooterElevationSubsystem shooterElevationSubsystem;
   public static ShooterWheelsAndAmpBarSubsystem shooterWheelsAndAmpBarSubsystem;
-  /* public static */ BlinkySubsystem blinkySubsystem;
+  public static BlinkySubsystem blinkySubsystem;
   public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
   public static VisionSubsystem visionSubsystem;
@@ -80,8 +80,9 @@ public class RobotContainer {
 
   private SuperSwerveController superSwerveController;
 
-  public static Map<String, Object> swerveDriveMotors = new HashMap<>();
-  public static Map<String, Object> swerveAzimuthMotors = new HashMap<>();
+  public static Map<String, SwerveMotor> swerveDriveMotors = new HashMap<>();
+  public static Map<String, SwerveMotor> swerveAzimuthMotors = new HashMap<>();
+  public static Map<String, SwerveAbsoluteEncoder> swerveAbsoluteEncoders = new HashMap<>();
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
@@ -139,28 +140,6 @@ public class RobotContainer {
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
-
-    SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase,
-        superSwerveController,
-        () -> -getDriveVerticalJoystick(),
-        () -> -getDriveHorizontalJoystick(),
-        () -> -getDriveSpinJoystick(),
-        () -> true);
-    /*
-     * TestDriveCommand StandardYagslDrive = new TestDriveCommand(drivebase,
-     * () -> -getDriveVerticalJoystick(),
-     * () -> -getDriveHorizontalJoystick(),
-     * () -> -getDriveSpinJoystick(),
-     * () -> true);
-     * 
-     * Command sitThereCommand = new TestDriveCommand(
-     * drivebase,
-     * () -> 0.0,
-     * () -> 0.0,
-     * () -> 0.0,
-     * () -> false);
-     */
-
 
     TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,
         () -> -getDriveVerticalJoystick(),
@@ -229,8 +208,9 @@ public class RobotContainer {
     SwerveModule[] modules = drivebase.getSwerveDrive().getModules();
     for (var module : modules) {
       String moduleName = module.getConfiguration().name;
-      swerveAzimuthMotors.put(moduleName, module.getAngleMotor().getMotor());
-      swerveDriveMotors.put(moduleName, module.getDriveMotor().getMotor());
+      swerveAzimuthMotors.put(moduleName, module.getAngleMotor());
+      swerveDriveMotors.put(moduleName, module.getDriveMotor());
+      swerveAbsoluteEncoders.put(moduleName, module.getAbsoluteEncoder());
     }
   }
 
@@ -333,6 +313,9 @@ public class RobotContainer {
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
     .onTrue(new RunRollersCommand(() -> -0.9).withTimeout(1.5));
+
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).toggleOnTrue(new SourcePickupCommand());
+
 /*
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
     .toggleOnFalse(new AmpShootCommandPart2());    

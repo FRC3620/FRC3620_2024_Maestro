@@ -69,9 +69,14 @@ public class TeleopDriveWithAimCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xVelocity = Math.pow(vX.getAsDouble() * 2, 3);
-    double yVelocity = Math.pow(vY.getAsDouble() * 2, 3);
-    double angVelocity = Math.pow(omega.getAsDouble(), 3);
+    double xJoy = vX.getAsDouble();
+    double yJoy = vY.getAsDouble();
+    double aJoy = omega.getAsDouble();
+
+    double xVelocity = xJoy * xJoy * xJoy;
+    double yVelocity = yJoy * yJoy * yJoy;
+    double angVelocity = aJoy * aJoy * aJoy;
+
     SmartDashboard.putNumber("vX", xVelocity);
     SmartDashboard.putNumber("vY", yVelocity);
     SmartDashboard.putNumber("omega", angVelocity);
@@ -102,7 +107,7 @@ public class TeleopDriveWithAimCommand extends Command {
         // We'll need to modify this to point the rear of the robot to the AprilTag
         // when we get JoeHann back.
         
-        double currentPosRotation = swerve.getHeading().getDegrees();
+        double currentPosRotation = swerve.getPose().getRotation().getDegrees();
         double targetHeading = headingToTag;
         //calculates angVelocity
         angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),

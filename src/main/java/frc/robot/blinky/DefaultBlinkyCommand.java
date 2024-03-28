@@ -21,7 +21,7 @@ public class DefaultBlinkyCommand extends Command {
 
   final Pattern patternReadyToShoot = new BlinkPattern().setColor(Color.kGreen);
   final Pattern patternGotPiece = new SolidPattern().setColor(Color.kGreen);
-  final Pattern patternNoPiece = new SolidPattern().setColor(Color.kRed);
+  final Pattern patternNoPiece = new SolidPattern().setColor(Color.kGray);
   final Pattern patternIdle = new BlinkPattern().setColor(Color.kGreen).setOnSeconds(0.1).setOffSeconds(1.0);
   // final Pattern patternSick = new
   // ChasePattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.25);
