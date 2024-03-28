@@ -18,6 +18,10 @@ public class TalonFXSwerve extends SwerveMotor
 {
 
   /**
+   * Wait time for status frames to show up.
+   */
+  public static double             STATUS_TIMEOUT_SECONDS  = 0.02;
+  /**
    * Factory default already occurred.
    */
   private final boolean            factoryDefaultOccurred  = false;
@@ -45,6 +49,7 @@ public class TalonFXSwerve extends SwerveMotor
    * Current TalonFX configuration.
    */
   private TalonFXConfiguration configuration = new TalonFXConfiguration();
+
 
   /**
    * Constructor for TalonFX swerve motor.
@@ -351,7 +356,7 @@ public class TalonFXSwerve extends SwerveMotor
   @Override
   public double getVoltage()
   {
-    return motor.getMotorVoltage().refresh().getValue();
+    return motor.getMotorVoltage().waitForUpdate(STATUS_TIMEOUT_SECONDS).getValue();
   }
 
   /**
@@ -373,7 +378,7 @@ public class TalonFXSwerve extends SwerveMotor
   @Override
   public double getAppliedOutput()
   {
-    return motor.getDutyCycle().refresh().getValue();
+    return motor.getDutyCycle().waitForUpdate(STATUS_TIMEOUT_SECONDS).getValue();
   }
 
   /**

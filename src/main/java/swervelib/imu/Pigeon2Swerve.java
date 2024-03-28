@@ -4,7 +4,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Pigeon2Configurator;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +15,10 @@ import java.util.Optional;
 public class Pigeon2Swerve extends SwerveIMU
 {
 
+  /**
+   * Wait time for status frames to show up.
+   */
+  public static double STATUS_TIMEOUT_SECONDS = 0.04;
   /**
    * Pigeon2 IMU device.
    */
@@ -101,15 +104,7 @@ public class Pigeon2Swerve extends SwerveIMU
   @Override
   public Rotation3d getRawRotation3d()
   {
-    // TODO: Switch to suppliers.
-    StatusSignal<Double> w = imu.getQuatW();
-    StatusSignal<Double> x = imu.getQuatX();
-    StatusSignal<Double> y = imu.getQuatY();
-    StatusSignal<Double> z = imu.getQuatZ();
-    Rotation3d reading = new Rotation3d(new Quaternion(w.refresh().getValue(),
-                                                       x.refresh().getValue(),
-                                                       y.refresh().getValue(),
-                                                       z.refresh().getValue()));
+    Rotation3d reading = imu.getRotation3d();
     return invertedIMU ? reading.unaryMinus() : reading;
   }
 
@@ -138,9 +133,9 @@ public class Pigeon2Swerve extends SwerveIMU
     StatusSignal<Double> yAcc = imu.getAccelerationY();
     StatusSignal<Double> zAcc = imu.getAccelerationZ();
 
-    return Optional.of(new Translation3d(xAcc.refresh().getValue(),
-                                         yAcc.refresh().getValue(),
-                                         zAcc.refresh().getValue()).times(9.81 / 16384.0));
+    return Optional.of(new Translation3d(xAcc.waitForUpdate(STATUS_TIMEOUT_SECONDS).getValue(),
+                                         yAcc.waitForUpdate(STATUS_TIMEOUT_SECONDS).getValue(),
+                                         zAcc.waitForUpdate(STATUS_TIMEOUT_SECONDS).getValue()).times(9.81 / 16384.0));
   }
 
   /**
