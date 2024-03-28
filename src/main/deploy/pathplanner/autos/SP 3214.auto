@@ -199,6 +199,31 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PITCH OMEGA BEAM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CENTER OMEGA BEAM"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "EVERYTHING BAGEL"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "DISABLE OMEGA BEAM"

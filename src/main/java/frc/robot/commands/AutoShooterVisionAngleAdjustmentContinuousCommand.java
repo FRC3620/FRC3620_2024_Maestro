@@ -12,13 +12,13 @@ import frc.robot.subsystems.ShooterElevationSubsystem;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class AutoShooterVisionAngleAdjustmentCommand extends Command {
+public class AutoShooterVisionAngleAdjustmentContinuousCommand extends Command {
   private final VisionSubsystem visionSubsystem;
   private final ShooterElevationSubsystem shooterElevationSubsystem;
   boolean isFinished = false;
 
   /** Creates a new ShooterVisionAngleAdjustmentCommand. */
-  public AutoShooterVisionAngleAdjustmentCommand(VisionSubsystem visionSubsystem, ShooterElevationSubsystem shooterElevationSubsystem) {
+  public AutoShooterVisionAngleAdjustmentContinuousCommand(VisionSubsystem visionSubsystem, ShooterElevationSubsystem shooterElevationSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.visionSubsystem = visionSubsystem;
     this.shooterElevationSubsystem = shooterElevationSubsystem;
@@ -28,9 +28,7 @@ public class AutoShooterVisionAngleAdjustmentCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    isFinished = false;
-  }
+  public void initialize() {  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -49,12 +47,8 @@ public class AutoShooterVisionAngleAdjustmentCommand extends Command {
       SmartDashboard.putNumber("shooterVision.Yaw", visionSubsystem.getCamYawToSpeaker());
       double actualElevationPosition = shooterElevationSubsystem.getActualElevationPosition();
 
-      SmartDashboard.putNumber("shooterVision.desiredPosition", desiredElevationPosition);
-      SmartDashboard.putNumber("shooterVision.actualPosition", actualElevationPosition);
-      
-      if (Math.abs(actualElevationPosition - desiredElevationPosition) < 2) {
-        isFinished = true;
-      }
+      //SmartDashboard.putNumber("shooterVision.desiredPosition", desiredElevationPosition);
+      //SmartDashboard.putNumber("shooterVision.actualPosition", actualElevationPosition);
     }
 
   }
@@ -66,6 +60,6 @@ public class AutoShooterVisionAngleAdjustmentCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isFinished;
+    return false;
   }
 }

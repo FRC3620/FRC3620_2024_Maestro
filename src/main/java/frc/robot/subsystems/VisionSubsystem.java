@@ -67,12 +67,13 @@ public class VisionSubsystem extends SubsystemBase {
     static Double APRILTAGCAM_FRONT_OFFSET = 0.3048;// change if neccessary, add to calculations
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
+    static Double SHOOTER_AIM_OFFSET = 3.0;
 
     boolean DoIHaveSpeakerTarget = false;
 
-    Double camYawToSpeaker;
+    Double camYawToSpeaker = null;
 
-    Double camDistToSpeakerTag;
+    Double camDistToSpeakerTag = null;
 
     LimelightHelpers.LimelightResults lastLimelightResults = null;
     Pose2d lastPose = null;
@@ -150,52 +151,40 @@ public class VisionSubsystem extends SubsystemBase {
         // added this to handle case where color is not yet set, otherwise we blow up in the simulator
         if (color.isEmpty()) return;
 
-        // TODO only do this when needed, it's expensive!
-        LimelightHelpers.PoseEstimate limelightMeasurementBLUE = lastLimelightMeasurementBLUE = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
-        LimelightHelpers.PoseEstimate limelightMeasurementRED = lastLimelightMeasurementRED = LimelightHelpers.getBotPoseEstimate_wpiRed("");
-    
+        Pose2d currentPose = RobotContainer.drivebase.getPose();
 
-        Pose2d currentPose;
-
+        /* 20240336 - I don't think we need these anymore. Commenting them out for now.
         // if alliance is blue.
         int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
         var desiredTarget = findTargetInResults(results, desiredTargetId);
         lastTargetFiducial = desiredTarget;
+         
 
         if (desiredTarget == null) {
-            lastPose = null;
+            //lastPose = null;
             camYawToSpeaker = null;
             camDistToSpeakerTag = null;
-        } else {
+        } else {*/
+
             if (color.get() == Alliance.Blue) {
-                lastPose = currentPose = limelightMeasurementBLUE.pose;
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(blueSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
-                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees())+3;//change offset yaw by changing 2
-
-                SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getX()));
-                SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementBLUE.pose.getY()));
+                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees()) + SHOOTER_AIM_OFFSET;
             } else {
-                lastPose = currentPose = limelightMeasurementBLUE.pose;
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(redSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
+                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()) + SHOOTER_AIM_OFFSET;
 
+                /* Not sure if we'll need this so commenting it out for now.
                 if (Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
                     camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()+3);
                 }  else {
                     camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()-180+3);
                 }
-
-                SmartDashboard.putNumber("Vision.TX_feet", Units.metersToFeet(limelightMeasurementRED.pose.getX()));
-                SmartDashboard.putNumber("Vision.TY_feet", Units.metersToFeet(limelightMeasurementRED.pose.getY()));
+                */
             }
 
             SmartDashboard.putNumber("Vision.DistToSpeakerTag", Units.metersToFeet(camDistToSpeakerTag));
-            //SmartDashboard.putNumber("Vision.camDistToSpeakerTag_feet", Units.metersToFeet(camDistToSpeakerTag));
             SmartDashboard.putNumber("Vision.camYawToSpeaker", camYawToSpeaker);
-
-            SmartDashboard.putNumber("Vision.tx", desiredTarget.tx);
-            SmartDashboard.putNumber("Vision.ty", desiredTarget.ty);
-
-        }
+        /* } */
 
     }
 
@@ -267,8 +256,8 @@ public class VisionSubsystem extends SubsystemBase {
             if (odometryPose2d != null) s.odometryTranslation = odometryPose2d.getTranslation();
             if (odometryHeading != null) s.odometryHeading = odometryHeading.getDegrees();
 
-            s.actualShooterPosition = RobotContainer.shooterSubsystem.getActualElevationPosition();
-            s.requestedShooterPosition = RobotContainer.shooterSubsystem.getRequestedShooterElevation();
+            s.actualShooterPosition = RobotContainer.shooterElevationSubsystem.getActualElevationPosition();
+            s.requestedShooterPosition = RobotContainer.shooterElevationSubsystem.getRequestedShooterElevation();
 
             String ss = objectMapper.writeValueAsString(s);
             logger.info ("Shooting: {}", ss);

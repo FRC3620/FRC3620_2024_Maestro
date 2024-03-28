@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.77430354290908,
-      "y": 4.420390379242297
+      "x": 0.7392210795817603,
+      "y": 4.373613761472538
     },
     "rotation": -60.0
   },
@@ -20,7 +20,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.9
+            "waitTime": 1.15
           }
         },
         {
@@ -34,12 +34,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "SC to 3"
@@ -48,7 +42,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "INIT OMEGA BEAM"
+                  "name": "SLURPY IN"
                 }
               }
             ]
@@ -73,7 +67,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.25
+                  "waitTime": 0.4
                 }
               },
               {
@@ -92,23 +86,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3 to 6"
+                  "pathName": "3 to 7"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SLURPY IN"
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "6 back"
-                }
-              }
-            ]
+            "pathName": "7 to shoot"
           }
         },
         {
@@ -128,6 +121,12 @@
                 }
               },
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.4
+                }
+              },
+              {
                 "type": "named",
                 "data": {
                   "name": "EVERYTHING BAGEL"
@@ -137,9 +136,22 @@
           }
         },
         {
-          "type": "wait",
+          "type": "parallel",
           "data": {
-            "waitTime": 0.25
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shoot to 6"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SLURPY IN"
+                }
+              }
+            ]
           }
         },
         {

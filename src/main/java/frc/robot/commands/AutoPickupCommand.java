@@ -4,39 +4,19 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
-import frc.robot.SuperSwerveController;
 import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoPickupCommand extends SequentialCommandGroup {
   /** Creates a new AutoPickupCommand. */
-  VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
-  ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
   IndexerSubsystem indexerSubsystem = RobotContainer.indexerSubsystem;
-  IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
 
   public AutoPickupCommand() {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-    //pickup
-    //pitch
-    //
-
-      //new GroundPickupCommand(),
       new WaitUntilCommand(() -> indexerSubsystem.gamePieceDetected()),
       new RunIndexerUntilGamePieceGoneCommand(() -> 0.8)
-      //new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterSubsystem)
       );
   }
 }

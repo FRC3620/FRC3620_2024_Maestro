@@ -38,45 +38,6 @@ public class SuperSwerveController {
     Timer turnTimer = new Timer();
     //SmartDashboard.putNumber("turnTimer", turnTimer);
 
-    public void doTeleop(SwerveSubsystem swerve, double rX, double rY, double rOmega) {
-
-            double targetOmega = 0;
-
-            if (Math.abs(rOmega) < 0.1) { // TODO: Change minimum Omega value to CONSTANT
-                // There is not enough rotational input -- Keep the previous heading value
-                // get heading  
-                if (turnTimer.get() < 0.05) {
-                    //headingSetpoint = drivebase.getHeading().getDegrees();
-                    targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), headingSetpoint);
-                } else {
-                    targetOmega = 0;
-                }
-            } else {
-                turnTimer.restart();
-                headingSetpoint = drivebase.getHeading().getDegrees();
-                targetOmega = rOmega;
-                // The driver is providing rotational input. Set Omega according to driver input
-                // and store current heading
-            }
-
-            //targetOmega = MathUtil.clamp(targetOmega, -1, 1);
-    
-            swerve.drive(new Translation2d(
-                            Math.pow(rX, 3) * swerve.getMaximumVelocity(), 
-                            Math.pow(rY, 3) * swerve.getMaximumVelocity()), 
-                            Math.pow(targetOmega, 3) * swerve.getMaximumAngularVelocity()                                                                               , 
-                            true);
-            SmartDashboard.putNumber("SuperSwerve.targetOmega", targetOmega);
-            SmartDashboard.putNumber("SuperSwerve.rOmega", rOmega);
-            SmartDashboard.putNumber("SuperSwerve.calculatedX", Math.pow(rX, 3) * swerve.getMaximumVelocity());
-            SmartDashboard.putNumber("SuperSwerve.calculatedY", Math.pow(rY, 3) * swerve.getMaximumVelocity());
-            SmartDashboard.putNumber("SuperSwerve.calculatedOmega", Math.pow(rOmega, 3) * swerve.getMaximumAngularVelocity());
-            if (headingSetpoint != null) {
-                SmartDashboard.putNumber("SuperSwerve.headingSetpoint", headingSetpoint);
-            }
-            SmartDashboard.putNumber("SuperSwerve.getHeading", drivebase.getHeading().getDegrees());
-    }
-
     public void turnTo(SwerveSubsystem swerve, double targetHeading) {
         double targetOmega = 0;
         if (headingSetpoint != null) {

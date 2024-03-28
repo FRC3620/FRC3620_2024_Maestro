@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
-public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
+public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements HasTelemetry {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
   CANDeviceFinder deviceFinder = RobotContainer.canDeviceFinder;
@@ -42,10 +42,8 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   private static final String canBusName = "";
   public TalonFX topMotor, bottomMotor;
 
-  public CANSparkMaxSendable elevationMotor;
-  RelativeEncoder elevationMotorEncoder, ampBarEncoder;
-
   public CANSparkMaxSendable ampBarMotor;
+  RelativeEncoder ampBarEncoder;
 
   public final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   private double requestedWheelSpeed = 0;
@@ -53,27 +51,15 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   public enum AmpBarPosition {
     HOME, UP
   }
-  public static double AmpBarHome=2;
-  public static double AmpBarUp=6.65;
+  public static double AmpBarHome = 2;
+  public static double AmpBarUp = 6.65;
   AmpBarPosition currentAmpBarPosition;
 
   public final static int MOTORID_SHOOTER_BOTTOM = 14;
   public final static int MOTORID_SHOOTER_TOP = 15;
-  public final static int MOTORID_SHOOTER_ELEVATION = 16;
-  public final static int MOTORID_AMP_BAR=11;
+  public final static int MOTORID_AMP_BAR = 11;
 
   public SparkPIDController ampBarPID;
-  SparkPIDController elevationPid = null;
-
-  // Robot is set to "not calibrated" by default
-  boolean encoderCalibrated = false;
-  Timer calibrationTimer;
-
-  // saves the requested position
-  double requestedPosition = 0;
-
-  // to save a requested position if encoder is not calibrated
-  Double requestedPositionWhileCalibrating = null;
 
   boolean disabledForDebugging = false;
 
@@ -86,7 +72,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
   double elevationAdjustment = 0;
 
   /** Creates a new ShooterSubsystem. */
-  public ShooterSubsystem() {
+  public ShooterWheelsAndAmpBarSubsystem() {
     topConfig.Voltage.PeakForwardVoltage = 12;
     topConfig.Voltage.PeakReverseVoltage = 12;
     bottomConfig.Voltage.PeakForwardVoltage = 12;
@@ -121,15 +107,6 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
 
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    // shooter angle PID parameters and encoder conversion factors
-    final double kP = 0.02;
-    final double kI = 0.00007;
-    final double kD = 0;
-    final double kFF = 0;
-    final double kIMaxAccum = 0.04;
-    final double negOutputLimit = -0.2;
-    final double posOutputLimit = 0.2;
-
     // amp bar pid
     final double aP = 0.07;
     final double aI = 0.0;
@@ -138,12 +115,6 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     final double aIMaxAccum = 0.0;
     final double aNegOutputLimit = -0.3;
     final double aPosOutputLimit = 0.2;
-
-    // was 9.44 before we swapped out 3:1/5:1 for a 5:1/5:1
-    // final double positionConverionFactor = 1.0 * 9.44 * (15.0 / 25.0);
-    final double positionConverionFactor = (64 - 18.1) / (64 - 54.93); // difference in angle divided by difference in
-                                                                       // motor rotation
-    final double velocityConverionFactor = 1.0;
 
     if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_BOTTOM, "Bottom Shooter")
         || RobotContainer.shouldMakeAllCANDevices()) {
@@ -158,32 +129,6 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
       configMotor("top shooter", topMotor, topConfig);
       addChild("top", topMotor);
     }
-
-    if (deviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_SHOOTER_ELEVATION, "Shooter Elaevation")
-        || RobotContainer.shouldMakeAllCANDevices()) {
-      elevationMotor = new CANSparkMaxSendable(MOTORID_SHOOTER_ELEVATION, MotorType.kBrushless);
-      MotorSetup setup = new MotorSetup().setCurrentLimit(10).setCoast(false);
-      setup.apply(elevationMotor);
-      addChild("elevationMotor", elevationMotor);
-
-      MotorSetup motorSetup = new MotorSetup().setCoast(false).setCurrentLimit(80);
-      motorSetup.apply(elevationMotor);
-      elevationMotorEncoder = elevationMotor.getEncoder();
-      elevationMotorEncoder.setPositionConversionFactor(positionConverionFactor);
-      elevationMotorEncoder.setVelocityConversionFactor(velocityConverionFactor);
-
-      elevationPid = elevationMotor.getPIDController();
-      elevationPid.setP(kP);
-      elevationPid.setI(kI);
-      elevationPid.setD(kD);
-      elevationPid.setFF(kFF);
-      var err = elevationPid.setIMaxAccum(kIMaxAccum, 0);
-      if (err != REVLibError.kOk) {
-        logger.error("Could not set elevation kImaxAccum: {}", err);
-      }
-      elevationPid.setOutputRange(negOutputLimit, posOutputLimit);
-    }
-    
     
     if (deviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, MOTORID_AMP_BAR, "Shooter Amp Bar")
         || RobotContainer.shouldMakeAllCANDevices()) {
@@ -212,7 +157,7 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
     topSpeedStats = new SlidingWindowStats(100);
     bottomSpeedStats = new SlidingWindowStats(100);
 
-    updateDashboardElevationAdjustment();
+    setAmpBarPosition(AmpBarPosition.HOME);
   }
 
   void configMotor(String motorName, TalonFX motor, TalonFXConfiguration configuration) {
@@ -319,108 +264,17 @@ public class ShooterSubsystem extends SubsystemBase implements HasTelemetry {
         }
       }
     }
-
-    double newElevationAdjustment = readDashboardElevationAdjustment();
-    if (newElevationAdjustment != elevationAdjustment) {
-      elevationAdjustment = newElevationAdjustment;
-      if (encoderCalibrated && ! disabledForDebugging) {
-        elevationPid.setReference(requestedPosition + elevationAdjustment, ControlType.kPosition);
-      }
-    }
-
-    // only do something if we actually have a motor
-    if (elevationMotor != null) {
-      if (elevationMotorEncoder != null) { // if there is an encoder, display these
-        if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
-          if (!encoderCalibrated) {
-            // If the robot is running, and the encoder is "not calibrated," run motor very
-            // slowly towards the switch
-            setElevationPower(0.08); 
-            if (calibrationTimer == null) {
-              // we need to calibrate and we have no timer. make one and start it
-              calibrationTimer = new Timer();
-              calibrationTimer.reset();
-              calibrationTimer.start();
-            } else {
-              // we have a timer, has the motor had power long enough to spin up
-              if (calibrationTimer.get() > 0.5) {
-                if (Math.abs(elevationMotorEncoder.getVelocity()) < 1) {
-                  // motor is not moving, hopefully it's against the stop
-                  encoderCalibrated = true;
-                  setElevationPower(0.0);
-                  elevationMotorEncoder.setPosition(68.5);
-                  setElevationPosition(68.5);
-                  setAmpBarPosition(AmpBarPosition.HOME);
-
-                  // If there was a requested position while we were calibrating, go there
-                  if (requestedPositionWhileCalibrating != null) {
-                    setElevationPosition(requestedPositionWhileCalibrating);
-                    requestedPositionWhileCalibrating = null;
-                  }
-
-                }
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
-  public void setElevationPosition(double position) {
-    position = MathUtil.clamp(position, 20, 68.5); // high end is a little short of the stop
-    SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
-    requestedPosition = position;
-    if (encoderCalibrated) {
-      if (!disabledForDebugging) {
-        elevationPid.setReference(position + elevationAdjustment, ControlType.kPosition);
-      }
-    } else {
-      requestedPositionWhileCalibrating = position;
-    }
-  }
-
-  public double getRequestedShooterElevation() {
-    return requestedPosition;
-  }
-
-  public double getActualElevationPosition() {
-    if (elevationMotorEncoder != null) return elevationMotorEncoder.getPosition();
-    return 0;
-  }
-
-  void setElevationPower(double power) {
-    if (!disabledForDebugging) {
-      elevationMotor.set(power);
-    }
-  }
-
-  public void setSpeedAndAngle(ShooterSpeedAndAngle speedAndAngle) {
-    // SPAM SPAM SPAM SPAM WONDERFUL SPAM
-    // logger.info("Setting intake to {}", speedAndAngle);
+  public void setRequestedWheelSpeed(ShooterSpeedAndAngle speedAndAngle) {
     setRequestedWheelSpeed(speedAndAngle.speed);
-    setElevationPosition(speedAndAngle.position);
-    requestedPosition = speedAndAngle.position;
   }
 
   @Override
   public void updateTelemetry() {
     putMotorInformationToDashboard("top", topMotor, topSpeedStats);
     putMotorInformationToDashboard("bottom", bottomMotor, bottomSpeedStats);
-    SmartDashboard.putBoolean(name + ".calibrated", encoderCalibrated);
-    if (elevationMotor != null) {
-      SmartDashboard.putNumber(name + ".elevation.current", elevationMotor.getOutputCurrent());
-      SmartDashboard.putNumber(name + ".elevation.power", elevationMotor.getAppliedOutput());
-      SmartDashboard.putNumber(name + ".elevation.temperature", elevationMotor.getMotorTemperature());
-      SmartDashboard.putNumber(name + ".elevation.IAccum", elevationPid.getIAccum());
 
-      if (elevationMotorEncoder != null) { // if there is an encoder, display these
-        double velocity = elevationMotorEncoder.getVelocity();
-        double position = elevationMotorEncoder.getPosition();
-        SmartDashboard.putNumber(name + ".elevation.velocity", velocity);
-        SmartDashboard.putNumber(name + ".elevation.position", position);
-      }
-    }
     if (ampBarMotor != null) {
       SmartDashboard.putNumber(name + ".ampbar.current", ampBarMotor.getOutputCurrent());
       SmartDashboard.putNumber(name + ".ampbar.power", ampBarMotor.getAppliedOutput());

@@ -5,10 +5,10 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem;
 
 public class AmpBarAnglePIDZapper extends InstantCommand {
-  ShooterSubsystem subsystem = RobotContainer.shooterSubsystem;
+  ShooterWheelsAndAmpBarSubsystem subsystem = RobotContainer.shooterWheelsAndAmpBarSubsystem;
   SparkPIDController pid;
 
   /** Creates a new ShooterAnglePIDZapper. */

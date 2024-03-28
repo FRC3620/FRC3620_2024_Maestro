@@ -52,16 +52,17 @@ public class RobotDataLogger {
     dataLogger.addDataProvider("doWeHaveATarget", () -> RobotContainer.visionSubsystem.getCamYawToSpeaker() != null);
     // requested vs actual headings
     // shooter motor velocities
-    if (RobotContainer.shooterSubsystem.topMotor != null) {
-      dataLogger.addDataProvider("shooter.top.velocity", () -> RobotContainer.shooterSubsystem.topMotor.getVelocity());
-    }
-    if (RobotContainer.shooterSubsystem.bottomMotor != null) {
+    if (RobotContainer.shooterWheelsAndAmpBarSubsystem.topMotor != null) {
       dataLogger.addDataProvider("shooter.top.velocity",
-          () -> RobotContainer.shooterSubsystem.bottomMotor.getVelocity());
+        () -> RobotContainer.shooterWheelsAndAmpBarSubsystem.topMotor.getVelocity());
+    }
+    if (RobotContainer.shooterWheelsAndAmpBarSubsystem.bottomMotor != null) {
+      dataLogger.addDataProvider("shooter.top.velocity",
+        () -> RobotContainer.shooterWheelsAndAmpBarSubsystem.bottomMotor.getVelocity());
     }
     //dataLogger.addDataProvider("shooter.elevation.position.requested", RobotContainer.shooterSubsystem.getRequestedShoulderPosition());
-    dataLogger.addDataProvider("shooter.elevation.position.adjustment", () -> RobotContainer.shooterSubsystem.getElevationAdjustment());
-    dataLogger.addDataProvider("shooter.elevation.position.actual", () -> RobotContainer.shooterSubsystem.getActualElevationPosition());
+    dataLogger.addDataProvider("shooter.elevation.position.adjustment", () -> RobotContainer.shooterElevationSubsystem.getElevationAdjustment());
+    dataLogger.addDataProvider("shooter.elevation.position.actual", () -> RobotContainer.shooterElevationSubsystem.getActualElevationPosition());
 
     dataLogger.addPrelude(odometryGatherer);
     // dataLogger.addDataProvider("vision.now", () -> odometryGatherer.getFPGATime());
@@ -97,7 +98,7 @@ public class RobotDataLogger {
 
   void addMotorProviders(DataLogger dataLogger, String name, Object motor) {
     addMotorProviders(dataLogger, name, motor,
-        EnumSet.of(MotorFields.CURRENT, MotorFields.TEMPERATURE, MotorFields.OUTPUT));
+        EnumSet.of(MotorFields.CURRENT, MotorFields.TEMPERATURE, MotorFields.OUTPUT, MotorFields.VELOCITY));
   }
 
   void addMotorProviders(DataLogger dataLogger, String name, Object motor, EnumSet<MotorFields> fields) {
@@ -109,6 +110,8 @@ public class RobotDataLogger {
         dataLogger.addDataProvider(name + ".current", () -> DataLogger.f2(m.getOutputCurrent()));
       if (fields.contains(MotorFields.OUTPUT))
         dataLogger.addDataProvider(name + ".output", () -> DataLogger.f2(m.getAppliedOutput()));
+      if (fields.contains(MotorFields.VELOCITY))
+        dataLogger.addDataProvider(name + ".velocity", () -> DataLogger.f2(m.getEncoder().getVelocity()));
     } else if (motor instanceof TalonFX) {
       TalonFX m = (TalonFX) motor;
       if (fields.contains(MotorFields.TEMPERATURE))
@@ -117,11 +120,13 @@ public class RobotDataLogger {
         dataLogger.addDataProvider(name + ".current", () -> DataLogger.f2(m.getStatorCurrent().getValueAsDouble()));
       if (fields.contains(MotorFields.OUTPUT))
         dataLogger.addDataProvider(name + ".output", () -> DataLogger.f2(m.getDutyCycle().getValue()));
+      if (fields.contains(MotorFields.VELOCITY))
+        dataLogger.addDataProvider(name + ".velocity", () -> DataLogger.f2(m.getVelocity().getValueAsDouble()));
     }
   }
 
   enum MotorFields {
-    TEMPERATURE, CURRENT, OUTPUT
+    TEMPERATURE, CURRENT, OUTPUT, VELOCITY
   }
 
   class OdometryGatherer implements DataLoggerPrelude {
