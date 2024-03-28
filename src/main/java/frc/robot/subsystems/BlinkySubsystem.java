@@ -94,6 +94,7 @@ public class BlinkySubsystem extends SubsystemBase {
       } else {
         spark.set(c.getPower());
       }
+      currentBlinkinColor = c;
     }
   }
 
