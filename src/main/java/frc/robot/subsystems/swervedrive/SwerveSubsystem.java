@@ -89,7 +89,7 @@ public class SwerveSubsystem extends SubsystemBase {
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(3.0), 100.0, 1.0);
 
     // Setup PathPlanner Rotation Override
-    //PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.
@@ -143,7 +143,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // Translation PID constants
             new PIDConstants(7.5, 0.0, 0.0), // 7.5, 0, 0
             // Rotation PID constants
-            new PIDConstants(9.0, 0.4, 0.3),
+            new PIDConstants(7.0, 0.0, 0.0), //9.0, 0.4, 0.3
             // Max module speed, in m/s
             4,
             swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
