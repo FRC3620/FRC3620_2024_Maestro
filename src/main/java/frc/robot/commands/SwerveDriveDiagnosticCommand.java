@@ -171,8 +171,13 @@ public class SwerveDriveDiagnosticCommand extends Command {
       double maxAziSpeed = Collections.max(aziSpeeds);
       double minAziCurrent = Collections.min(aziCurrents);
       double maxAziCurrent = Collections.max(aziCurrents);
-      double relEncoderPos = Collections.max(aziRelEncoderPos);
-      double absEncoderPos = Collections.max(aziAbsEncoderPos);
+      for(int i = 0; i < aziAbsEncoderPos.size(); i++) {
+        double absEncoderPos = aziAbsEncoderPos.get(i);
+        double relEncoderPos = aziRelEncoderPos.get(i);
+        if (Math.abs(relEncoderPos - absEncoderPos) > 15) { //Arbitrary number. May need changing.
+        aziColor = colorAziEncoderBad;
+      }
+      }
 
       if (minAziSpeed / maxAziSpeed < .9) {
         aziColor = colorAziBad;
@@ -185,11 +190,6 @@ public class SwerveDriveDiagnosticCommand extends Command {
       if (maxAziSpeed == 0 || maxAziCurrent == 0) {
         aziColor = colorZeroMotors;
       }
-
-      if (Math.abs(relEncoderPos - absEncoderPos) > 5) { //Arbitrary number. May need changing.
-        aziColor = colorAziEncoderBad;
-      }
-
     } else {
       aziColor = colorZeroMotors;
     }
