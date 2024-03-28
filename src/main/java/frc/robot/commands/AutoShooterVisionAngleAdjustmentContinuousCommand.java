@@ -8,44 +8,47 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ShooterCalcutlaiter;
+import frc.robot.subsystems.ShooterElevationSubsystem;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class AutoShooterVisionAngleAdjustmentContinuousCommand extends Command {
-  private final VisionSubsystem vision;
-  private final ShooterSubsystem shooter;
+  private final VisionSubsystem visionSubsystem;
+  private final ShooterElevationSubsystem shooterElevationSubsystem;
+  boolean isFinished = false;
 
   /** Creates a new ShooterVisionAngleAdjustmentCommand. */
-  public AutoShooterVisionAngleAdjustmentContinuousCommand(VisionSubsystem vision, ShooterSubsystem shooter) {
+  public AutoShooterVisionAngleAdjustmentContinuousCommand(VisionSubsystem visionSubsystem, ShooterElevationSubsystem shooterElevationSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.vision = vision;
-    this.shooter = shooter;
+    this.visionSubsystem = visionSubsystem;
+    this.shooterElevationSubsystem = shooterElevationSubsystem;
 
-    addRequirements(shooter);
-
-    
+    addRequirements(shooterElevationSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Double distance = vision.getCamDistToSpeaker();
+    Double distance = visionSubsystem.getCamDistToSpeaker();
     if(distance == null){
       SmartDashboard.putString("shooterVision.doIHaveTarget", "no");
     }else{
       ShooterSpeedAndAngle angle= ShooterCalcutlaiter.CalculaiteAngleM(distance);
-      shooter.setElevationPosition(angle.getPosition());
+      double desiredElevationPosition = angle.getPosition();
+      shooterElevationSubsystem.setElevationPosition(angle.getPosition());
       SmartDashboard.putNumber("shooterVision.Angle", angle.getPosition());
       SmartDashboard.putString("shooterVision.doIHaveTarget", "yes");
       SmartDashboard.putNumber("shooterVision.Distance", distance);
       SmartDashboard.putNumber("shooterVision.DistanceFt", Units.metersToFeet(distance));
-      SmartDashboard.putNumber("shooterVision.Yaw", vision.getCamYawToSpeaker());
+      SmartDashboard.putNumber("shooterVision.Yaw", visionSubsystem.getCamYawToSpeaker());
+      double actualElevationPosition = shooterElevationSubsystem.getActualElevationPosition();
+
+      //SmartDashboard.putNumber("shooterVision.desiredPosition", desiredElevationPosition);
+      //SmartDashboard.putNumber("shooterVision.actualPosition", actualElevationPosition);
     }
 
   }
