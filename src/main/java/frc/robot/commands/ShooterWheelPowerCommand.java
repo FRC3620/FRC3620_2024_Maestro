@@ -9,10 +9,10 @@ import org.usfirst.frc3620.misc.Utilities.SlidingWindowStats;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem;
 
 public class ShooterWheelPowerCommand extends Command {
-  ShooterSubsystem subsystem = RobotContainer.shooterSubsystem;
+  ShooterWheelsAndAmpBarSubsystem shooterWheelsAndAmpBarSubsystem = RobotContainer.shooterWheelsAndAmpBarSubsystem;
 
   SlidingWindowStats topSpeed, bottomSpeed;
 
@@ -22,7 +22,7 @@ public class ShooterWheelPowerCommand extends Command {
     topSpeed = new SlidingWindowStats(100);
     bottomSpeed = new SlidingWindowStats(100);
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(shooterWheelsAndAmpBarSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -36,11 +36,11 @@ public class ShooterWheelPowerCommand extends Command {
   @Override
   public void execute() {
     double power = SmartDashboard.getNumber("shooter.wheels.power", 0);
-    subsystem.setWheelPower(power);
+    shooterWheelsAndAmpBarSubsystem.setWheelPower(power);
 
-    double s = subsystem.getTopMotorVelocity();
+    double s = shooterWheelsAndAmpBarSubsystem.getTopMotorVelocity();
     topSpeed.addValue(s);
-    s = subsystem.getBottomMotorVelocity();
+    s = shooterWheelsAndAmpBarSubsystem.getBottomMotorVelocity();
     bottomSpeed.addValue(s);
     putStats("top", topSpeed);
     putStats("bottom", bottomSpeed);
@@ -55,7 +55,7 @@ public class ShooterWheelPowerCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    subsystem.setWheelPower(null);
+    shooterWheelsAndAmpBarSubsystem.setWheelPower(null);
   }
 
   // Returns true when the command should end.

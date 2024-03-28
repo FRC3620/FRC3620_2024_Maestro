@@ -5,17 +5,17 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterElevationSubsystem;
 
 public class ShooterAnglePIDZapper extends InstantCommand {
-  ShooterSubsystem subsystem = RobotContainer.shooterSubsystem;
+  ShooterElevationSubsystem subsystem = RobotContainer.shooterElevationSubsystem;
   SparkPIDController pid;
 
   /** Creates a new ShooterAnglePIDZapper. */
   public ShooterAnglePIDZapper() {
     addRequirements(subsystem);
     if (subsystem.elevationMotor != null) {
-    pid = subsystem.elevationMotor.getPIDController();
+      pid = subsystem.elevationMotor.getPIDController();
 
       SmartDashboard.putNumber("test.shooter.angle.pid.actual.kP", pid.getP());
       SmartDashboard.putNumber("test.shooter.angle.pid.actual.kI", pid.getI());
