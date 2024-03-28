@@ -5,12 +5,15 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.misc.BlinkinColor;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.blinky.Pattern;
 
 /**/
@@ -23,8 +26,19 @@ public class BlinkySubsystem extends SubsystemBase {
   List<LightSegment> lightSegments = new ArrayList<>();
   public LightSegment lightSegment = new LightSegment(0, 19);
 
+  Spark spark, s2;
+
+  BlinkinColor color = null;
+
+  boolean runningIntakeAtSource = false;
+  boolean readyToShoot = false;
+
   /** Creates a new BlinkySubsystem. */
   public BlinkySubsystem() {
+    spark = new Spark(1);
+    s2 = new Spark(2);
+    spark.addFollower(s2);
+
     leds = new AddressableLED(0);
     lBuffer = new AddressableLEDBuffer(20);
     timer = new Timer();
@@ -43,12 +57,62 @@ public class BlinkySubsystem extends SubsystemBase {
     if (changed) {
       leds.setData(lBuffer);
     }
+
+    blinkinPeriodic();
+  }
+
+  void blinkinPeriodic() {
+    if (getCurrentCommand() == null) {
+      BlinkinColor c = BlinkinColor.GRAY;
+      if (runningIntakeAtSource) {
+        c = BlinkinColor.VIOLET;
+      } else {
+        if (RobotContainer.indexerSubsystem.gamePieceDetected()) {
+          if (readyToShoot) {
+            c = BlinkinColor.HEARTBEAT_FAST_TEAMCOLOR1;
+          } else {
+            c = BlinkinColor.GREEN;
+          }
+        }
+      }
+      setBlinkin(c);
+    } else {
+      if (color == null) {
+        setBlinkin(null);
+      } else {
+        setBlinkin(color);
+      }
+    }
+  }
+
+  BlinkinColor currentBlinkinColor = null;
+  void setBlinkin(BlinkinColor c) {
+    if (currentBlinkinColor != c) {
+      logger.info ("Changing Blinkin to {}", c);
+      if (c == null) {
+        spark.disable();
+      } else {
+        spark.set(c.getPower());
+      }
+    }
   }
 
   public LightSegment getLightSegment(int first, int last) {
     LightSegment rv = new LightSegment(first, last);
     lightSegments.add(rv);
     return rv;
+  }
+
+  public void setRunningIntakeAtSource(boolean b) {
+    runningIntakeAtSource = b;
+  }
+
+  public void setReadyToShoot(boolean b) {
+    readyToShoot = b;
+  }
+
+  public void setColor(BlinkinColor color) {
+    this.color = color;
   }
 
   public class LightSegment extends SubsystemBase {

@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ShooterElevationSubsystem;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
 import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem;
 
@@ -21,9 +20,11 @@ public class SourcePickupCommand extends SequentialCommandGroup {
   /** Creates a new SourcePickupCommand. */
   public SourcePickupCommand() {
     addCommands(
-        new InnerSourcePickupCommand(),
-        new InstantCommand(() -> shooterWheels.setRequestedWheelSpeed(0), shooterWheels)
-      );
+      new InstantCommand(() ->RobotContainer.blinkySubsystem.setRunningIntakeAtSource(true)),
+      new InnerSourcePickupCommand(),
+      new InstantCommand(() -> shooterWheels.setRequestedWheelSpeed(0), shooterWheels),
+      new InstantCommand(() -> RobotContainer.blinkySubsystem.setRunningIntakeAtSource(false))
+    );
   }
 
   /**

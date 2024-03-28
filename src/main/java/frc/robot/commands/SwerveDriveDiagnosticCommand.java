@@ -50,7 +50,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
     this.lightSegment = RobotContainer.lightSegment;
 
     for (var nameAndMotor : RobotContainer.swerveDriveMotors.entrySet()) {
-      if (nameAndMotor.getValue() instanceof CANSparkBase) {
+      if (nameAndMotor.getValue().getMotor() instanceof CANSparkBase) {
         driveMotorCurrents.put(nameAndMotor.getKey(), new SlidingWindowStats(slidingWindowSize));
       } else {
         logger.error("Swerve Drive Motor {} is not a CANSparkBase, it is a {}", nameAndMotor.getKey(),
@@ -59,7 +59,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
     }
 
     for (var nameAndMotor : RobotContainer.swerveAzimuthMotors.entrySet()) {
-      if (nameAndMotor.getValue() instanceof CANSparkBase) {
+      if (nameAndMotor.getValue().getMotor() instanceof CANSparkBase) {
         azimuthMotorCurrents.put(nameAndMotor.getKey(), new SlidingWindowStats(slidingWindowSize));
       } else {
         logger.error("Swerve Azimuth Motor {} is not a CANSparkBase, it is a {}", nameAndMotor.getKey(),
@@ -94,7 +94,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
       for (var nameAndCurrentStat : driveMotorCurrents.entrySet()) {
         String name = nameAndCurrentStat.getKey();
         SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
-        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveDriveMotors.get(name);
+        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveDriveMotors.get(name).getMotor();
         motor.set(power);
 
         double velocity = motor.getEncoder().getVelocity();
@@ -136,7 +136,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
       for (var nameAndCurrentStat : azimuthMotorCurrents.entrySet()) {
         String name = nameAndCurrentStat.getKey();
         SlidingWindowStats currentStat = nameAndCurrentStat.getValue();
-        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveAzimuthMotors.get(name);
+        CANSparkBase motor = (CANSparkBase) RobotContainer.swerveAzimuthMotors.get(name).getMotor();
         motor.set(power);
 
         double velocity = motor.getEncoder().getVelocity();
