@@ -176,9 +176,10 @@ public class Robot extends TimedRobot {
           if(color.get()==Alliance.Red){
             var pose = RobotContainer.drivebase.getPose();
             var rotation = pose.getRotation();
-            rotation = rotation.plus(Rotation2d.fromDegrees(180));
-            var newPose = new Pose2d(pose.getTranslation(), rotation);
-            RobotContainer.drivebase.resetOdometry(newPose);
+            var newRotation = rotation.plus(Rotation2d.fromDegrees(180));
+            var newPose = new Pose2d(pose.getTranslation(), newRotation);
+            RobotContainer.drivebase.setGyro(-rotation.getDegrees());
+            RobotContainer.drivebase.resetOdometry(pose);
           }
         }
   }
