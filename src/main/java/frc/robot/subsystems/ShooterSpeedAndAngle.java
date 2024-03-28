@@ -18,6 +18,7 @@ public class ShooterSpeedAndAngle extends SubsystemBase {
   public static ShooterSpeedAndAngle ejectAllShooter = new ShooterSpeedAndAngle(20, 30);
   public static ShooterSpeedAndAngle disabledUp = new ShooterSpeedAndAngle(0, 68);
   public static ShooterSpeedAndAngle ampShot = new ShooterSpeedAndAngle(1500, 54);
+  public static ShooterSpeedAndAngle sourcePickup = new ShooterSpeedAndAngle(-2000, 60);
 
   /** Creates a new ShooterSpeedAndAngle. */
   public ShooterSpeedAndAngle(double speed, double position) {

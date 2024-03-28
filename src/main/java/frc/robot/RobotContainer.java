@@ -1,6 +1,5 @@
 package frc.robot;
 
-import frc.robot.commands.swervedrive.drivebase.SuperSwerveDrive;
 import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveModule;
@@ -139,28 +138,6 @@ public class RobotContainer {
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
-
-    SuperSwerveDrive SuperFieldRel = new SuperSwerveDrive(drivebase,
-        superSwerveController,
-        () -> -getDriveVerticalJoystick(),
-        () -> -getDriveHorizontalJoystick(),
-        () -> -getDriveSpinJoystick(),
-        () -> true);
-    /*
-     * TestDriveCommand StandardYagslDrive = new TestDriveCommand(drivebase,
-     * () -> -getDriveVerticalJoystick(),
-     * () -> -getDriveHorizontalJoystick(),
-     * () -> -getDriveSpinJoystick(),
-     * () -> true);
-     * 
-     * Command sitThereCommand = new TestDriveCommand(
-     * drivebase,
-     * () -> 0.0,
-     * () -> 0.0,
-     * () -> 0.0,
-     * () -> false);
-     */
-
 
     TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,
         () -> -getDriveVerticalJoystick(),
