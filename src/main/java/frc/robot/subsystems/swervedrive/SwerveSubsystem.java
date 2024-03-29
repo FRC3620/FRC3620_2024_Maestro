@@ -470,7 +470,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void alignModules(double moduleHeading){
-    swerveDrive.alignModules(moduleHeading);
+    //swerveDrive.alignModules(moduleHeading);
   }
   
   public ChassisSpeeds getTargetSpeedsFromPreScaledInputs(double xInput, double yInput, Rotation2d angle){
