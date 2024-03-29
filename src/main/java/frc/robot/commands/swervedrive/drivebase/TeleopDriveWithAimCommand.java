@@ -5,10 +5,15 @@
 package frc.robot.commands.swervedrive.drivebase;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.SuperSwerveController;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -76,6 +81,14 @@ public class TeleopDriveWithAimCommand extends Command {
     double xVelocity = xJoy * xJoy * xJoy;
     double yVelocity = yJoy * yJoy * yJoy;
     double angVelocity = aJoy * aJoy * aJoy;
+
+    var color = DriverStation.getAlliance();
+    if(color.isPresent()){
+          if(color.get()==Alliance.Red){
+            xVelocity = -xVelocity;
+            yVelocity = -yVelocity;
+          }
+        }
 
     SmartDashboard.putNumber("vX", xVelocity);
     SmartDashboard.putNumber("vY", yVelocity);
