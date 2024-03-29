@@ -125,7 +125,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   void periodicWhileCalibrated() {
     // If the robot is running, and the encoder is "not calibrated," run motor very
     // slowly towards the stop
-    setPower(-0.1);
+    setPower(-0.15);
     if (calibrationTimer == null) {
       // we need to calibrate and we have no timer. make one and start it
       calibrationTimer = new Timer();
