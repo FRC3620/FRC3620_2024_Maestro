@@ -265,7 +265,7 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
     }
 
-    updateVisionOdometry();
+      updateVisionOdometry();
 
     SmartDashboard.putBoolean("swerve.areweaiming", areweaiming);
   }
@@ -521,8 +521,8 @@ public class SwerveSubsystem extends SubsystemBase {
     LimelightHelpers.PoseEstimate limeLightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
 
     if(limeLightMeasurement.tagCount >= 2) {
-     // swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds, VecBuilder.fill(5, 5,100));
-      swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds);
+      swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds, VecBuilder.fill(5, 5,99999));
+      //swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds);
       SmartDashboard.putNumber("limelightvision.pose.x", limeLightMeasurement.pose.getX());
       SmartDashboard.putNumber("limelightvision.pose.y", limeLightMeasurement.pose.getY());
       SmartDashboard.putNumber("limelightvision.pose.Rotation", limeLightMeasurement.pose.getRotation().getDegrees());
