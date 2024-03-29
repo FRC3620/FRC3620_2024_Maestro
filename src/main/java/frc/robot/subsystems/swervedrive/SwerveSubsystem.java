@@ -359,6 +359,10 @@ public class SwerveSubsystem extends SubsystemBase {
   public void zeroGyro() {
     swerveDrive.zeroGyro();
   }
+  // "Squares up" robot odometry based on alliance color
+  public void squareUp(){
+    swerveDrive.squareUp();
+  }
 
   public void setGyro(double degrees){
     swerveDrive.setGyro(new Rotation3d(0,0,Units.degreesToRadians(degrees)));

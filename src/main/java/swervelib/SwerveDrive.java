@@ -18,10 +18,14 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotContainer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -170,7 +174,7 @@ public class SwerveDrive
     swerveDrivePoseEstimator =
         new SwerveDrivePoseEstimator(
             kinematics,
-            getYaw(),
+            getYaw(),//TODO: check getYaw()
             getModulePositions(),
             new Pose2d(new Translation2d(0, 0),
                        Rotation2d.fromDegrees(0))); // x,y,heading in radians; Vision measurement std dev, higher=less weight
@@ -634,7 +638,7 @@ public class SwerveDrive
   public void resetOdometry(Pose2d pose)
   {
     odometryLock.lock();
-    swerveDrivePoseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
+    swerveDrivePoseEstimator.resetPosition(getYaw(), getModulePositions(), pose); //TODO: check getYaw()
     odometryLock.unlock();
     kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, pose.getRotation()));
   }
@@ -715,6 +719,7 @@ public class SwerveDrive
    */
   public void zeroGyro()
   {
+
     // Resets the real gyro or the angle accumulator, depending on whether the robot is being
     // simulated
     if (!SwerveDriveTelemetry.isSimulation)
@@ -728,6 +733,22 @@ public class SwerveDrive
     lastHeadingRadians = 0;
     resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d()));
   }
+  // "Squares up" robot odometry based on alliance color
+  public void squareUp(){
+        var color = DriverStation.getAlliance();
+        if(color.isPresent()){
+          if(color.get()==Alliance.Red){
+            var pose = RobotContainer.drivebase.getPose();
+            var newPose = new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(180));
+            RobotContainer.drivebase.resetOdometry(newPose);
+          }else{
+            var pose = RobotContainer.drivebase.getPose();
+            var newPose = new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(0));
+            RobotContainer.drivebase.resetOdometry(newPose);
+          }
+        }
+  }
+
 
   /**
    * Gets the current yaw angle of the robot, as reported by the imu. CCW positive, not wrapped.
@@ -953,7 +974,7 @@ public class SwerveDrive
     try
     {
       // Update odometry
-      swerveDrivePoseEstimator.update(getYaw(), getModulePositions());
+      swerveDrivePoseEstimator.update(getYaw(), getModulePositions());//TODO: Check getYaw()
 
       // Update angle accumulator if the robot is simulated
       if (SwerveDriveTelemetry.verbosity.ordinal() >= TelemetryVerbosity.HIGH.ordinal())
