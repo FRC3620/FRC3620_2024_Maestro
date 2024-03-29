@@ -521,7 +521,11 @@ public class SwerveSubsystem extends SubsystemBase {
     LimelightHelpers.PoseEstimate limeLightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
 
     if(limeLightMeasurement.tagCount >= 2) {
-      swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds, VecBuilder.fill(.7, .7,9999999));
+     // swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds, VecBuilder.fill(5, 5,100));
+      swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds);
+      SmartDashboard.putNumber("limelightvision.pose.x", limeLightMeasurement.pose.getX());
+      SmartDashboard.putNumber("limelightvision.pose.y", limeLightMeasurement.pose.getY());
+      SmartDashboard.putNumber("limelightvision.pose.Rotation", limeLightMeasurement.pose.getRotation().getDegrees());
     }
   }
 
