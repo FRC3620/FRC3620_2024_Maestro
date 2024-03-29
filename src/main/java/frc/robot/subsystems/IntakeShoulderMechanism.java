@@ -96,16 +96,16 @@ public class IntakeShoulderMechanism implements HasTelemetry {
         double currentPosition = getActualPosition();
         if (requestedLocation == IntakeLocation.IntakeIn) {
           //Up
-          if (currentPosition < 2.5) {
+          if (currentPosition < 4) {
             //Close
-            requestedPower = -0.05;
+            requestedPower = -0.02;
           } else {
             //Not Close
             requestedPower = -0.35;
           }
         } else {
           //Down
-          if (currentPosition > 1) {
+          if (currentPosition > 1.5) {
             //Close
             requestedPower = +0.01;
           } else {
@@ -117,6 +117,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
       if (requestedPower != null) {
         setPower(requestedPower);
+        SmartDashboard.putNumber(name + ".requestedPower", requestedPower);
       } // else the PID is driving
     }
   }
@@ -124,7 +125,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   void periodicWhileCalibrated() {
     // If the robot is running, and the encoder is "not calibrated," run motor very
     // slowly towards the stop
-    setPower(0.0);
+    setPower(-0.1);
     if (calibrationTimer == null) {
       // we need to calibrate and we have no timer. make one and start it
       calibrationTimer = new Timer();
