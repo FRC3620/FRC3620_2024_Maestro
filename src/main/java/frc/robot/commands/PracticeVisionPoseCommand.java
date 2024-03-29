@@ -10,13 +10,21 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class PracticeVisionPoseCommand extends Command {
   Logger logger = EventLogging.getLogger(getClass());
   VisionSubsystem vision = RobotContainer.visionSubsystem;
+
+  Translation2d blueSP = new Translation2d(1.3473171105886368,5.5430292057165325);
+  Translation2d redSP = new Translation2d(14.6526828894,5.5430292057165325);
+  Pose2d blueSPPose = new Pose2d(blueSP, Rotation2d.fromDegrees(0));
+  Pose2d redSPPose = new Pose2d(blueSP, Rotation2d.fromDegrees(180));
   /** Creates a new PracticeVisionPoseCommand. */
   public PracticeVisionPoseCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -38,7 +46,14 @@ public class PracticeVisionPoseCommand extends Command {
 
       if (pose == null) {
         // assumes SP position based on color
-        RobotContainer.drivebase.squareUp();
+        var color = DriverStation.getAlliance();
+        if (color.isPresent()) {
+          if (color.get() == Alliance.Red) {
+            RobotContainer.drivebase.resetOdometry(redSPPose);
+          }else{
+            RobotContainer.drivebase.resetOdometry(blueSPPose);
+          }
+        }
       }
 
       if (pose != null) {
