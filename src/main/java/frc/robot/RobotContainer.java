@@ -274,8 +274,8 @@ public class RobotContainer {
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 */
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
-        .toggleOnTrue(new SetShooterSpeedCommand(5000))
-        .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
+        .toggleOnTrue(new SetShooterSpeedCommand(5000));
+        //.toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
         .toggleOnTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ampShot));

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Robot;
 import frc.robot.ShooterCalcutlaiter;
 import frc.robot.subsystems.ShooterElevationSubsystem;
@@ -63,17 +64,18 @@ public class AutoShooterVisionAngleAdjustmentContinuousCommand extends Command {
       
       Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
-          if (ally.get() == Alliance.Red) {
-              if(swerveSubsystem.getPose().getX() > 8.3) {
-
-              } else {
-
-              }
-          }
-          if (ally.get() == Alliance.Blue) {
-              //<BLUE ACTION>
+          if (ally.get() == Alliance.Red && swerveSubsystem.getPose().getX() > 8.3) {
+              shooterElevationSubsystem.setElevationPosition(angle.getPosition());
+              new InstantCommand(() -> swerveSubsystem.setAreWeAiming(true));
+          } else if (ally.get() == Alliance.Blue && swerveSubsystem.getPose().getX() < 8.3) {
+              shooterElevationSubsystem.setElevationPosition(angle.getPosition());
+              new InstantCommand(() -> swerveSubsystem.setAreWeAiming(true));
+          } else {
+              shooterElevationSubsystem.setElevationPosition(ShooterSpeedAndAngle.sourcePickup);
+              new InstantCommand(() -> swerveSubsystem.setAreWeAiming(false));
           }
       }
+      
       //SmartDashboard.putNumber("shooterVision.desiredPosition", desiredElevationPosition);
       //SmartDashboard.putNumber("shooterVision.actualPosition", actualElevationPosition);
     }
