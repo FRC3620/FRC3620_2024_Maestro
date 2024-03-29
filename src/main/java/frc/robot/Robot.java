@@ -55,9 +55,9 @@ public class Robot extends TimedRobot {
     logger.info ("I'm alive! {}", GitNess.gitDescription());
     printMemoryStatus("logger is up");
 
-    PortForwarder.add (10080, "photonvision.local", 80);
-    PortForwarder.add (15800, "photonvision.local", 5800);
-    PortForwarder.add (5801, "photonvision.local", 5801);
+    for (int port = 5800; port <= 5809; port++) {
+      PortForwarder.add(port, "limelight.local", port);
+    }    
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
