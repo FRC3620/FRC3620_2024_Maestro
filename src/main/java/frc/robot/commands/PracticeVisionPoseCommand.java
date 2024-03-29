@@ -24,7 +24,7 @@ public class PracticeVisionPoseCommand extends Command {
   Translation2d blueSP = new Translation2d(1.3473171105886368,5.5430292057165325);
   Translation2d redSP = new Translation2d(14.6526828894,5.5430292057165325);
   Pose2d blueSPPose = new Pose2d(blueSP, Rotation2d.fromDegrees(0));
-  Pose2d redSPPose = new Pose2d(blueSP, Rotation2d.fromDegrees(180));
+  Pose2d redSPPose = new Pose2d(redSP, Rotation2d.fromDegrees(180));
   /** Creates a new PracticeVisionPoseCommand. */
   public PracticeVisionPoseCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
