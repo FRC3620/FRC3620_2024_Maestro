@@ -252,18 +252,20 @@ public class SwerveSubsystem extends SubsystemBase {
 
       CANSparkMax angleMotor = (CANSparkMax) swerveModule.getAngleMotor().getMotor();
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Angle Applied Output", angleMotor.getAppliedOutput());
-      SmartDashboard.putNumber("maxAngleVelocity", swerveDrive.getMaximumAngularVelocity());
+      SmartDashboard.putNumber("SwerveMotor[" + configName + "] Angle Temperature", angleMotor.getMotorTemperature());
 
       CANSparkMax driveMotor = (CANSparkMax) swerveModule.getDriveMotor().getMotor();
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Applied Output", driveMotor.getAppliedOutput());
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Amperage", driveMotor.getOutputCurrent());
-
-      SmartDashboard.putNumber("Drive Radius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
-
-      SmartDashboard.putNumber("Swerve.pose.x", getPose().getX());
-      SmartDashboard.putNumber("Swerve.pose.y", getPose().getY());
-      SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
+      SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Requested speed (m/s)", swerveModule.getState().speedMetersPerSecond);
+      SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Motor Speed", swerveModule.getDriveMotor().getVelocity());
     }
+
+    SmartDashboard.putNumber("maxAngleVelocity", swerveDrive.getMaximumAngularVelocity());
+    SmartDashboard.putNumber("Drive Radius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
+    SmartDashboard.putNumber("Swerve.pose.x", getPose().getX());
+    SmartDashboard.putNumber("Swerve.pose.y", getPose().getY());
+    SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
 
     updateVisionOdometry();
 
