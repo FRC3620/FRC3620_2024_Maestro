@@ -88,7 +88,7 @@ public class BlinkySubsystem extends SubsystemBase {
   BlinkinColor currentBlinkinColor = null;
   void setBlinkin(BlinkinColor c) {
     if (currentBlinkinColor != c) {
-      logger.info ("Changing Blinkin to {}", c);
+      //logger.info ("Changing Blinkin to {}", c); //TODO: put this somewhere where it wont spam the log.
       if (c == null) {
         spark.disable();
       } else {
