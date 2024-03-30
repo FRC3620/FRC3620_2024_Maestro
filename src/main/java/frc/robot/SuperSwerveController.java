@@ -29,8 +29,9 @@ public class SuperSwerveController {
 
     public SuperSwerveController(SwerveSubsystem drivebase) {
         headingPID = new PIDController(kSpinP, kSpinI, kSpinD);
-        headingPID.enableContinuousInput(-180, 180); // sets a circular range instead of a linear one.
+        headingPID.enableContinuousInput(-Math.PI, Math.PI); // sets a circular range instead of a linear one.
         headingPID.setTolerance(2.5);
+    
         this.drivebase = drivebase;
         headingSetpoint = drivebase.getPose().getRotation().getDegrees();
     }

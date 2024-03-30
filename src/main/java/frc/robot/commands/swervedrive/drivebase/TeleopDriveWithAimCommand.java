@@ -4,6 +4,7 @@
 
 package frc.robot.commands.swervedrive.drivebase;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,6 +21,11 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import org.usfirst.frc3620.misc.Utilities;
+
+import com.ctre.phoenix.Util;
+
 import swervelib.SwerveController;
 
 /**
@@ -120,12 +126,14 @@ public class TeleopDriveWithAimCommand extends Command {
         // We'll need to modify this to point the rear of the robot to the AprilTag
         // when we get JoeHann back.
         
-        double currentPosRotation = swerve.getHeading().getDegrees();
-        double targetHeading = headingToTag;
+        double currentPosRotation = swerve.getPose().getRotation().getDegrees();
+        double targetHeading =  Utilities.normalizeAngle(headingToTag + 180);
         //calculates angVelocity
         angVelocity = controller.headingCalculate(Units.degreesToRadians(currentPosRotation),
-                                                  Units.degreesToRadians(targetHeading)) 
-                                                  / 1.5;
+                                                  Units.degreesToRadians(targetHeading));
+
+        angVelocity = MathUtil.clamp(angVelocity, -swerve.getMaximumAngularVelocity(), swerve.getMaximumAngularVelocity() );
+                                        
                                           
         
         //angVelocity = aimController.calculate(currentPosRotation,targetHeading);
@@ -142,12 +150,13 @@ public class TeleopDriveWithAimCommand extends Command {
     
       
     } else {
-      //swerve.setHeadingCorrection(true);
+      angVelocity = angVelocity*swerve.getMaximumAngularVelocity();
     }
     SmartDashboard.putNumber("aimDrive.AngVelocity", angVelocity);
     // Drive using raw values.
+
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
-        angVelocity * 5.1,
+        angVelocity,
         driveMode.getAsBoolean());
   }
 
