@@ -146,27 +146,24 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      if (false && m_autonomousCommand instanceof PathPlannerAuto){
-        PathPlannerAuto pathPlannerAuto = (PathPlannerAuto) m_autonomousCommand;
-        String autoName = pathPlannerAuto.getName();
-        Pose2d startingPose = PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
-        Rotation2d startingRotation = startingPose.getRotation();
-        double startingDeg = startingRotation.getDegrees();
-        var color = DriverStation.getAlliance();
-        if(color.isPresent()){
-          if(color.get()==Alliance.Red){
-            startingDeg = -startingDeg;
-          }
-        }
-        SmartDashboard.putString("autoName", autoName);
-        SmartDashboard.putNumber("startingDeg", startingDeg);
-        logger.info("Running Auto Name {}, starting gyro = {}", autoName, startingDeg);
-        RobotContainer.drivebase.setGyro(-startingDeg);
+      if (m_autonomousCommand instanceof PathPlannerAuto){
+      }else{
+        RobotContainer.drivebase.squareUp();
       }
       m_autonomousCommand.schedule();
     }
 
     setupDriverController();
+  }
+  @Override
+  public void autonomousExit() {
+    var color = DriverStation.getAlliance();
+        if(color.isPresent()){
+          if(color.get()==Alliance.Red){
+            var pose = RobotContainer.drivebase.getPose();
+            var rotation = pose.getRotation();
+          }
+        }
   }
 
   /** This function is called periodically during autonomous. */

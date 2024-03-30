@@ -143,7 +143,8 @@ public class SwerveSubsystem extends SubsystemBase {
         // Translation PID constants
             new PIDConstants(7.5, 0.0, 0.0), // 7.5, 0, 0
             // Rotation PID constants
-            new PIDConstants(7.0, 0.0, 0.0), //9.0, 0.4, 0.3
+            new PIDConstants(9.0, 0.4, 0.3),
+          
             // Max module speed, in m/s
             4,
             swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
@@ -265,7 +266,7 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
     }
 
-      //updateVisionOdometry();
+    //updateVisionOdometry();
 
     SmartDashboard.putBoolean("swerve.areweaiming", areweaiming);
   }
@@ -358,6 +359,10 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void zeroGyro() {
     swerveDrive.zeroGyro();
+  }
+  // "Squares up" robot odometry based on alliance color
+  public void squareUp(){
+    swerveDrive.squareUp();
   }
 
   public void setGyro(double degrees){

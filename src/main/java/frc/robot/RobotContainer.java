@@ -234,7 +234,7 @@ public class RobotContainer {
     // Driver controls
     if (drivebase != null) {
       // reset NavX
-      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new InstantCommand(() -> drivebase.squareUp()));
 
       // turn off "autoaiming" (robot does not try to keep shooter pointed @ speaker)
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
@@ -387,6 +387,9 @@ public class RobotContainer {
     SmartDashboard.putData("SwerveDiagnostics", new SwerveDriveDiagnosticCommand());
 
     SmartDashboard.putData("Run Indexers Reversed Until Detected", new RunIndexerUntilGamePieceDetectedCommand(() -> -0.8));
+
+    //Practice reset pose based on vision command.
+    SmartDashboard.putData("Reset Pose Based on Vision", new PracticeVisionPoseCommand());
 
     // indexer test
     SmartDashboard.putData("Test index with joystick", new FunctionalCommand(
