@@ -64,7 +64,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public double maximumSpeed = 6.2; //1
   double targetHeading;
-  double RotationOffsetVision = 6.5;
+  double RotationOffsetVision = 3;
   static boolean areweaiming = false;
 
   
@@ -144,6 +144,7 @@ public class SwerveSubsystem extends SubsystemBase {
             new PIDConstants(7.5, 0.0, 0.0), // 7.5, 0, 0
             // Rotation PID constants
             new PIDConstants(9.0, 0.4, 0.3),
+          
             // Max module speed, in m/s
             4,
             swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
@@ -268,7 +269,7 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Swerve.pose.y", getPose().getY());
     SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
 
-    updateVisionOdometry();
+    //updateVisionOdometry();
 
     SmartDashboard.putBoolean("swerve.areweaiming", areweaiming);
   }
@@ -361,6 +362,10 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void zeroGyro() {
     swerveDrive.zeroGyro();
+  }
+  // "Squares up" robot odometry based on alliance color
+  public void squareUp(){
+    swerveDrive.squareUp();
   }
 
   public void setGyro(double degrees){
@@ -525,6 +530,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     if(limeLightMeasurement.tagCount >= 2) {
       swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds, VecBuilder.fill(.7, .7,9999999));
+      //swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds);
+      SmartDashboard.putNumber("limelightvision.pose.x", limeLightMeasurement.pose.getX());
+      SmartDashboard.putNumber("limelightvision.pose.y", limeLightMeasurement.pose.getY());
+      SmartDashboard.putNumber("limelightvision.pose.Rotation", limeLightMeasurement.pose.getRotation().getDegrees());
     }
   }
 
