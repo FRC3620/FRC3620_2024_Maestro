@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import org.usfirst.frc3620.misc.Utilities;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
@@ -27,6 +29,8 @@ public class CameraLockToTargetTag extends Command {
    */
   public CameraLockToTargetTag(SwerveSubsystem swerve, VisionSubsystem vision, SuperSwerveController controller) {
 
+
+
     this.swerve = swerve;
     this.vision = vision;
     this.controller = controller;
@@ -48,7 +52,7 @@ public class CameraLockToTargetTag extends Command {
     var camYaw_Speaker = vision.getCamYawToSpeaker();
     if (camYaw_Speaker != null) {
       headingToTag = camYaw_Speaker;
-      var desiredHeading = headingToTag+180;
+      var desiredHeading = Utilities.normalizeAngle(headingToTag+180);
 
       var currentDirection = swerve.getPose().getRotation().getDegrees();
 
@@ -64,7 +68,7 @@ public class CameraLockToTargetTag extends Command {
       controller.turnTo(swerve, desiredHeading);
 
       // if heading is close enough, stop turning
-      if (currentDirection < desiredHeading + 2.5 && currentDirection > desiredHeading - 2.5) {
+      if (currentDirection < desiredHeading + .85 && currentDirection > desiredHeading - .85) {
         finishedTurn = true;
       } else {
         // if command isn't turning, return no

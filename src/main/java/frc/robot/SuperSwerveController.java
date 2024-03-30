@@ -21,16 +21,26 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 /** Add your docs here. */
 public class SuperSwerveController {
     public PIDController headingPID;
-    private double kSpinP = 0.05; 
+    private double kSpinP = 0.15; 
     private double kSpinI = 0.00;
     private double kSpinD = 0.00; //0.01
+
+    public PIDController turnToheadingPID;
+    private double TurnkSpinP = 0.50; 
+    private double TurnkSpinI = 0.00;
+    private double TurnkSpinD = 0.00;
+
     SwerveSubsystem drivebase;
     Double headingSetpoint = null;
 
     public SuperSwerveController(SwerveSubsystem drivebase) {
         headingPID = new PIDController(kSpinP, kSpinI, kSpinD);
         headingPID.enableContinuousInput(-Math.PI, Math.PI); // sets a circular range instead of a linear one.
-        headingPID.setTolerance(2.5);
+        SmartDashboard.putData("Heading PID", headingPID);
+
+        turnToheadingPID = new PIDController(TurnkSpinP, TurnkSpinI, TurnkSpinD);
+        turnToheadingPID.enableContinuousInput(-Math.PI, Math.PI); // sets a circular range instead of a linear one.
+        SmartDashboard.putData("Turn To Heading PID", turnToheadingPID);
     
         this.drivebase = drivebase;
         headingSetpoint = drivebase.getPose().getRotation().getDegrees();
@@ -40,17 +50,18 @@ public class SuperSwerveController {
     //SmartDashboard.putNumber("turnTimer", turnTimer);
 
     public void turnTo(SwerveSubsystem swerve, double targetHeading) {
+
         double targetOmega = 0;
         if (headingSetpoint != null) {
             //targetOmega = headingPID.calculate(drivebase.getHeading().getDegrees(), targetHeading);
-            targetOmega = headingPID.calculate(drivebase.getPose().getRotation().getDegrees(), targetHeading);
-            targetOmega = MathUtil.clamp(targetOmega, -4, 4);
+            targetOmega = turnToheadingPID.calculate(drivebase.getPose().getRotation().getRadians(), Math.toRadians(targetHeading));
+            //targetOmega = MathUtil.clamp(targetOmega, -4, 4);
             headingSetpoint = targetHeading;
         }
-        if(Math.abs(targetOmega) < 0.16) {
+        /*if(Math.abs(targetOmega) < 0.16) {
             targetOmega = 0;
-        }
-        swerve.drive(new Translation2d(0, 0), targetOmega, true);
+        }*/
+        swerve.drive(new Translation2d(0, 0), targetOmega*swerve.getMaximumAngularVelocity(), true);
 
         SmartDashboard.putNumber("SuperSwerve.targetOmega", targetOmega);
         if (headingSetpoint != null) {
