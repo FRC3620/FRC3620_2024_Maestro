@@ -259,6 +259,7 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Amperage", driveMotor.getOutputCurrent());
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Requested speed (m/s)", swerveModule.getState().speedMetersPerSecond);
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Motor Speed", swerveModule.getDriveMotor().getVelocity());
+      SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Temperature", driveMotor.getMotorTemperature());
     }
 
     SmartDashboard.putNumber("maxAngleVelocity", swerveDrive.getMaximumAngularVelocity());

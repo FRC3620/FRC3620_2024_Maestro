@@ -24,18 +24,28 @@ public class HealthMonitorSubsystem extends SubsystemBase {
   public void periodic() {
     broken.clear();
 
-    // TODO this is for testing remove it!
-    // broken.add("testing!!!");
-
-    for (var nameAndAzimuthMotor : RobotContainer.swerveAzimuthMotors.entrySet()) {
-      SwerveMotor swerveMotor = nameAndAzimuthMotor.getValue();
+    for (var nameAndMotor : RobotContainer.swerveAzimuthMotors.entrySet()) {
+      SwerveMotor swerveMotor = nameAndMotor.getValue();
       var motor = swerveMotor.getMotor();
       if (motor instanceof CANSparkBase) {
         @SuppressWarnings({ "resource" })
         CANSparkBase m = (CANSparkBase) motor;
         double t = m.getMotorTemperature();
         if (t > 50) {
-          broken.add (nameAndAzimuthMotor.getKey() + " azimuth hot: " + Double.toString(t));
+          broken.add (nameAndMotor.getKey() + " azimuth hot: " + Double.toString(t));
+        }
+      }
+    }
+
+    for (var nameAndMotor : RobotContainer.swerveDriveMotors.entrySet()) {
+      SwerveMotor swerveMotor = nameAndMotor.getValue();
+      var motor = swerveMotor.getMotor();
+      if (motor instanceof CANSparkBase) {
+        @SuppressWarnings({ "resource" })
+        CANSparkBase m = (CANSparkBase) motor;
+        double t = m.getMotorTemperature();
+        if (t > 50) {
+          broken.add (nameAndMotor.getKey() + " drive hot: " + Double.toString(t));
         }
       }
     }
