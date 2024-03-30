@@ -81,7 +81,8 @@ public class VisionSubsystem extends SubsystemBase {
     Double lastFPGATime = null;
     public LimelightHelpers.PoseEstimate lastLimelightMeasurementBLUE;
     public LimelightHelpers.PoseEstimate lastLimelightMeasurementRED;
-
+    double targetsSeen;
+    public Pose2d visPose;
 
     Double lastTimestamp = null;
 
@@ -128,6 +129,7 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
         LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults("");
         lastLimelightResults = results;
+        targetsSeen = results.targetingResults.targets_Fiducials.length;
 
         if (lastTimestamp == null || lastTimestamp != results.targetingResults.timestamp_LIMELIGHT_publish) {
             lastTimestamp = results.targetingResults.timestamp_LIMELIGHT_publish;
@@ -185,7 +187,9 @@ public class VisionSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Vision.DistToSpeakerTag", Units.metersToFeet(camDistToSpeakerTag));
             SmartDashboard.putNumber("Vision.camYawToSpeaker", camYawToSpeaker);
         /* } */
-
+        if(targetsSeen>1){
+            visPose = results.targetingResults.getBotPose2d_wpiBlue();
+        }
     }
 
     public Double getCamYawToSpeaker() {
