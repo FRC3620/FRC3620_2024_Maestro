@@ -389,7 +389,9 @@ public class RobotContainer {
     SmartDashboard.putData("Run Indexers Reversed Until Detected", new RunIndexerUntilGamePieceDetectedCommand(() -> -0.8));
 
     //Practice reset pose based on vision command.
-    SmartDashboard.putData("Reset Pose Based on Vision", new PracticeVisionPoseCommand());
+    //SmartDashboard.putData("Reset Pose Based on Vision", new PracticeVisionPoseCommand());
+    SmartDashboard.putData("Reset Pose Based on Vision", new EnabledResetPoseWithVision().withTimeout(3));
+
 
     // indexer test
     SmartDashboard.putData("Test index with joystick", new FunctionalCommand(
