@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ClimbElevationSubsystem;
+import frc.robot.subsystems.IntakeLocation;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -19,8 +20,9 @@ public class ActivateClimberJoystickCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetClimberPositionCommand(11),
-      new WaitUntilCommand(() -> climbElevationSubsystem.getActualPosition() > 10),
+      new SetIntakeLocationCommand(IntakeLocation.IntakeOut),
+      new SetClimberPositionCommand(6.5),
+      new WaitUntilCommand(() -> climbElevationSubsystem.getActualPosition() > 5),
       new SetClimberPowerPositionCommand()
     );
   }

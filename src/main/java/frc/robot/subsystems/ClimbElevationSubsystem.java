@@ -93,7 +93,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   @Override
   public void periodic() {
     // only do something if we actually have a motor
-    if (motor != null) { 
+    if (motor != null && !disabledForDebugging) { 
       if (motorEncoder != null) { // if there is an encoder, display these
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
           if (!encoderCalibrated) { 
