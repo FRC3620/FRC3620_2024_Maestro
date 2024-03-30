@@ -32,7 +32,7 @@ public class SuperSwerveController {
         headingPID.enableContinuousInput(-180, 180); // sets a circular range instead of a linear one.
         headingPID.setTolerance(2.5);
         this.drivebase = drivebase;
-        headingSetpoint = drivebase.getHeading().getDegrees();
+        headingSetpoint = drivebase.getPose().getRotation().getDegrees();
     }
 
     Timer turnTimer = new Timer();
@@ -55,7 +55,7 @@ public class SuperSwerveController {
         if (headingSetpoint != null) {
             SmartDashboard.putNumber("SuperSwerve.headingSetpoint", headingSetpoint);
         }
-        SmartDashboard.putNumber("drivebase.getHeading", drivebase.getHeading().getDegrees());
+        //SmartDashboard.putNumber("drivebase.getHeading", drivebase.getHeading().getDegrees());
 
     }
 

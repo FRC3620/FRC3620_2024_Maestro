@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.Drivebase;
 
 import java.io.File;
 
@@ -268,6 +269,7 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Swerve.pose.x", getPose().getX());
     SmartDashboard.putNumber("Swerve.pose.y", getPose().getY());
     SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Swerve.Drivebase.getHeading", getHeading().getDegrees());
 
     //updateVisionOdometry();
 

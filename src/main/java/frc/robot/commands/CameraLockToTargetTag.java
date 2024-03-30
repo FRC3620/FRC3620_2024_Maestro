@@ -48,24 +48,23 @@ public class CameraLockToTargetTag extends Command {
     var camYaw_Speaker = vision.getCamYawToSpeaker();
     if (camYaw_Speaker != null) {
       headingToTag = camYaw_Speaker;
+      var desiredHeading = headingToTag+180;
 
-      double headingError = headingToTag - swerve.getHeading().getDegrees();
+      var currentDirection = swerve.getPose().getRotation().getDegrees();
+
+      double headingError = headingToTag - currentDirection;
       // putting current robot heading and target heading
-      SmartDashboard.putNumber("vision.currentHeading", swerve.getHeading().getDegrees());
+      SmartDashboard.putNumber("vision.currentDirection", currentDirection);
       SmartDashboard.putNumber("vision.headingToApril", headingToTag);
       SmartDashboard.putNumber("vision.headingError", headingError);
-
-      RobotContainer.logger.info("navX heading", swerve.getHeading().getDegrees());
-      RobotContainer.logger.info("heading to april tag", headingToTag);
-      RobotContainer.logger.info("heading error", headingError);
-      RobotContainer.logger.info("yaw to speaker", camYaw_Speaker);
+      SmartDashboard.putNumber("vision.desiredHeading", desiredHeading);
 
 
       // turns by target heading
-      controller.turnTo(swerve, headingToTag);
+      controller.turnTo(swerve, desiredHeading);
 
       // if heading is close enough, stop turning
-      if (swerve.getHeading().getDegrees() < headingToTag + 2.5 && swerve.getHeading().getDegrees() > headingToTag - 2.5) {
+      if (currentDirection < desiredHeading + 2.5 && currentDirection > desiredHeading - 2.5) {
         finishedTurn = true;
       } else {
         // if command isn't turning, return no
