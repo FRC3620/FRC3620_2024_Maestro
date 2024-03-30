@@ -64,7 +64,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public double maximumSpeed = 6.2; //1
   double targetHeading;
-  double RotationOffsetVision = 6.5;
+  double RotationOffsetVision = 3;
   static boolean areweaiming = false;
 
   
@@ -265,7 +265,7 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Swerve.pose.rotation", getPose().getRotation().getDegrees());
     }
 
-      updateVisionOdometry();
+      //updateVisionOdometry();
 
     SmartDashboard.putBoolean("swerve.areweaiming", areweaiming);
   }
@@ -521,7 +521,7 @@ public class SwerveSubsystem extends SubsystemBase {
     LimelightHelpers.PoseEstimate limeLightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
 
     if(limeLightMeasurement.tagCount >= 2) {
-      swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds, VecBuilder.fill(5, 5,99999));
+      swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds, VecBuilder.fill(.7, .7,9999999));
       //swerveDrive.addVisionMeasurement(limeLightMeasurement.pose, limeLightMeasurement.timestampSeconds);
       SmartDashboard.putNumber("limelightvision.pose.x", limeLightMeasurement.pose.getX());
       SmartDashboard.putNumber("limelightvision.pose.y", limeLightMeasurement.pose.getY());

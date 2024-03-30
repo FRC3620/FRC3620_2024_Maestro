@@ -60,7 +60,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   // to save a requested position if encoder is not calibrated
   Double requestedPositionWhileCalibrating = null;
 
-  boolean disabledForDebugging = false;
+  boolean disabledForDebugging = true;
 
 
 
