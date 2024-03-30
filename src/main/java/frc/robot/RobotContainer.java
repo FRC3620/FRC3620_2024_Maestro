@@ -175,7 +175,7 @@ public class RobotContainer {
 
     shooterElevationSubsystem = new ShooterElevationSubsystem();
     addSubsystem(shooterElevationSubsystem);
-    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem));
+    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
 
     shooterWheelsAndAmpBarSubsystem = new ShooterWheelsAndAmpBarSubsystem();
     addSubsystem(shooterWheelsAndAmpBarSubsystem);
@@ -276,8 +276,8 @@ public class RobotContainer {
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 */
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
-        .toggleOnTrue(new SetShooterSpeedCommand(5000))
-        .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
+        .toggleOnTrue(new SetShooterSpeedCommand(5000));
+        //.toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
 
     //new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
     //    .toggleOnTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ampShot));
@@ -429,7 +429,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
     NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(1.5));
     NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
-    NamedCommands.registerCommand("PITCH OMEGA BEAM FOREVER", new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem));
+    NamedCommands.registerCommand("PITCH OMEGA BEAM FOREVER", new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
     NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand().withTimeout(1.5));
     NamedCommands.registerCommand("INIT OMEGA BEAM", new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 37)).withTimeout(1));
 

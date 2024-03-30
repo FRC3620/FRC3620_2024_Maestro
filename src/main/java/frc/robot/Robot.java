@@ -48,10 +48,6 @@ public class Robot extends TimedRobot {
 
   public static RobotDataLogger robotDataLogger;
 
-  private ShooterElevationSubsystem shooterElevationSubsystem = RobotContainer.shooterElevationSubsystem;
-  private SwerveSubsystem swerveSubsystem = RobotContainer.drivebase;
-  private VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -163,7 +159,6 @@ public class Robot extends TimedRobot {
 
     setupDriverController();
 
-    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem));
   }
   @Override
   public void autonomousExit() {
@@ -201,8 +196,6 @@ public class Robot extends TimedRobot {
     logMatchInfo();
 
     setupDriverController();
-    
-    shooterElevationSubsystem.setDefaultCommand(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
   }
 
   /** This function is called periodically during operator control. */
