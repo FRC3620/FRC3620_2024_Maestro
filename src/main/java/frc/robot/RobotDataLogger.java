@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkBase;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
@@ -38,6 +39,12 @@ public class RobotDataLogger {
     dataLogger.addDataProvider("mem.free", () -> runtime.freeMemory());
     dataLogger.addDataProvider("mem.total", () -> runtime.totalMemory());
     dataLogger.addDataProvider("mem.max", () -> runtime.maxMemory());
+
+    ChassisSpeeds cs = RobotContainer.drivebase.getRobotVelocity();
+    var x = cs.vxMetersPerSecond;
+    var y = cs.vyMetersPerSecond;
+    var velocity = Math.sqrt(x*x + y*y);
+    dataLogger.addDataProvider("swerve.chassis.velocity", () -> velocity);
 
     addSwerveDataLoggers(dataLogger);
 
@@ -70,6 +77,7 @@ public class RobotDataLogger {
     // dataLogger.addDataProvider("vision.ts", () -> odometryGatherer.getVisionTs());
     dataLogger.addDataProvider ("vision.poseX", () -> odometryGatherer.visionPoseX());
     dataLogger.addDataProvider ("vision.poseY", () -> odometryGatherer.visionPoseY());
+    dataLogger.addDataProvider ("vision.heading", () -> odometryGatherer.visionPoseRotation());
     dataLogger.addDataProvider ("vision.age", () -> odometryGatherer.getVisionAge());
 		dataLogger.addDataProvider("odometry.poseX", () -> odometryGatherer.odometryPoseX());
 		dataLogger.addDataProvider("odometry.poseY", () -> odometryGatherer.odometryPoseY());
@@ -87,9 +95,7 @@ public class RobotDataLogger {
 
   void addSwerveDataLoggers(DataLogger dataLogger) {
     for (var m : RobotContainer.swerveAzimuthMotors.entrySet()) {
-      addMotorProviders(dataLogger, "swerve." + m.getKey() + ".azimuth", m.getValue(),
-          EnumSet.allOf(MotorFields.class));
-
+      addMotorProviders(dataLogger, "swerve." + m.getKey() + ".azimuth", m.getValue(), EnumSet.allOf(MotorFields.class));
     }
     for (var m : RobotContainer.swerveDriveMotors.entrySet()) {
       addMotorProviders(dataLogger, "swerve." + m.getKey() + ".drive", m.getValue(), EnumSet.allOf(MotorFields.class));
@@ -160,6 +166,11 @@ public class RobotDataLogger {
     public String visionPoseY() {
       if (visionPose2d == null) return "";
       return DataLogger.f2(visionPose2d.getY());
+    }
+
+    public String visionPoseRotation() {
+      if (visionPose2d == null) return "";
+      return DataLogger.f2(visionPose2d.getRotation().getDegrees());
     }
 
     public String getRedPoseX() {

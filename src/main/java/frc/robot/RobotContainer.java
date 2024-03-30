@@ -151,6 +151,8 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand(aimDrive);
 
+    // TODO this just runs when the robot comes up, probably need to move it to 
+    // a periodic() somewhere (probably in SwerveSubsystem)?
     if (drivebase.getCurrentCommand() != null) {
       SmartDashboard.putString("CurrentCommand", drivebase.getCurrentCommand().toString());
     } else {
