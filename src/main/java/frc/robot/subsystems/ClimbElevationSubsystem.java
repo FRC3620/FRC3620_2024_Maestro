@@ -33,7 +33,8 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
   final double kI = 0;
   final double kD = 0;
   final double kFF = 0; // define FF
-  final double outputLimit = 0.75; // the limit that the power cannot exceed
+  final double negOutputLimit = -0.75; // the limit that the power cannot exceed
+  final double posOutputLimit = 0.85; // the limit that the power cannot exceed
 
   final double positionConverionFactor = 0.11962 / 3; // was 0.11962, we just threw another 3:1 in
   final double velocityConverionFactor = 60.0;
@@ -86,7 +87,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
       pid.setI(kI); // 
       pid.setD(kD); // 
       pid.setFF(kFF); //
-      pid.setOutputRange(-outputLimit, outputLimit);
+      pid.setOutputRange(negOutputLimit, posOutputLimit);
     }
   }
 
@@ -160,6 +161,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
    * return the last requested position
    * @return the last requested position, units as in setPosition()
    */
+
   public double getRequestedPosition() {
     return requestedPosition;
   }
