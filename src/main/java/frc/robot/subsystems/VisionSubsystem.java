@@ -82,7 +82,6 @@ public class VisionSubsystem extends SubsystemBase {
     public LimelightHelpers.PoseEstimate lastLimelightMeasurementBLUE;
     public LimelightHelpers.PoseEstimate lastLimelightMeasurementRED;
 
-
     Double lastTimestamp = null;
 
     // Set Target Speaker Positions
@@ -185,7 +184,6 @@ public class VisionSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Vision.DistToSpeakerTag", Units.metersToFeet(camDistToSpeakerTag));
             SmartDashboard.putNumber("Vision.camYawToSpeaker", camYawToSpeaker);
         /* } */
-
     }
 
     public Double getCamYawToSpeaker() {

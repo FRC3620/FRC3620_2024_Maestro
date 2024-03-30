@@ -208,6 +208,16 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    
+    // Auto Update Draft
+
+    /*double xmps = RobotContainer.drivebase.getRobotVelocity().vxMetersPerSecond;
+    double ymps = RobotContainer.drivebase.getRobotVelocity().vyMetersPerSecond;
+    double mps = Math.sqrt((xmps*xmps)+(ymps*ymps));
+    if(mps<2){
+      Pose2d vPose = RobotContainer.visionSubsystem.visPose;
+      RobotContainer.drivebase.resetOdometry(vPose);
+    }*/
   }
 
   @Override

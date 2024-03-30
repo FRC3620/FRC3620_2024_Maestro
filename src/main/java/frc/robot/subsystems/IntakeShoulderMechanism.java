@@ -52,7 +52,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
   // in case we manually adjusting
   Double manualPower = null;
 
-  boolean disabledForDebugging = true;
+  boolean disabledForDebugging = false;
 
   public IntakeShoulderMechanism(CANSparkMax motor) { // The constructor
     this.motor = motor;
