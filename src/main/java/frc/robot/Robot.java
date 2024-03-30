@@ -25,6 +25,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.AutoShooterVisionAngleAdjustmentContinuousCommand;
+import frc.robot.commands.SetShooterSpeedAndAngleCommand;
+import frc.robot.subsystems.ShooterElevationSubsystem;
+import frc.robot.subsystems.ShooterSpeedAndAngle;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -43,6 +47,10 @@ public class Robot extends TimedRobot {
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
   public static RobotDataLogger robotDataLogger;
+
+  private ShooterElevationSubsystem shooterElevationSubsystem = RobotContainer.shooterElevationSubsystem;
+  private SwerveSubsystem swerveSubsystem = RobotContainer.drivebase;
+  private VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -154,6 +162,8 @@ public class Robot extends TimedRobot {
     }
 
     setupDriverController();
+
+    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem));
   }
   @Override
   public void autonomousExit() {
@@ -192,6 +202,7 @@ public class Robot extends TimedRobot {
 
     setupDriverController();
     
+    shooterElevationSubsystem.setDefaultCommand(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
   }
 
   /** This function is called periodically during operator control. */

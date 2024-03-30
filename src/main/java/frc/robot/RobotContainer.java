@@ -279,8 +279,8 @@ public class RobotContainer {
         .toggleOnTrue(new SetShooterSpeedCommand(5000))
         .toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
 
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
-        .toggleOnTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ampShot));
+    //new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
+    //    .toggleOnTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.ampShot));
 
    
 
