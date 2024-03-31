@@ -251,6 +251,8 @@ public class VisionSubsystem extends SubsystemBase {
                 s.visionTranslation = visionPose2d.getTranslation();
             }
 
+            Robot.robotWPIDataLogger.setTookAShot(odometryPose2d);
+
             if (odometryPose2d != null) s.odometryTranslation = odometryPose2d.getTranslation();
             if (odometryHeading != null) s.odometryHeading = odometryHeading.getDegrees();
 

@@ -16,6 +16,7 @@ import java.util.function.BooleanSupplier;
 import org.slf4j.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;
@@ -240,6 +241,12 @@ public class WPIDataLogger {
     return rv;
   }
 
+  public Pose3dDataProvider addPose3dDataProvider(String name, Supplier<Pose3d> supplier) {
+    Pose3dDataProvider rv = new Pose3dDataProvider(name, supplier);
+    providers.add(rv);
+    return rv;
+  }
+
   interface IDataProvider {
 
     String getName();
@@ -448,6 +455,12 @@ public class WPIDataLogger {
   public class Pose2dDataProvider extends StructDataProvider<Pose2d> {
     Pose2dDataProvider(String name, Supplier<Pose2d> supplier) {
       super(name, supplier, Pose2d.struct);
+    }
+  }
+
+  public class Pose3dDataProvider extends StructDataProvider<Pose3d> {
+    Pose3dDataProvider(String name, Supplier<Pose3d> supplier) {
+      super(name, supplier, Pose3d.struct);
     }
   }
 

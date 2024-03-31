@@ -10,7 +10,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkBase;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
@@ -79,6 +83,7 @@ public class RobotWPIDataLogger {
     dataLogger.addPrelude(odometryGatherer);
 
     dataLogger.addPose2dDataProvider("odometry.pose", () -> odometryGatherer.getOdometryPose2d());
+    dataLogger.addPose3dDataProvider("shot.pose", () -> odometryGatherer.getShotPose());
     dataLogger.addPose2dDataProvider("vision.pose", () -> odometryGatherer.getVisionPose());
     dataLogger.addDoubleDataProvider("vision.age", () -> odometryGatherer.getVisionAge());
 
@@ -131,13 +136,18 @@ public class RobotWPIDataLogger {
     TEMPERATURE, CURRENT, OUTPUT, VELOCITY
   }
 
+  Pose2d shotPose;
+  public void setTookAShot(Pose2d _shotPose) {
+    shotPose = _shotPose;
+  }
+
   class OdometryGatherer implements DataLoggerPrelude {
     private LimelightHelpers.LimelightResults limelightResults;
     private LimelightTarget_Fiducial lastTargetFiducial;
     private Double distanceToSpeaker, yawToSpeaker;
     private LimelightHelpers.PoseEstimate red;
     private LimelightHelpers.PoseEstimate blue;
-    private Pose2d visionPose2d, odometryPose2d;
+    private Pose2d visionPose2d, odometryPose2d, og_shotPose2d;
     private long fpgaTime;
 
     @Override
@@ -154,6 +164,18 @@ public class RobotWPIDataLogger {
 
       red = RobotContainer.visionSubsystem.lastLimelightMeasurementRED;
       blue = RobotContainer.visionSubsystem.lastLimelightMeasurementBLUE;
+
+      og_shotPose2d = shotPose;
+      shotPose = null;
+    }
+
+    static final Transform3d plus1MZ = new Transform3d(new Translation3d(0, 0, 1), new Rotation3d());
+    public Pose3d getShotPose() {
+      if (og_shotPose2d != null) {
+        return new Pose3d(og_shotPose2d).plus(plus1MZ);
+      } else {
+        return new Pose3d(odometryPose2d).plus(plus1MZ);
+      }
     }
 
     public Pose2d getVisionPose() {
