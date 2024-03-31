@@ -217,6 +217,9 @@ public class RobotContainer {
       swerveDriveMotors.put(moduleName, module.getDriveMotor());
       swerveAbsoluteEncoders.put(moduleName, module.getAbsoluteEncoder());
     }
+
+    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
+
   }
 
   public String getDriverControllerName() {
@@ -273,13 +276,14 @@ public class RobotContainer {
       */
 
     // bring intake to home position
-    operatorDpad.up().onTrue(new SetIntakeLocationCommand(IntakeLocation.IntakeIn));
+    operatorDpad.up().onTrue(new EnabledResetPoseWithVision());
 
   /*  new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 */
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
         .toggleOnTrue(new SetShooterSpeedCommand(5000));
+        //.onTrue(new EnabledResetPoseWithVision().withTimeout(5));
         //.toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
 
     //new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
@@ -395,7 +399,7 @@ public class RobotContainer {
 
     //Practice reset pose based on vision command.
     //SmartDashboard.putData("Reset Pose Based on Vision", new PracticeVisionPoseCommand());
-    SmartDashboard.putData("Reset Pose Based on Vision", new EnabledResetPoseWithVision().withTimeout(3));
+    SmartDashboard.putData("Reset Pose Based on Vision", new EnabledResetPoseWithVision().withTimeout(5));
 
 
     // indexer test
