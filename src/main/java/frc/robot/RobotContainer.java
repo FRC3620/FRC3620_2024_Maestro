@@ -175,7 +175,7 @@ public class RobotContainer {
 
     shooterElevationSubsystem = new ShooterElevationSubsystem();
     addSubsystem(shooterElevationSubsystem);
-    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
+    // see below for default command
 
     shooterWheelsAndAmpBarSubsystem = new ShooterWheelsAndAmpBarSubsystem();
     addSubsystem(shooterWheelsAndAmpBarSubsystem);
@@ -200,6 +200,9 @@ public class RobotContainer {
     SmartDashboard.putString("swerveFolder", swerveFolder);
     drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
     addSubsystem(drivebase);
+
+    // all subsystems present, can make default commands now
+    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
 
     Robot.printMemoryStatus("making superSwerveController");
 
