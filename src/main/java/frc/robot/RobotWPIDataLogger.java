@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
@@ -83,6 +84,7 @@ public class RobotWPIDataLogger {
     dataLogger.addPrelude(odometryGatherer);
 
     dataLogger.addPose2dDataProvider("odometry.pose", () -> odometryGatherer.getOdometryPose2d());
+    dataLogger.addDoubleDataProvider("velocity", () -> odometryGatherer.getRobotVelocity());
     dataLogger.addPose3dDataProvider("shot.pose", () -> odometryGatherer.getShotPose());
     dataLogger.addPose2dDataProvider("vision.pose", () -> odometryGatherer.getVisionPose());
     dataLogger.addDoubleDataProvider("vision.age", () -> odometryGatherer.getVisionAge());
@@ -149,6 +151,7 @@ public class RobotWPIDataLogger {
     private LimelightHelpers.PoseEstimate blue;
     private Pose2d visionPose2d, odometryPose2d, og_shotPose2d;
     private long fpgaTime;
+    private ChassisSpeeds robotVelocity;
 
     @Override
     public void dataLoggerPrelude() {
@@ -167,6 +170,8 @@ public class RobotWPIDataLogger {
 
       og_shotPose2d = shotPose;
       shotPose = null;
+
+      robotVelocity = RobotContainer.drivebase.getRobotVelocity();
     }
 
     static final Transform3d plus1MZ = new Transform3d(new Translation3d(0, 0, 1), new Rotation3d());
@@ -176,6 +181,13 @@ public class RobotWPIDataLogger {
       } else {
         return new Pose3d(odometryPose2d).plus(plus1MZ);
       }
+    }
+
+    public double getRobotVelocity() {
+      if (robotVelocity == null) return 0;
+      double x = robotVelocity.vxMetersPerSecond;
+      double y = robotVelocity.vyMetersPerSecond;
+      return Math.sqrt(x*x + y*y);
     }
 
     public Pose2d getVisionPose() {
