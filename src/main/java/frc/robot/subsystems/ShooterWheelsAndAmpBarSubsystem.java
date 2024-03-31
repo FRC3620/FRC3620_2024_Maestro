@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import org.slf4j.Logger;
@@ -12,7 +8,6 @@ import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
-import org.usfirst.frc3620.misc.RobotMode;
 import org.usfirst.frc3620.misc.Utilities.SlidingWindowStats;
 
 import com.ctre.phoenix6.StatusCode;
@@ -26,11 +21,8 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements HasTelemetry {
@@ -69,9 +61,6 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
 
   boolean areWeShooting = false;
 
-  double elevationAdjustment = 0;
-
-  /** Creates a new ShooterSubsystem. */
   public ShooterWheelsAndAmpBarSubsystem() {
     topConfig.Voltage.PeakForwardVoltage = 12;
     topConfig.Voltage.PeakReverseVoltage = 12;
@@ -307,17 +296,4 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
       SmartDashboard.putNumber(name + "." + motorName + ".sliding.flyers", slidingWindowStats.getFlyers());
     }
   }
-
-  void updateDashboardElevationAdjustment() {
-    SmartDashboard.putNumber(name + ".elevationAdjustment", elevationAdjustment);
-  }
-
-  double readDashboardElevationAdjustment() {
-    return SmartDashboard.getNumber(name + ".elevationAdjustment", elevationAdjustment);
-  }
-
-  public double getElevationAdjustment() {
-    return elevationAdjustment;
-  }
-
 }

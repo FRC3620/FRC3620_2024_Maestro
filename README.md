@@ -6,12 +6,14 @@
 * DIO 2: Drive LF Absolute Encoder
 * DIO 3: Drive LR Absolute Encoder
 * DIO 4: Drive RR Absolute Encoder
-* DIO 7: Shoulder CTRE Mag Encoder
+* ~~DIO 7: Shoulder CTRE Mag Encoder~~
 
 ## Analog IO
 
 ## PWM
 * PWM 0: Blinky Lights
+* PWM 1: Blinken
+* PWM 2: Blinken
 
 ## Motor Controllers
 
@@ -29,6 +31,14 @@
 * LT/SWE: intake
 * RT/SWH: shoot
 * B/SWC: outtake barf
+
+---
+
+# Things to do different next year
+
+* Angular stuff should use Rotation2d, eliminates this year's Mars Orbiter degrees/radians screwup.
+* All results from Vision should be in one container (so all data comes from same data read).
+* Use ErrorMessages.requireNonNullParam in constructors.
 
 ---
 
@@ -127,31 +137,12 @@ admin@roboRIO-3620-FRC:/etc/init.d# chmod a+x addswap.sh
 ```
    
 
-```
-#!/bin/sh
-### BEGIN INIT INFO
-# Provides:          swap
-# Required-Start:    udev
-# Required-Stop:
-# Default-Start:     S
-# Default-Stop:
-# Short-Description: Add swap space
-# Description:
-### END INIT INFO
-
-[ -x /sbin/swapon ] && swapon --summary
-echo "Adding Swap"
-[ -x /sbin/swapon ] && swapon --all --ifexists --verbose
-[ -x /sbin/swapon ] && swapon --summary
-
-: exit 0
-```
-
 * Enable the addswap.sh: `update-rc.d -v addswap.sh defaults`
 * Add this to fstab
 ```
 /dev/sda1            none                 swap       sw                    0  0
 ```
+* Issue these commands
 ```
 admin@roboRIO-3620-FRC:/etc/init.d# swapon -s
 admin@roboRIO-3620-FRC:/etc/init.d# vi /etc/fstab
@@ -160,16 +151,17 @@ admin@roboRIO-3620-FRC:/etc/init.d# swapon -s
 Filename                                Type            Size    Used    Priority
 /dev/sda1                               partition       975868  0       -2
 admin@roboRIO-3620-FRC:/etc/init.d#
-login as: admin
+```
+* Reboot roboRIO and verify swap space is present.
+```
+login as: lvuser
 Pre-authentication banner message from server:
 | NI Linux Real-Time (run mode)
 |
 | Log in with your NI-Auth credentials.
 |
 End of banner message from server
-admin@roboRIO-3620-FRC:~# swapon -s
+lvuser@roboRIO-3620-FRC:~# swapon -s
 Filename                                Type            Size    Used    Priority
 /dev/sda1                               partition       975868  0       -2
-admin@roboRIO-3620-FRC:~# uptime
- 16:18:46 up 0 min,  load average: 2.57, 0.66, 0.22
 ```
