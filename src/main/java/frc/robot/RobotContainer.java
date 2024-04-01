@@ -431,14 +431,17 @@ public class RobotContainer {
     NamedCommands.registerCommand("PICKUP INTAKE POSITION", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("SLURPY IN", new GroundPickupCommand().withTimeout(3));
     NamedCommands.registerCommand("NO MORE SLURPY", new GroundToHomeCommand());
-    NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
-    NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
-    NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
-    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(1.5));
+    NamedCommands.registerCommand("LONGER SLURPY IN", new GroundPickupCommand().withTimeout(6));
+    NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new AutoSetShooterSpeedCommand(5000));
+    NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new AutoSetShooterSpeedCommand(5000));
+    NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedCommand(0));
+    NamedCommands.registerCommand("LONG CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(1));
+    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(.5));
     NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
     NamedCommands.registerCommand("PITCH OMEGA BEAM FOREVER", new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
-    NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand().withTimeout(1.5));
+    NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand().withTimeout(2));
     NamedCommands.registerCommand("INIT OMEGA BEAM", new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 37)).withTimeout(1));
+    NamedCommands.registerCommand("UPDATE ODOM", new AutoEnabledResetPoseWithVision(drivebase));
 
     chooser = AutoBuilder.buildAutoChooser();
 

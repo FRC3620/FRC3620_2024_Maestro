@@ -68,7 +68,7 @@ public class CameraLockToTargetTag extends Command {
       controller.turnTo(swerve, desiredHeading);
 
       // if heading is close enough, stop turning
-      if (currentDirection < desiredHeading + .85 && currentDirection > desiredHeading - .85) {
+      if (currentDirection < desiredHeading + 1 && currentDirection > desiredHeading - 1) {
         finishedTurn = true;
       } else {
         // if command isn't turning, return no

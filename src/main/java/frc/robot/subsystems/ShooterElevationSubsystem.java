@@ -102,6 +102,7 @@ public class ShooterElevationSubsystem extends SubsystemBase implements HasTelem
 
   @Override
   public void periodic() {
+    SmartDashboard.putString("shooterSubsystemCommand", "" + getCurrentCommand());
     double newElevationAdjustment = readDashboardElevationAdjustment();
     if (newElevationAdjustment != elevationAdjustment) {
       elevationAdjustment = newElevationAdjustment;

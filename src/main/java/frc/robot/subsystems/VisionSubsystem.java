@@ -150,7 +150,7 @@ public class VisionSubsystem extends SubsystemBase {
         // added this to handle case where color is not yet set, otherwise we blow up in the simulator
         if (color.isEmpty()) return;
 
-        Pose2d currentPose = RobotContainer.drivebase.getPose();
+        Pose2d currentPose = lastLimelightResults.targetingResults.getBotPose2d_wpiBlue();
 
         /* 20240336 - I don't think we need these anymore. Commenting them out for now.
         // if alliance is blue.

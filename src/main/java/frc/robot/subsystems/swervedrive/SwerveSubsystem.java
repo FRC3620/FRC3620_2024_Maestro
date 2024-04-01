@@ -8,6 +8,8 @@ import java.io.File;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import javax.swing.text.Utilities;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
@@ -118,7 +120,7 @@ public class SwerveSubsystem extends SubsystemBase {
     var camYawToSpeaker = RobotContainer.visionSubsystem.getCamYawToSpeaker();
     if(camYawToSpeaker != null) {
 
-      double VisionTargetHeading = camYawToSpeaker + RotationOffsetVision;
+      double VisionTargetHeading = org.usfirst.frc3620.misc.Utilities.normalizeAngle(camYawToSpeaker + RotationOffsetVision + 180);
       Rotation2d VisionToTarget = new Rotation2d(Units.degreesToRadians(VisionTargetHeading));
       
       SmartDashboard.putNumber("VisionSwerve.VisionTargetHeading",VisionTargetHeading);
