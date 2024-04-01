@@ -420,6 +420,8 @@ public class RobotContainer {
     SmartDashboard.putData("AmpBar bump -", new InstantCommand(()->shooterWheelsAndAmpBarSubsystem.bumpAmpBar(-0.1)));
 
     SmartDashboard.putData("Snapshot", new InstantCommand(() -> visionSubsystem.takeSnapshot()));
+
+    SmartDashboard.putData("Sing", new SingCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
