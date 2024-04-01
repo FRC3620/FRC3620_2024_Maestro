@@ -98,7 +98,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
           //Up
           if (currentPosition < 4) {
             //Close
-            requestedPower = -0.02;
+            requestedPower = -0.035;
           } else {
             //Not Close
             requestedPower = -0.35;
