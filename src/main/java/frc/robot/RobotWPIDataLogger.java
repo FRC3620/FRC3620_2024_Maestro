@@ -89,9 +89,7 @@ public class RobotWPIDataLogger {
     dataLogger.addPose2dDataProvider("vision.pose", () -> odometryGatherer.getVisionPose());
     dataLogger.addDoubleDataProvider("vision.age", () -> odometryGatherer.getVisionAge());
 
-    dataLogger.addLongDataProvider("vision.targetID", () -> odometryGatherer.getTargetID());
-    dataLogger.addDoubleDataProvider("vision.targetTx", () -> odometryGatherer.getTargetTx());
-    dataLogger.addDoubleDataProvider("vision.targetTy", () -> odometryGatherer.getTargetTy());
+    dataLogger.addLongDataProvider("vision.targetCount", () -> odometryGatherer.getTargetCount());
     dataLogger.addPose2dDataProvider("red.pose", () -> odometryGatherer.getRedPose());
     dataLogger.addPose2dDataProvider("blue.pose", () -> odometryGatherer.getBluePose());
 
@@ -145,19 +143,16 @@ public class RobotWPIDataLogger {
 
   class OdometryGatherer implements DataLoggerPrelude {
     private LimelightHelpers.LimelightResults limelightResults;
-    private LimelightTarget_Fiducial lastTargetFiducial;
     private Double distanceToSpeaker, yawToSpeaker;
     private LimelightHelpers.PoseEstimate red;
     private LimelightHelpers.PoseEstimate blue;
-    private Pose2d visionPose2d, odometryPose2d, og_shotPose2d;
+    private Pose2d odometryPose2d, og_shotPose2d;
     private long fpgaTime;
     private ChassisSpeeds robotVelocity;
 
     @Override
     public void dataLoggerPrelude() {
       limelightResults = RobotContainer.visionSubsystem.getLastLimelightResults();
-      lastTargetFiducial = RobotContainer.visionSubsystem.getLastTargetFiducial();
-      visionPose2d = RobotContainer.visionSubsystem.getLastPose2d();
       fpgaTime = RobotController.getFPGATime();
 
       distanceToSpeaker = RobotContainer.visionSubsystem.getCamDistToSpeaker();
@@ -183,6 +178,11 @@ public class RobotWPIDataLogger {
       }
     }
 
+    public int getTargetCount() {
+      if (limelightResults == null) return 0;
+      return limelightResults.targetingResults.targets_Fiducials.length;
+    }
+
     public double getRobotVelocity() {
       if (robotVelocity == null) return 0;
       double x = robotVelocity.vxMetersPerSecond;
@@ -191,7 +191,19 @@ public class RobotWPIDataLogger {
     }
 
     public Pose2d getVisionPose() {
-      return pp(visionPose2d);
+      Pose2d rv = null;
+      if (limelightResults != null) {
+        rv = limelightResults.targetingResults.getBotPose2d_wpiBlue();
+      }
+      return pp(rv);
+    }
+
+    public Pose2d getVisionPose2() {
+      Pose2d rv = null;
+      if (limelightResults != null) {
+        rv = limelightResults.targetingResults.getBotPose2d_wpiBlue();
+      }
+      return pp(rv);
     }
 
     public Pose2d getOdometryPose2d() {
@@ -237,21 +249,6 @@ public class RobotWPIDataLogger {
     
     public Pose2d odometryPose() {
       return pp(odometryPose2d);
-    }
-    
-    public long getTargetID() {
-      if (lastTargetFiducial == null) return 0;
-      return (long) lastTargetFiducial.fiducialID;
-    }
-
-    public double getTargetTx() {
-      if (lastTargetFiducial == null) return Double.NaN;
-      return lastTargetFiducial.tx;
-    }
-
-    public double getTargetTy() {
-      if (lastTargetFiducial == null) return Double.NaN;
-      return lastTargetFiducial.ty;
     }
 
   }

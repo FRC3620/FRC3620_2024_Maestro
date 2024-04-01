@@ -77,7 +77,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     LimelightHelpers.LimelightResults lastLimelightResults = null;
     Pose2d lastPose = null;
-    LimelightTarget_Fiducial lastTargetFiducial = null;
+    // LimelightTarget_Fiducial lastTargetFiducial = null;
     Double lastFPGATime = null;
     public LimelightHelpers.PoseEstimate lastLimelightMeasurementBLUE;
     public LimelightHelpers.PoseEstimate lastLimelightMeasurementRED;
@@ -209,9 +209,11 @@ public class VisionSubsystem extends SubsystemBase {
         return lastLimelightResults;
     }
 
+    /*
     public LimelightTarget_Fiducial getLastTargetFiducial() {
         return lastTargetFiducial;
     }
+    */
 
     public Pose2d getLastPose2d() {
         return lastPose;
@@ -235,26 +237,11 @@ public class VisionSubsystem extends SubsystemBase {
 
             LimelightHelpers.takeSnapshot("", s.timestamp);
 
-            var lastTargetFiducial = getLastTargetFiducial();
-            var visionPose2d = getLastPose2d();
+            // var lastTargetFiducial = getLastTargetFiducial();
+            s.visionPose = getLastPose2d();
+            s.odometryPose = RobotContainer.drivebase.getPose();
 
-            var odometryPose2d = RobotContainer.drivebase.getPose();
-            var odometryHeading = RobotContainer.drivebase.getHeading();
-
-            if (lastTargetFiducial != null) {
-                s.tx = lastTargetFiducial.tx;
-                s.ty = lastTargetFiducial.ty;
-                s.id = (int) lastTargetFiducial.fiducialID;
-            }
-
-            if (visionPose2d != null) {
-                s.visionTranslation = visionPose2d.getTranslation();
-            }
-
-            Robot.robotWPIDataLogger.setTookAShot(odometryPose2d);
-
-            if (odometryPose2d != null) s.odometryTranslation = odometryPose2d.getTranslation();
-            if (odometryHeading != null) s.odometryHeading = odometryHeading.getDegrees();
+            Robot.robotWPIDataLogger.setTookAShot(s.odometryPose);
 
             s.actualShooterPosition = RobotContainer.shooterElevationSubsystem.getActualElevationPosition();
             s.requestedShooterPosition = RobotContainer.shooterElevationSubsystem.getRequestedShooterElevation();
@@ -268,12 +255,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     public static class SnapshotData {
         public String timestamp;
-        public Double tx, ty;
-        public Integer id;
-        public Translation2d odometryTranslation;
-        public Double odometryHeading;
-        public Translation2d visionTranslation;
-        public Double visionHeading;
+        public Pose2d odometryPose;
+        public Pose2d visionPose;
         public Double requestedShooterPosition, actualShooterPosition;
 
     }

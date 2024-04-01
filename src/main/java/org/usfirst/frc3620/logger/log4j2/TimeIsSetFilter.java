@@ -9,22 +9,18 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 
+import edu.wpi.first.wpilibj.RobotController;
+
 @Plugin(name = "TimeIsSetFilter", category = Core.CATEGORY_NAME, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class TimeIsSetFilter extends AbstractFilter {
-    private final static long SOME_TIME_AFTER_1970 = 523980000000L;
-
-    int i = 0;
     private TimeIsSetFilter(Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
     }
 
     @Override
     public Result filter(LogEvent event) {
-        // Message m = event.getMessage();
-        long ms = event.getTimeMillis();
-        boolean timeIsSet = ms >= SOME_TIME_AFTER_1970;
+        boolean timeIsSet = RobotController.isSystemTimeValid();
         Result r = timeIsSet ? onMatch : onMismatch;
-        // System.out.println ("ms=" + ms + ", timeIsSet=" + timeIsSet + ", m=" + m.getFormattedMessage() + ", r=" + r);
         return r;
     }
 
@@ -38,4 +34,5 @@ public final class TimeIsSetFilter extends AbstractFilter {
     public static TimeIsSetFilter createFilter(@PluginAttribute(value = "onMatch", defaultString = "NEUTRAL") Result onMatch,
                                                @PluginAttribute(value = "onMismatch", defaultString= "DENY") Result onMismatch) {
         return new TimeIsSetFilter(onMatch, onMismatch);
-    }}
+    }
+}

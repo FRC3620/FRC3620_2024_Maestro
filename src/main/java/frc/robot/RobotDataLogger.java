@@ -147,7 +147,6 @@ public class RobotDataLogger {
     @Override
     public void dataLoggerPrelude() {
       limelightResults = RobotContainer.visionSubsystem.getLastLimelightResults();
-      lastTargetFiducial = RobotContainer.visionSubsystem.getLastTargetFiducial();
       visionPose2d = RobotContainer.visionSubsystem.getLastPose2d();
       fpgaTime = RobotController.getFPGATime();
 
