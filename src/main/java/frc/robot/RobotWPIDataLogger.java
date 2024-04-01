@@ -89,9 +89,6 @@ public class RobotWPIDataLogger {
     dataLogger.addPose2dDataProvider("vision.pose", () -> odometryGatherer.getVisionPose());
     dataLogger.addDoubleDataProvider("vision.age", () -> odometryGatherer.getVisionAge());
 
-    dataLogger.addLongDataProvider("vision.targetID", () -> odometryGatherer.getTargetID());
-    dataLogger.addDoubleDataProvider("vision.targetTx", () -> odometryGatherer.getTargetTx());
-    dataLogger.addDoubleDataProvider("vision.targetTy", () -> odometryGatherer.getTargetTy());
     dataLogger.addLongDataProvider("vision.targetCount", () -> odometryGatherer.getTargetCount());
     dataLogger.addPose2dDataProvider("red.pose", () -> odometryGatherer.getRedPose());
     dataLogger.addPose2dDataProvider("blue.pose", () -> odometryGatherer.getBluePose());
@@ -146,7 +143,6 @@ public class RobotWPIDataLogger {
 
   class OdometryGatherer implements DataLoggerPrelude {
     private LimelightHelpers.LimelightResults limelightResults;
-    private LimelightTarget_Fiducial lastTargetFiducial;
     private Double distanceToSpeaker, yawToSpeaker;
     private LimelightHelpers.PoseEstimate red;
     private LimelightHelpers.PoseEstimate blue;
@@ -157,7 +153,6 @@ public class RobotWPIDataLogger {
     @Override
     public void dataLoggerPrelude() {
       limelightResults = RobotContainer.visionSubsystem.getLastLimelightResults();
-      lastTargetFiducial = RobotContainer.visionSubsystem.getLastTargetFiducial();
       fpgaTime = RobotController.getFPGATime();
 
       distanceToSpeaker = RobotContainer.visionSubsystem.getCamDistToSpeaker();
@@ -254,21 +249,6 @@ public class RobotWPIDataLogger {
     
     public Pose2d odometryPose() {
       return pp(odometryPose2d);
-    }
-    
-    public long getTargetID() {
-      if (lastTargetFiducial == null) return 0;
-      return (long) lastTargetFiducial.fiducialID;
-    }
-
-    public double getTargetTx() {
-      if (lastTargetFiducial == null) return Double.NaN;
-      return lastTargetFiducial.tx;
-    }
-
-    public double getTargetTy() {
-      if (lastTargetFiducial == null) return Double.NaN;
-      return lastTargetFiducial.ty;
     }
 
   }
