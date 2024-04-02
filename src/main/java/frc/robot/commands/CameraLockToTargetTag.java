@@ -4,8 +4,13 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import org.usfirst.frc3620.misc.Utilities;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
@@ -52,7 +57,13 @@ public class CameraLockToTargetTag extends Command {
     var camYaw_Speaker = vision.getCamYawToSpeaker();
     if (camYaw_Speaker != null) {
       headingToTag = camYaw_Speaker;
-      var desiredHeading = Utilities.normalizeAngle(headingToTag+180);
+      double desiredHeading = 0;
+      Optional<Alliance> ally = DriverStation.getAlliance();
+      if(ally.get() == Alliance.Red) {
+        desiredHeading = Utilities.normalizeAngle(headingToTag+180);
+      } else {
+        desiredHeading = Utilities.normalizeAngle(headingToTag);
+      }
 
       var currentDirection = swerve.getPose().getRotation().getDegrees();
 
