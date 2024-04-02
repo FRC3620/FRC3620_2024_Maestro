@@ -85,12 +85,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "LONGER SLURPY IN"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "3 to 7"
