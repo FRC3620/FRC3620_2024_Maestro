@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6924444618120005,
-      "y": 6.735832958845405
+      "x": 0.77,
+      "y": 6.66
     },
     "rotation": 60.0
   },
@@ -59,15 +59,15 @@
                 }
               },
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "EVERYTHING BAGEL"
+                  "waitTime": 0.5
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "UPDATE ODOM"
+                  "name": "EVERYTHING BAGEL"
                 }
               }
             ]
@@ -156,6 +156,12 @@
                 "type": "named",
                 "data": {
                   "name": "CENTER OMEGA BEAM"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.3
                 }
               },
               {

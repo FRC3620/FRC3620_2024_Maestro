@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 8.007013068657967,
-        "y": 4.32889264828411
+        "y": 4.25
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.935880304191974,
-        "y": 4.32889264828411
+        "y": 4.25
       },
       "isLocked": false,
       "linkedName": "Real 6"
     },
     {
       "anchor": {
-        "x": 4.321604462686361,
-        "y": 5.167371854933734
+        "x": 4.1363590565660955,
+        "y": 5.138122580283166
       },
       "prevControl": {
-        "x": 5.111334878251705,
-        "y": 3.383166101249068
+        "x": 4.92608947213144,
+        "y": 3.3539168265984998
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Shoot"
     }
   ],
   "rotationTargets": [],

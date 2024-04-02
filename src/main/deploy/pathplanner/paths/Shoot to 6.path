@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 8.007013068657967,
-        "y": 4.32889264828411
+        "y": 4.33
       },
       "prevControl": {
         "x": 4.804786924743944,
-        "y": 4.0833431820818085
+        "y": 4.084450533797699
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Real 6"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
