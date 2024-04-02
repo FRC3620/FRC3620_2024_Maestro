@@ -55,7 +55,19 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "CENTER OMEGA BEAM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "EVERYTHING BAGEL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "UPDATE ODOM"
                 }
               }
             ]
@@ -68,13 +80,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1 to 4"
+                  "pathName": "1 to 5 AMP"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SLURPY IN"
+                  "name": "LONGER SLURPY IN"
                 }
               }
             ]
@@ -83,13 +95,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 back"
+            "pathName": "5 to SHOOT out"
           }
         },
         {
           "type": "sequential",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "CENTER OMEGA BEAM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "UPDATE ODOM"
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -106,13 +130,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SLURPY IN"
+                  "name": "LONGER SLURPY IN"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "back to 5"
+                  "pathName": "Shoot to 6 AMP"
                 }
               }
             ]
@@ -121,7 +145,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5 back"
+            "pathName": "6 to shoot"
           }
         },
         {
@@ -131,16 +155,16 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "CENTER OMEGA BEAM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "EVERYTHING BAGEL"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.25
           }
         },
         {

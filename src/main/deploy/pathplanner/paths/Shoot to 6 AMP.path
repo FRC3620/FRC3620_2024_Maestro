@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.233856638734657,
-        "y": 5.489113876089985
+        "x": 4.1363590565660955,
+        "y": 5.138122580283166
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.955113551252743,
-        "y": 7.145128364330803
+        "x": 4.545848901674051,
+        "y": 3.8511544956581605
       },
       "isLocked": false,
-      "linkedName": "back"
+      "linkedName": "Shoot"
     },
     {
       "anchor": {
-        "x": 8.055761859742248,
-        "y": 6.005851061583359
+        "x": 5.4428266576248125,
+        "y": 3.9681515942604335
       },
       "prevControl": {
-        "x": 6.687545789975419,
-        "y": 6.941383416978553
+        "x": 5.033336812516856,
+        "y": 3.919402803176153
+      },
+      "nextControl": {
+        "x": 6.519030378546351,
+        "y": 4.096271084846331
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.007013068657967,
+        "y": 4.32889264828411
+      },
+      "prevControl": {
+        "x": 6.905290390153228,
+        "y": 4.192396033248125
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "5"
+      "linkedName": "Real 6"
     }
   ],
   "rotationTargets": [],
@@ -39,7 +55,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -19.440034828237497,
+    "rotation": 1.7045369969865871,
     "rotateFast": false
   },
   "reversed": false,
