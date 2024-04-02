@@ -304,7 +304,7 @@ public class RobotContainer {
     */
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
-      .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+      .whileTrue(new SetShooterSpeedAndAngleAlwaysCommand(ShooterSpeedAndAngle.subWoofShot));
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
