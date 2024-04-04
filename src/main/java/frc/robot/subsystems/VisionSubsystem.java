@@ -170,7 +170,7 @@ public class VisionSubsystem extends SubsystemBase {
                 camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees() + SHOOTER_AIM_OFFSET);
             } else {
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(redSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
-                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()+SHOOTER_AIM_OFFSET-180);
+                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()+SHOOTER_AIM_OFFSET);
 
                 /* Not sure if we'll need this so commenting it out for now.
                 if (Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){

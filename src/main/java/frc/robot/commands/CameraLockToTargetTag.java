@@ -60,7 +60,7 @@ public class CameraLockToTargetTag extends Command {
       double desiredHeading = 0;
       Optional<Alliance> ally = DriverStation.getAlliance();
       if(ally.get() == Alliance.Red) {
-        desiredHeading = Utilities.normalizeAngle(headingToTag+180);
+        desiredHeading = Utilities.normalizeAngle(headingToTag);
       } else {
         desiredHeading = Utilities.normalizeAngle(headingToTag);
       }
