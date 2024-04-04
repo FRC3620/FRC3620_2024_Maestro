@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 8.007013068657967,
-        "y": 4.33
+        "x": 8.036373451664282,
+        "y": 4.1046482092964185
       },
       "prevControl": {
-        "x": 4.804786924743944,
-        "y": 4.084450533797699
+        "x": 4.834147307750259,
+        "y": 3.8590987430941173
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Real 6"
     }
   ],
   "rotationTargets": [],

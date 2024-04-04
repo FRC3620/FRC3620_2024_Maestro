@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 2.4699559370628714,
-        "y": 4.0
+        "y": 4.2
       },
       "prevControl": {
         "x": 1.9668792264386419,
-        "y": 4.401026151663678
+        "y": 4.601026151663678
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SC 3"
     }
   ],
   "rotationTargets": [

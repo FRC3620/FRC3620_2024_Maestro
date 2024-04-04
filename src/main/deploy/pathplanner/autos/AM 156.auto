@@ -67,6 +67,12 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "UPDATE ODOM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "EVERYTHING BAGEL"
                 }
               }
@@ -86,16 +92,29 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "LONGER SLURPY IN"
+                  "name": "SLURPY IN"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "5 to SHOOT out"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SLURPY IN"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5 to SHOOT out"
+                }
+              }
+            ]
           }
         },
         {
@@ -145,7 +164,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6 to shoot"
+            "pathName": "6 to Shoot AMP"
           }
         },
         {

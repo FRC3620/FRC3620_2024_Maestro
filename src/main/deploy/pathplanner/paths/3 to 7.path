@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 2.4699559370628714,
-        "y": 4.42
+        "y": 4.2
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.4072322914255564,
-        "y": 2.7820406195681753
+        "y": 2.5620406195681755
       },
       "isLocked": false,
-      "linkedName": "3"
+      "linkedName": "SC 3"
     },
     {
       "anchor": {
