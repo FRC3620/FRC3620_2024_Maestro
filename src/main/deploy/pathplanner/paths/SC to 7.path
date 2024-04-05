@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 7.533524810637386,
-        "y": 2.432384124031373
+        "x": 8.188397459416,
+        "y": 2.3739133518153084
       },
       "prevControl": {
-        "x": 6.539049472518065,
-        "y": 1.7401512906345897
+        "x": 7.193922121296679,
+        "y": 1.681680518418525
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "7"
+      "linkedName": "7 SC"
     }
   ],
   "rotationTargets": [
@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.1,
+      "waypointRelativePos": 0.9,
       "command": {
         "type": "parallel",
         "data": {

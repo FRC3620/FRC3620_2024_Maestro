@@ -44,7 +44,7 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
     HOME, UP
   }
   public static double AmpBarHome = 0;
-  public static double AmpBarUp = 5;
+  public static double AmpBarUp = 17;
   AmpBarPosition currentAmpBarPosition;
 
   public final static int MOTORID_SHOOTER_BOTTOM = 14;
@@ -97,13 +97,13 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // amp bar pid
-    final double aP = 0.07;
+    final double aP = 0.1;
     final double aI = 0.0;
     final double aD = 0;
     final double aFF = 0;
     final double aIMaxAccum = 0.0;
-    final double aNegOutputLimit = -0.3;
-    final double aPosOutputLimit = 0.2;
+    final double aNegOutputLimit = -0.2;
+    final double aPosOutputLimit = 0.7;
 
     if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_BOTTOM, "Bottom Shooter")
         || RobotContainer.shouldMakeAllCANDevices()) {
