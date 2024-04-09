@@ -127,15 +127,15 @@ public class WPIDataLogger {
             if (outputFilename != null) {
               dataLog = new DataLog(LoggingMaster.getLoggingDirectory().getAbsolutePath(), outputFilename);
               logger.info("Writing dataLogger to {}", outputFilename);
-            }
 
-            for (var dataProvider : providers) {
-              dataProvider.connectToDataLog(dataLog);
-            }
+              for (var dataProvider : providers) {
+                dataProvider.connectToDataLog(dataLog);
+              }
 
-            NetworkTableInstance inst = NetworkTableInstance.getDefault();
-            int m_ntEntryLogger = inst.startEntryDataLog(dataLog, "/FMSInfo/", "NT:/FMSInfo/");
-            logger.info ("ntEntryLogger = {}", m_ntEntryLogger);
+              NetworkTableInstance inst = NetworkTableInstance.getDefault();
+              int m_ntEntryLogger = inst.startEntryDataLog(dataLog, "/FMSInfo/", "NT:/FMSInfo/");
+              logger.info ("ntEntryLogger = {}", m_ntEntryLogger);
+            }
           }
         }
       }
