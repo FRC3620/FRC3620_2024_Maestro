@@ -111,7 +111,6 @@ public class RobotDataLogger {
   }
 
   void addMotorProviders(DataLogger dataLogger, String name, Object motor, EnumSet<MotorFields> fields) {
-    logger.info ("gonna log {} for {}  {}", fields, name, motor.getClass());
     if (motor instanceof CANSparkBase) {
       CANSparkBase m = (CANSparkBase) motor;
       if (fields.contains(MotorFields.TEMPERATURE))
@@ -133,7 +132,7 @@ public class RobotDataLogger {
       if (fields.contains(MotorFields.VELOCITY))
         dataLogger.addDataProvider(name + ".velocity", () -> DataLogger.f2(m.getVelocity().getValueAsDouble()));
     } else {
-      logger.error("don't know what {} is", name);
+      logger.error("don't know what {} is: {}", name, motor.getClass());
     }
   }
 

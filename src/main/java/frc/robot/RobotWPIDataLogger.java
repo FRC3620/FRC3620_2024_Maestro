@@ -2,7 +2,9 @@ package frc.robot;
 
 import java.util.EnumSet;
 
+import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLoggerPrelude;
+import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.WPIDataLogger;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
@@ -20,10 +22,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class RobotWPIDataLogger {
+  Logger logger = EventLogging.getLogger(getClass());
   PowerDistribution powerDistribution = RobotContainer.powerDistribution;
   Runtime runtime = Runtime.getRuntime();
   OdometryGatherer odometryGatherer = new OdometryGatherer();
@@ -94,12 +96,12 @@ public class RobotWPIDataLogger {
     dataLogger.addPose2dDataProvider("blue.pose", () -> odometryGatherer.getBluePose());
 
     for (var m : RobotContainer.swerveAzimuthMotors.entrySet()) {
-      addMotorProviders("swerve." + m.getKey() + ".azimuth", m.getValue(),
+      addMotorProviders("swerve." + m.getKey() + ".azimuth", m.getValue().getMotor(),
           EnumSet.allOf(MotorFields.class));
 
     }
     for (var m : RobotContainer.swerveDriveMotors.entrySet()) {
-      addMotorProviders("swerve." + m.getKey() + ".drive", m.getValue(), EnumSet.allOf(MotorFields.class));
+      addMotorProviders("swerve." + m.getKey() + ".drive", m.getValue().getMotor(), EnumSet.allOf(MotorFields.class));
     }
   }
 
@@ -129,6 +131,8 @@ public class RobotWPIDataLogger {
         dataLogger.addDoubleDataProvider(name + ".output", () -> m.getDutyCycle().getValue());
       if (fields.contains(MotorFields.VELOCITY))
         dataLogger.addDoubleDataProvider(name + ".velocity", () -> m.getVelocity().getValueAsDouble());
+    } else {
+      logger.error("don't know what {} is: {}", name, motor.getClass());
     }
   }
 
