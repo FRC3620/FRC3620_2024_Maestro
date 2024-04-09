@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.048067606106722,
-        "y": 3.92923589265982
+        "y": 4.05
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.976934841640729,
-        "y": 3.92923589265982
+        "y": 4.05
       },
       "isLocked": false,
       "linkedName": "Real 6"

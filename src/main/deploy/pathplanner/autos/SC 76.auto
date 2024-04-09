@@ -59,21 +59,9 @@
                 }
               },
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.2
-                }
-              },
-              {
                 "type": "parallel",
                 "data": {
                   "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "UPDATE ODOM"
-                      }
-                    },
                     {
                       "type": "named",
                       "data": {
@@ -99,7 +87,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "LONGER SLURPY IN"
+                  "name": "SLURPY IN"
                 }
               }
             ]
@@ -113,6 +101,12 @@
                 "type": "path",
                 "data": {
                   "pathName": "6 to shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "NO MORE SLURPY"
                 }
               }
             ]
