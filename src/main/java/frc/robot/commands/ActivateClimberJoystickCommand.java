@@ -26,8 +26,8 @@ public class ActivateClimberJoystickCommand extends SequentialCommandGroup {
     addCommands(
       new SetIntakeLocationCommand(IntakeLocation.IntakeOut),
       new InstantCommand(() -> ampBarSubsystem.setAmpBarPosition(AmpBarPosition.UP)),
-      new SetClimberPositionCommand(6.5),
-      new WaitUntilCommand(() -> climbElevationSubsystem.getActualPosition() > 5),
+      new SetClimberPositionCommand(12.325),
+      new WaitUntilCommand(() -> climbElevationSubsystem.getActualPosition() > 12),
       new SetClimberPowerPositionCommand()
     );
   }

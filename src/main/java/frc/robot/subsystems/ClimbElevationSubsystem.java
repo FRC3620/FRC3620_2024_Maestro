@@ -140,7 +140,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
    * @param position units are ???, referenced from position 0 == ?????
    */
   public void setPosition(double position) {
-    position = MathUtil.clamp(position, 0, 11);
+    position = MathUtil.clamp(position, 0, 12.6);
     SmartDashboard.putNumber(name + ".requestedPosition", position);
     requestedPosition = position;
     requestedPower = null;
