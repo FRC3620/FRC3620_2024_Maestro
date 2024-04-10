@@ -67,7 +67,7 @@ public class VisionSubsystem extends SubsystemBase {
     static Double APRILTAGCAM_FRONT_OFFSET = 0.3048;// change if neccessary, add to calculations
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
-    static Double SHOOTER_AIM_OFFSET = 3.0;
+    static Double SHOOTER_AIM_OFFSET = 0.0;
 
     boolean DoIHaveSpeakerTarget = false;
 

@@ -325,6 +325,10 @@ public class RobotContainer {
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).toggleOnTrue(new SourcePickupCommand());
 
+    operatorDpad.left().whileTrue(new ShuttleShootCommand());
+    
+    
+
 /*
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
     .toggleOnFalse(new AmpShootCommandPart2());    
@@ -343,6 +347,7 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand());
     SmartDashboard.putData("set shooter wheels power", new ShooterWheelPowerCommand());
+    SmartDashboard.putData("Shuttle Shoot Command", new ShuttleShootCommand());
 
     SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
     SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());

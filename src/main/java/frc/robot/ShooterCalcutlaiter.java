@@ -12,11 +12,11 @@ public class ShooterCalcutlaiter {
     public static ShooterSpeedAndAngle CalculaiteAngleFt(Double distanceFt){
         double rAngle=0;
         if(distanceFt<6.8){
-         rAngle=87.068+-11.9696*distanceFt+ .732323  *Math.pow(distanceFt, 2);
+         rAngle=129.2961186+-28.91633242*distanceFt+ 2.272542078  *Math.pow(distanceFt, 2);
         }else if(distanceFt<10.5){
-            rAngle= 51.8587+-2.098*distanceFt+0.0404135*Math.pow(distanceFt, 2);
+            rAngle= 48.73426573+-1.607778187*distanceFt+-0.01226843332*Math.pow(distanceFt, 2);
         }else{
-            rAngle=98.58167+-9.71519*distanceFt+0.347431*Math.pow(distanceFt, 2);
+            rAngle=50.56925208+-2.638504155*distanceFt+0.06925207756*Math.pow(distanceFt, 2);
         }
     ShooterSpeedAndAngle shooterSpeedAndAngle= new ShooterSpeedAndAngle(0, rAngle);
 

@@ -249,7 +249,7 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
         if (requestedWheelSpeed == 0) {
           bottomMotor.stopMotor();
         } else {
-          bottomMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed * 0.9));
+          bottomMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed * 1));
         }
       }
     }
