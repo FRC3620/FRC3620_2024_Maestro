@@ -59,6 +59,12 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "NO MORE SLURPY"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
                   "waitTime": 0.5
@@ -92,7 +98,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SLURPY IN"
+                  "name": "LONGER SLURPY IN"
                 }
               }
             ]
