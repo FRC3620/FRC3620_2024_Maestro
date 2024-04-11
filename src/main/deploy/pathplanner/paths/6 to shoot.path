@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.048067606106722,
-        "y": 4.27
+        "x": 8.007013068657967,
+        "y": 4.1046482092964185
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.976934841640729,
-        "y": 4.27
+        "x": 7.935880304191974,
+        "y": 4.1046482092964185
       },
       "isLocked": false,
-      "linkedName": "Real 6"
+      "linkedName": "Amp 6"
     },
     {
       "anchor": {
-        "x": 4.1363590565660955,
-        "y": 5.138122580283166
+        "x": 4.282605429818937,
+        "y": 5.147872338500022
       },
       "prevControl": {
-        "x": 4.434573883392781,
-        "y": 3.508246332731982
+        "x": 5.433076899407958,
+        "y": 3.236919727996227
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": -3.576334374997331,
     "rotateFast": false
   },
   "reversed": false,

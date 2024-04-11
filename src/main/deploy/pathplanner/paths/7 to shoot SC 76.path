@@ -3,49 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.1363590565660955,
-        "y": 5.138122580283166
+        "x": 8.188397459416,
+        "y": 2.32
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.52634938524034,
-        "y": 4.514138054404375
+        "x": 7.439971575099845,
+        "y": 3.6836586493685815
       },
       "isLocked": false,
-      "linkedName": "Shoot"
+      "linkedName": "7 SC"
     },
     {
       "anchor": {
-        "x": 5.433076899407956,
-        "y": 4.1046482092964185
+        "x": 6.013284733122172,
+        "y": 3.9643183559871398
       },
       "prevControl": {
-        "x": 5.00706351906732,
-        "y": 4.218251777387254
+        "x": 6.6915456907836885,
+        "y": 3.8239885026778606
       },
       "nextControl": {
-        "x": 5.72556964591364,
-        "y": 4.02665014356157
+        "x": 5.3458235128373675,
+        "y": 4.102413780873651
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.036373451664282,
-        "y": 4.1
+        "x": 4.282605429818937,
+        "y": 5.147872338500022
       },
       "prevControl": {
-        "x": 6.878652161862727,
-        "y": 4.0415292277878
+        "x": 5.095363052112979,
+        "y": 4.091009658628396
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Amp 6"
+      "linkedName": "Shoot"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.3,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.75,
+        "maxAcceleration": 1.75,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
@@ -55,7 +67,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 1.7045369969865871,
+    "rotation": -4.864514437760577,
     "rotateFast": false
   },
   "reversed": false,

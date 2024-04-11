@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.2,
-        "y": 5.8
+        "x": 8.046012101525392,
+        "y": 4.426390230452671
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.187324710991464,
-        "y": 8.180047143942268
+        "x": 7.974879337059399,
+        "y": 4.426390230452671
       },
       "isLocked": false,
-      "linkedName": "Amp 5"
+      "linkedName": "SC 6"
     },
     {
       "anchor": {
@@ -20,12 +20,12 @@
         "y": 5.147872338500022
       },
       "prevControl": {
-        "x": 4.75059382422803,
-        "y": 6.620085829245294
+        "x": 5.423327141191101,
+        "y": 3.1686714204782342
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Shoot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -5.599339336520575,
+    "rotation": -2.5448043798131237,
     "rotateFast": false
   },
   "reversed": false,

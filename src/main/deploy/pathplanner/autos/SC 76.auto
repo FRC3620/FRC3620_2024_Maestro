@@ -45,7 +45,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7 to shoot"
+            "pathName": "7 to shoot SC 76"
           }
         },
         {
@@ -67,6 +67,12 @@
                       "data": {
                         "name": "FIRE OMEGA BEAM"
                       }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "UPDATE ODOM"
+                      }
                     }
                   ]
                 }
@@ -81,13 +87,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Shoot to 6"
+                  "pathName": "Shoot to 6 SC 76"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SLURPY IN"
+                  "name": "LONGER SLURPY IN"
                 }
               }
             ]
@@ -100,7 +106,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "6 to shoot"
+                  "pathName": "6 to Shoot SC"
                 }
               },
               {
@@ -125,7 +131,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.2
+                  "waitTime": 0.25
                 }
               },
               {

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2126845393291923,
-        "y": 2.8884561472826653
+        "x": 0.528948516329338,
+        "y": 2.6714337514185726
       },
       "isLocked": false,
       "linkedName": "SC 3"
     },
     {
       "anchor": {
-        "x": 4.341020647853261,
-        "y": 1.7541231663659906
+        "x": 4.311854704469505,
+        "y": 1.5697110729138337
       },
       "prevControl": {
-        "x": 3.475653219112706,
-        "y": 2.104947799639189
+        "x": 3.3467119722675633,
+        "y": 1.5997936602325098
       },
       "nextControl": {
-        "x": 5.203941611243573,
-        "y": 1.4042903433699179
+        "x": 5.242539450392273,
+        "y": 1.5407025084795285
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 2.4
       },
       "prevControl": {
-        "x": 7.034564962065615,
-        "y": 1.979010440072162
+        "x": 7.041787005189213,
+        "y": 2.378941004912889
       },
       "nextControl": null,
       "isLocked": false,
@@ -84,7 +84,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0

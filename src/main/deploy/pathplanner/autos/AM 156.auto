@@ -155,7 +155,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Shoot to 6 AMP"
+                  "pathName": "Shoot to 6 SC 76"
                 }
               }
             ]
@@ -164,7 +164,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6 to Shoot AMP"
+            "pathName": "6 to Shoot SC"
           }
         },
         {
