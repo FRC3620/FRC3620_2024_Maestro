@@ -21,6 +21,7 @@ import frc.robot.blinky.DefaultBlinkyCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.BlinkySubsystem.LightSegment;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem.AmpBarPosition;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -326,6 +327,8 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).toggleOnTrue(new SourcePickupCommand());
 
     operatorDpad.left().whileTrue(new ShuttleShootCommand());
+
+    operatorDpad.down().onTrue(new ActivateClimberDPadCommand());
     
     
 
