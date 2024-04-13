@@ -44,7 +44,7 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
     HOME, UP
   }
   public static double AmpBarHome = 0;
-  public static double AmpBarUp = 17;
+  public static double AmpBarUp = 18;
   AmpBarPosition currentAmpBarPosition;
 
   public final static int MOTORID_SHOOTER_BOTTOM = 14;

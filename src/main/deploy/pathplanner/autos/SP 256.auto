@@ -80,7 +80,64 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 to 6"
+                  "pathName": "2 to 5"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "NO MORE SLURPY"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5 to Shoot AMP"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "CENTER OMEGA BEAM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FIRE OMEGA BEAM"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "LONGER SLURPY IN"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shoot to 6 AMP"
                 }
               }
             ]
@@ -100,12 +157,6 @@
                 "type": "named",
                 "data": {
                   "name": "CENTER OMEGA BEAM"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.25
                 }
               },
               {

@@ -36,12 +36,12 @@
         "y": 5.147872338500022
       },
       "prevControl": {
-        "x": 5.095363052112979,
+        "x": 5.09536305211298,
         "y": 4.091009658628396
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Shoot"
+      "linkedName": "Stage shoot"
     }
   ],
   "rotationTargets": [],
