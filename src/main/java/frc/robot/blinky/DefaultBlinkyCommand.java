@@ -26,7 +26,7 @@ public class DefaultBlinkyCommand extends Command {
   // final Pattern patternSick = new
   // ChasePattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.25);
   final Pattern patternSick = new BlinkPattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.50);
-  final Pattern patternReallySick = new BlinkPattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.15);
+  final Pattern patternReallySick = new BlinkPattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.10);
 
   LightSegment lightSegment;
 

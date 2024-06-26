@@ -50,10 +50,10 @@ public class HealthMonitorSubsystem extends SubsystemBase {
         @SuppressWarnings({ "resource" })
         CANSparkBase m = (CANSparkBase) motor;
         double t = m.getMotorTemperature();
-        if (t > 70) {
+        if (t > 85) {
           broken.add (nameAndMotor.getKey() + " drive hot: " + Double.toString(t));
         }
-        if (t > 100) {
+        if (t > 105) {
           reallyBad = true;
         }
       }
