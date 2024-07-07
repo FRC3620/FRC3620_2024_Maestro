@@ -65,7 +65,7 @@ public class SwerveSubsystem extends SubsystemBase {
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public double maximumSpeed = 6.2; //1
+  public double maximumSpeed = 5.25; //1
   double targetHeading;
   double RotationOffsetVision = 3;
   static boolean areweaiming = false;
