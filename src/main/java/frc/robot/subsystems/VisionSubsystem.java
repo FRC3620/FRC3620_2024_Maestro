@@ -67,7 +67,7 @@ public class VisionSubsystem extends SubsystemBase {
     static Double APRILTAGCAM_FRONT_OFFSET = 0.3048;// change if neccessary, add to calculations
     Double APRILTAGCAM_X_OFFSET = 0.0;// change if neccessary
     Double NOTEDETECTCAM_X_OFFSET = 0.0;
-    static Double SHOOTER_AIM_OFFSET = 3.0;
+    static Double SHOOTER_AIM_OFFSET = 0.0;
 
     boolean DoIHaveSpeakerTarget = false;
 
@@ -77,7 +77,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     LimelightHelpers.LimelightResults lastLimelightResults = null;
     Pose2d lastPose = null;
-    LimelightTarget_Fiducial lastTargetFiducial = null;
+    // LimelightTarget_Fiducial lastTargetFiducial = null;
     Double lastFPGATime = null;
     public LimelightHelpers.PoseEstimate lastLimelightMeasurementBLUE;
     public LimelightHelpers.PoseEstimate lastLimelightMeasurementRED;
@@ -150,7 +150,7 @@ public class VisionSubsystem extends SubsystemBase {
         // added this to handle case where color is not yet set, otherwise we blow up in the simulator
         if (color.isEmpty()) return;
 
-        Pose2d currentPose = RobotContainer.drivebase.getPose();
+        Pose2d currentPose = lastLimelightResults.targetingResults.getBotPose2d_wpiBlue();
 
         /* 20240336 - I don't think we need these anymore. Commenting them out for now.
         // if alliance is blue.
@@ -170,7 +170,7 @@ public class VisionSubsystem extends SubsystemBase {
                 camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees() + SHOOTER_AIM_OFFSET);
             } else {
                 camDistToSpeakerTag = currentPose.getTranslation().getDistance(redSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
-                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()+SHOOTER_AIM_OFFSET-180);
+                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()+SHOOTER_AIM_OFFSET);
 
                 /* Not sure if we'll need this so commenting it out for now.
                 if (Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
@@ -209,9 +209,11 @@ public class VisionSubsystem extends SubsystemBase {
         return lastLimelightResults;
     }
 
+    /*
     public LimelightTarget_Fiducial getLastTargetFiducial() {
         return lastTargetFiducial;
     }
+    */
 
     public Pose2d getLastPose2d() {
         return lastPose;
@@ -235,24 +237,11 @@ public class VisionSubsystem extends SubsystemBase {
 
             LimelightHelpers.takeSnapshot("", s.timestamp);
 
-            var lastTargetFiducial = getLastTargetFiducial();
-            var visionPose2d = getLastPose2d();
+            // var lastTargetFiducial = getLastTargetFiducial();
+            s.visionPose = getLastPose2d();
+            s.odometryPose = RobotContainer.drivebase.getPose();
 
-            var odometryPose2d = RobotContainer.drivebase.getPose();
-            var odometryHeading = RobotContainer.drivebase.getHeading();
-
-            if (lastTargetFiducial != null) {
-                s.tx = lastTargetFiducial.tx;
-                s.ty = lastTargetFiducial.ty;
-                s.id = (int) lastTargetFiducial.fiducialID;
-            }
-
-            if (visionPose2d != null) {
-                s.visionTranslation = visionPose2d.getTranslation();
-            }
-
-            if (odometryPose2d != null) s.odometryTranslation = odometryPose2d.getTranslation();
-            if (odometryHeading != null) s.odometryHeading = odometryHeading.getDegrees();
+            Robot.robotWPIDataLogger.setTookAShot(s.odometryPose);
 
             s.actualShooterPosition = RobotContainer.shooterElevationSubsystem.getActualElevationPosition();
             s.requestedShooterPosition = RobotContainer.shooterElevationSubsystem.getRequestedShooterElevation();
@@ -266,12 +255,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     public static class SnapshotData {
         public String timestamp;
-        public Double tx, ty;
-        public Integer id;
-        public Translation2d odometryTranslation;
-        public Double odometryHeading;
-        public Translation2d visionTranslation;
-        public Double visionHeading;
+        public Pose2d odometryPose;
+        public Pose2d visionPose;
         public Double requestedShooterPosition, actualShooterPosition;
 
     }

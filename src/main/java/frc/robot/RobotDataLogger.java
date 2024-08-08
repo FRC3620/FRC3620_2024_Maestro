@@ -2,8 +2,10 @@ package frc.robot;
 
 import java.util.EnumSet;
 
+import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.DataLoggerPrelude;
+import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 
 public class RobotDataLogger {
+  Logger logger = EventLogging.getLogger(getClass());
   PowerDistribution powerDistribution = RobotContainer.powerDistribution;
   Runtime runtime = Runtime.getRuntime();
   OdometryGatherer odometryGatherer = new OdometryGatherer();
@@ -95,10 +98,10 @@ public class RobotDataLogger {
 
   void addSwerveDataLoggers(DataLogger dataLogger) {
     for (var m : RobotContainer.swerveAzimuthMotors.entrySet()) {
-      addMotorProviders(dataLogger, "swerve." + m.getKey() + ".azimuth", m.getValue(), EnumSet.allOf(MotorFields.class));
+      addMotorProviders(dataLogger, "swerve." + m.getKey() + ".azimuth", m.getValue().getMotor(), EnumSet.allOf(MotorFields.class));
     }
     for (var m : RobotContainer.swerveDriveMotors.entrySet()) {
-      addMotorProviders(dataLogger, "swerve." + m.getKey() + ".drive", m.getValue(), EnumSet.allOf(MotorFields.class));
+      addMotorProviders(dataLogger, "swerve." + m.getKey() + ".drive", m.getValue().getMotor(), EnumSet.allOf(MotorFields.class));
     }
   }
 
@@ -128,6 +131,8 @@ public class RobotDataLogger {
         dataLogger.addDataProvider(name + ".output", () -> DataLogger.f2(m.getDutyCycle().getValue()));
       if (fields.contains(MotorFields.VELOCITY))
         dataLogger.addDataProvider(name + ".velocity", () -> DataLogger.f2(m.getVelocity().getValueAsDouble()));
+    } else {
+      logger.error("don't know what {} is: {}", name, motor.getClass());
     }
   }
 
@@ -147,7 +152,6 @@ public class RobotDataLogger {
     @Override
     public void dataLoggerPrelude() {
       limelightResults = RobotContainer.visionSubsystem.getLastLimelightResults();
-      lastTargetFiducial = RobotContainer.visionSubsystem.getLastTargetFiducial();
       visionPose2d = RobotContainer.visionSubsystem.getLastPose2d();
       fpgaTime = RobotController.getFPGATime();
 

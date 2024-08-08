@@ -25,7 +25,8 @@ public class DefaultBlinkyCommand extends Command {
   final Pattern patternIdle = new BlinkPattern().setColor(Color.kGreen).setOnSeconds(0.1).setOffSeconds(1.0);
   // final Pattern patternSick = new
   // ChasePattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.25);
-  final Pattern patternSick = new BlinkPattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.25);
+  final Pattern patternSick = new BlinkPattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.50);
+  final Pattern patternReallySick = new BlinkPattern().setColor1(Color.kRed).setColor2(Color.kBlue).setBlinkTime(0.10);
 
   LightSegment lightSegment;
 
@@ -38,10 +39,18 @@ public class DefaultBlinkyCommand extends Command {
   public void execute() {
     Pattern p;
     if (Robot.getCurrentRobotMode() == RobotMode.DISABLED) {
-      if (!RobotContainer.healthMonitorSubsystem.isHealthy()) {
-        p = patternSick;
-      } else {
-        p = patternIdle;
+      switch (RobotContainer.healthMonitorSubsystem.getHealth()) {
+        case SICK:
+          p = patternSick;
+          break;
+
+        case REALLY_SICK:
+          p = patternReallySick;
+          break;
+
+        default:
+          p = patternIdle;
+          break;
       }
     } else {
       if (indexerSubsystem.gamePieceDetected()) {
@@ -51,13 +60,22 @@ public class DefaultBlinkyCommand extends Command {
           // If we have gamepiece but no shooting solution, solid green
           p = patternGotPiece;
         }
-      } else { // No game piece, solid red
+      } else { // No game piece, solid gray
         p = patternNoPiece;
       }
 
       if (!DriverStation.isFMSAttached()) {
-        if (!RobotContainer.healthMonitorSubsystem.isHealthy()) {
-          p = patternSick;
+        switch (RobotContainer.healthMonitorSubsystem.getHealth()) {
+          case SICK:
+            p = patternSick;
+            break;
+
+          case REALLY_SICK:
+            p = patternReallySick;
+            break;
+
+          default:
+            break;
         }
       }
 

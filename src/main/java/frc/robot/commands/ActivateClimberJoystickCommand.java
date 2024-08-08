@@ -4,11 +4,14 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ClimbElevationSubsystem;
 import frc.robot.subsystems.IntakeLocation;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem.AmpBarPosition;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -17,12 +20,14 @@ public class ActivateClimberJoystickCommand extends SequentialCommandGroup {
   /** Creates a new ActivateCimberJoystickCommand. */
   public ActivateClimberJoystickCommand() {
     ClimbElevationSubsystem climbElevationSubsystem = RobotContainer.climbElevationSubsystem;
+    ShooterWheelsAndAmpBarSubsystem ampBarSubsystem = RobotContainer.shooterWheelsAndAmpBarSubsystem;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetIntakeLocationCommand(IntakeLocation.IntakeOut),
-      new SetClimberPositionCommand(6.5),
-      new WaitUntilCommand(() -> climbElevationSubsystem.getActualPosition() > 5),
+      new InstantCommand(() -> ampBarSubsystem.setAmpBarPosition(AmpBarPosition.UP)),
+      new SetClimberPositionCommand(12.325),
+      new WaitUntilCommand(() -> climbElevationSubsystem.getActualPosition() > 12),
       new SetClimberPowerPositionCommand()
     );
   }

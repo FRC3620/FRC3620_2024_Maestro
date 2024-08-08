@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.282605429818937,
+        "y": 5.147872338500022
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.711594791360605,
+        "y": 4.514138054404375
+      },
+      "isLocked": false,
+      "linkedName": "Stage shoot"
+    },
+    {
+      "anchor": {
+        "x": 5.355078833673108,
+        "y": 4.172896516814411
+      },
+      "prevControl": {
+        "x": 4.9290654533324725,
+        "y": 4.286500084905247
+      },
+      "nextControl": {
+        "x": 5.647571580178792,
+        "y": 4.094898451079563
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.046012101525392,
+        "y": 4.426390230452671
+      },
+      "prevControl": {
+        "x": 6.888290811723837,
+        "y": 4.367919458240471
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "SC 6"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 1.7045369969865871,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

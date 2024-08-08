@@ -8,27 +8,33 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.768306670516475,
-        "y": 4.923239020267214
+        "x": 1.0900457128549583,
+        "y": 4.408696224799858
       },
       "isLocked": false,
       "linkedName": "SC"
     },
     {
       "anchor": {
-        "x": 2.4,
-        "y": 4.3
+        "x": 2.45,
+        "y": 4.2
       },
       "prevControl": {
-        "x": 1.896942369383314,
-        "y": 4.701050085860856
+        "x": 1.7834331967809232,
+        "y": 4.408696224799858
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "3"
+      "linkedName": "SC 3"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -30.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
@@ -51,8 +57,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -30.0,
-    "rotateFast": false
+    "rotation": -27.64597536373859,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": null,

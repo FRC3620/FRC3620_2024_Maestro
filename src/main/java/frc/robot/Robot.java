@@ -15,8 +15,6 @@ import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -25,12 +23,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.AutoShooterVisionAngleAdjustmentContinuousCommand;
-import frc.robot.commands.SetShooterSpeedAndAngleCommand;
-import frc.robot.subsystems.ShooterElevationSubsystem;
-import frc.robot.subsystems.ShooterSpeedAndAngle;
-import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -47,6 +39,7 @@ public class Robot extends TimedRobot {
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
   public static RobotDataLogger robotDataLogger;
+  public static RobotWPIDataLogger robotWPIDataLogger;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -87,11 +80,15 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     // get data logging going
-    printMemoryStatus("setting up data logger");
+    printMemoryStatus("setting up data loggers");
     DataLogger genericDataLogger = new DataLogger();
     robotDataLogger = new RobotDataLogger(genericDataLogger, RobotContainer.canDeviceFinder);
     genericDataLogger.setInterval(0.25);
     genericDataLogger.start();
+
+    robotWPIDataLogger = new RobotWPIDataLogger(RobotContainer.canDeviceFinder);
+    robotWPIDataLogger.setInterval(0.25);
+    robotWPIDataLogger.start();
 
     FileSaver.add("networktables.ini");
 

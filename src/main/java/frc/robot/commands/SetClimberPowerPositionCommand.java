@@ -31,7 +31,7 @@ public class SetClimberPowerPositionCommand extends Command {
     // if joystick position is above 0 (running up), the joystick will run on
     // positive power, and if its below 0, the joystick will run on negative power
     double power = -RobotContainer.getClimberJoystickPosition();
-    if (Math.abs(RobotContainer.getClimberJoystickPosition()) < .1) {
+    if (Math.abs(RobotContainer.getClimberJoystickPosition()) < .2) {
       climbElevationSubsystem.setPower(0);
     } else {
       climbElevationSubsystem.setPower(power);

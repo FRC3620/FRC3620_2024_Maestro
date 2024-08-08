@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.usfirst.frc3620.misc.RobotMode;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.ErrorMessages;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -18,6 +19,7 @@ import frc.robot.Robot;
 import frc.robot.ShooterCalcutlaiter;
 import frc.robot.subsystems.ShooterElevationSubsystem;
 import frc.robot.subsystems.ShooterSpeedAndAngle;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -31,9 +33,9 @@ public class AutoShooterVisionAngleAdjustmentContinuousCommand extends Command {
   public AutoShooterVisionAngleAdjustmentContinuousCommand(VisionSubsystem visionSubsystem,
       ShooterElevationSubsystem shooterElevationSubsystem, SwerveSubsystem swerveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.visionSubsystem = visionSubsystem;
-    this.shooterElevationSubsystem = shooterElevationSubsystem;
-    this.swerveSubsystem = swerveSubsystem;
+    this.visionSubsystem = ErrorMessages.requireNonNullParam(visionSubsystem, "visionSubsystem", "<init>");
+    this.shooterElevationSubsystem = ErrorMessages.requireNonNullParam(shooterElevationSubsystem, "shooterElevationSubsystem", "<init>");
+    this.swerveSubsystem = ErrorMessages.requireNonNullParam(swerveSubsystem, "swerveSubsystem", "<init>");
 
     addRequirements(shooterElevationSubsystem);
   }

@@ -3,52 +3,88 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4,
-        "y": 4.3
+        "x": 2.45,
+        "y": 4.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9554131415955136,
-        "y": 2.7715146028582662
+        "x": 0.528948516329338,
+        "y": 2.6714337514185726
       },
       "isLocked": false,
-      "linkedName": "3"
+      "linkedName": "SC 3"
     },
     {
       "anchor": {
-        "x": 4.341020647853261,
-        "y": 1.7541231663659906
+        "x": 4.311854704469505,
+        "y": 1.5697110729138337
       },
       "prevControl": {
-        "x": 3.2885467480336676,
-        "y": 1.9295354830025888
+        "x": 3.3467119722675633,
+        "y": 1.5997936602325098
       },
       "nextControl": {
-        "x": 5.259488251656568,
-        "y": 1.6010452323987734
+        "x": 5.242539450392273,
+        "y": 1.5407025084795285
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.094844223876482,
-        "y": 2.362219197372869
+        "x": 8.25075702407937,
+        "y": 2.4
       },
       "prevControl": {
-        "x": 6.878652161862727,
-        "y": 1.9412296374450309
+        "x": 7.041787005189213,
+        "y": 2.378941004912889
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "6"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
-  "eventMarkers": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.5,
+      "rotationDegrees": 16.31,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.7,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.75,
+        "maxAcceleration": 1.75,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "LONGER SLURPY IN"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0

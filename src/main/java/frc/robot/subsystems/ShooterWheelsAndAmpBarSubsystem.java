@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import org.slf4j.Logger;
@@ -12,7 +8,6 @@ import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.CANDeviceType;
 import org.usfirst.frc3620.misc.CANSparkMaxSendable;
 import org.usfirst.frc3620.misc.MotorSetup;
-import org.usfirst.frc3620.misc.RobotMode;
 import org.usfirst.frc3620.misc.Utilities.SlidingWindowStats;
 
 import com.ctre.phoenix6.StatusCode;
@@ -26,11 +21,8 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements HasTelemetry {
@@ -52,7 +44,7 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
     HOME, UP
   }
   public static double AmpBarHome = 0;
-  public static double AmpBarUp = 5;
+  public static double AmpBarUp = 18;
   AmpBarPosition currentAmpBarPosition;
 
   public final static int MOTORID_SHOOTER_BOTTOM = 14;
@@ -69,9 +61,6 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
 
   boolean areWeShooting = false;
 
-  double elevationAdjustment = 0;
-
-  /** Creates a new ShooterSubsystem. */
   public ShooterWheelsAndAmpBarSubsystem() {
     topConfig.Voltage.PeakForwardVoltage = 12;
     topConfig.Voltage.PeakReverseVoltage = 12;
@@ -108,13 +97,13 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // amp bar pid
-    final double aP = 0.07;
+    final double aP = 0.1;
     final double aI = 0.0;
     final double aD = 0;
     final double aFF = 0;
     final double aIMaxAccum = 0.0;
-    final double aNegOutputLimit = -0.3;
-    final double aPosOutputLimit = 0.2;
+    final double aNegOutputLimit = -0.2;
+    final double aPosOutputLimit = 0.7;
 
     if (deviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, MOTORID_SHOOTER_BOTTOM, "Bottom Shooter")
         || RobotContainer.shouldMakeAllCANDevices()) {
@@ -260,7 +249,7 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
         if (requestedWheelSpeed == 0) {
           bottomMotor.stopMotor();
         } else {
-          bottomMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed * 0.9));
+          bottomMotor.setControl(m_voltageVelocity.withVelocity(requestedWheelSpeed * 1));
         }
       }
     }
@@ -307,17 +296,4 @@ public class ShooterWheelsAndAmpBarSubsystem extends SubsystemBase implements Ha
       SmartDashboard.putNumber(name + "." + motorName + ".sliding.flyers", slidingWindowStats.getFlyers());
     }
   }
-
-  void updateDashboardElevationAdjustment() {
-    SmartDashboard.putNumber(name + ".elevationAdjustment", elevationAdjustment);
-  }
-
-  double readDashboardElevationAdjustment() {
-    return SmartDashboard.getNumber(name + ".elevationAdjustment", elevationAdjustment);
-  }
-
-  public double getElevationAdjustment() {
-    return elevationAdjustment;
-  }
-
 }

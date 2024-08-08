@@ -21,6 +21,7 @@ import frc.robot.blinky.DefaultBlinkyCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.BlinkySubsystem.LightSegment;
+import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem.AmpBarPosition;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -175,6 +176,7 @@ public class RobotContainer {
 
     shooterElevationSubsystem = new ShooterElevationSubsystem();
     addSubsystem(shooterElevationSubsystem);
+    // see below for default command
 
     shooterWheelsAndAmpBarSubsystem = new ShooterWheelsAndAmpBarSubsystem();
     addSubsystem(shooterWheelsAndAmpBarSubsystem);
@@ -199,6 +201,9 @@ public class RobotContainer {
     SmartDashboard.putString("swerveFolder", swerveFolder);
     drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
     addSubsystem(drivebase);
+
+    // all subsystems present, can make default commands now
+    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
 
     Robot.printMemoryStatus("making superSwerveController");
 
@@ -300,7 +305,7 @@ public class RobotContainer {
     */
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
-      .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
+      .whileTrue(new SetShooterSpeedAndAngleAlwaysCommand(ShooterSpeedAndAngle.subWoofShot));
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
@@ -321,6 +326,12 @@ public class RobotContainer {
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).toggleOnTrue(new SourcePickupCommand());
 
+    operatorDpad.left().whileTrue(new ShuttleShootCommand());
+
+    operatorDpad.down().onTrue(new ActivateClimberDPadCommand());
+    
+    
+
 /*
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
     .toggleOnFalse(new AmpShootCommandPart2());    
@@ -339,6 +350,7 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleAndWaitCommand(ShooterSpeedAndAngle.testshooter2));
     SmartDashboard.putData("set variable shooter speed", new SetVariableShooterSpeedCommand());
     SmartDashboard.putData("set shooter wheels power", new ShooterWheelPowerCommand());
+    SmartDashboard.putData("Shuttle Shoot Command", new ShuttleShootCommand());
 
     SmartDashboard.putData("HomeToGroundPosition", new GroundPickupCommand());
     SmartDashboard.putData("GroundToHomePosition", new GroundToHomeCommand());
@@ -416,6 +428,8 @@ public class RobotContainer {
     SmartDashboard.putData("AmpBar bump -", new InstantCommand(()->shooterWheelsAndAmpBarSubsystem.bumpAmpBar(-0.1)));
 
     SmartDashboard.putData("Snapshot", new InstantCommand(() -> visionSubsystem.takeSnapshot()));
+
+    SmartDashboard.putData("Sing", new SingCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
@@ -427,14 +441,17 @@ public class RobotContainer {
     NamedCommands.registerCommand("PICKUP INTAKE POSITION", new AutoGroundPickupCommand());
     NamedCommands.registerCommand("SLURPY IN", new GroundPickupCommand().withTimeout(3));
     NamedCommands.registerCommand("NO MORE SLURPY", new GroundToHomeCommand());
-    NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.subWoofShot));
-    NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.shootingPosition));
-    NamedCommands.registerCommand("DISABLE OMEGA BEAM", new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
-    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(1.5));
+    NamedCommands.registerCommand("LONGER SLURPY IN", new GroundPickupCommand().withTimeout(7.5));
+    NamedCommands.registerCommand("CHARGE SUBWOOF OMEGA BEAM", new AutoSetShooterSpeedCommand(5000));
+    NamedCommands.registerCommand("CHARGE MIDSTAGE OMEGA BEAM", new AutoSetShooterSpeedCommand(5000));
+    NamedCommands.registerCommand("DISABLE OMEGA BEAM", new AutoSetShooterSpeedCommand(0));
+    NamedCommands.registerCommand("LONG CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(1));
+    NamedCommands.registerCommand("CENTER OMEGA BEAM", new CameraLockToTargetTag(drivebase, visionSubsystem, superSwerveController).withTimeout(.5));
     NamedCommands.registerCommand("PITCH OMEGA BEAM", new AutoShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
     NamedCommands.registerCommand("PITCH OMEGA BEAM FOREVER", new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
-    NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand().withTimeout(1.5));
+    NamedCommands.registerCommand("EVERYTHING BAGEL", new AutoPickupCommand().withTimeout(2));
     NamedCommands.registerCommand("INIT OMEGA BEAM", new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(5000, 37)).withTimeout(1));
+    NamedCommands.registerCommand("UPDATE ODOM", new AutoEnabledResetPoseWithVision(drivebase));
 
     chooser = AutoBuilder.buildAutoChooser();
 

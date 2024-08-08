@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7392210795817603,
-      "y": 4.373613761472538
+      "x": 0.6924444618120005,
+      "y": 4.387391197585246
     },
-    "rotation": -60.0
+    "rotation": -61.821409890040826
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.15
+            "waitTime": 0.9
           }
         },
         {
@@ -34,15 +34,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "SC to 3"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "SLURPY IN"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SC to 3"
                 }
               }
             ]
@@ -59,21 +59,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "PITCH OMEGA BEAM"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.4
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "EVERYTHING BAGEL"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "UPDATE ODOM"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "FIRE OMEGA BEAM"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -87,12 +88,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "3 to 7"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
                 }
               }
             ]
@@ -111,25 +106,32 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "CENTER OMEGA BEAM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PITCH OMEGA BEAM"
+                  "name": "LONG CENTER OMEGA BEAM"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.4
+                  "waitTime": 0.5
                 }
               },
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "EVERYTHING BAGEL"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "FIRE OMEGA BEAM"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "UPDATE ODOM"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -148,7 +150,39 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SLURPY IN"
+                  "name": "LONGER SLURPY IN"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "6 to shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "CENTER OMEGA BEAM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "EVERYTHING BAGEL"
                 }
               }
             ]

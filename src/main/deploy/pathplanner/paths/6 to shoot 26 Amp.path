@@ -1,0 +1,64 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.270256540513081,
+        "y": 4.128036518181299
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.199123776047088,
+        "y": 4.128036518181299
+      },
+      "isLocked": false,
+      "linkedName": "Amp 6"
+    },
+    {
+      "anchor": {
+        "x": 4.282605429818937,
+        "y": 5.147872338500022
+      },
+      "prevControl": {
+        "x": 5.433076899407958,
+        "y": 3.236919727996227
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Stage shoot"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.8,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 2.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -3.576334374997331,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

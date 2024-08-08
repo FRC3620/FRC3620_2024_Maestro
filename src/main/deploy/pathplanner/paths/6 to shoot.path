@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.094844223876482,
-        "y": 2.362219197372869
+        "x": 8.270256540513081,
+        "y": 4.128036518181299
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.023711459410489,
-        "y": 2.362219197372869
+        "x": 8.199123776047088,
+        "y": 4.128036518181299
       },
       "isLocked": false,
-      "linkedName": "6"
+      "linkedName": "Amp 6"
     },
     {
       "anchor": {
-        "x": 3.674453844634184,
-        "y": 5.332534425752613
+        "x": 4.282605429818937,
+        "y": 5.147872338500022
       },
       "prevControl": {
-        "x": 4.305938184527924,
-        "y": 4.361919607026232
+        "x": 5.433076899407958,
+        "y": 3.236919727996227
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Shoot"
+      "linkedName": "Stage shoot"
     }
   ],
   "rotationTargets": [],
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -7.696051722016573,
+    "rotation": -3.576334374997331,
     "rotateFast": false
   },
   "reversed": false,

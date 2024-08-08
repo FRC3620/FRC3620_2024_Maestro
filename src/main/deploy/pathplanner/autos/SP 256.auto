@@ -20,7 +20,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.9
+            "waitTime": 0.8
           }
         },
         {
@@ -34,21 +34,15 @@
           "data": {
             "commands": [
               {
+                "type": "path",
+                "data": {
+                  "pathName": "SP to 2"
+                }
+              },
+              {
                 "type": "named",
                 "data": {
                   "name": "SLURPY IN"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "SP to 3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "INIT OMEGA BEAM"
                 }
               }
             ]
@@ -67,19 +61,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "PITCH OMEGA BEAM"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.25
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "EVERYTHING BAGEL"
+                  "name": "FIRE OMEGA BEAM"
                 }
               }
             ]
@@ -92,13 +74,32 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SLURPY IN"
+                  "name": "LONGER SLURPY IN"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3 to 2"
+                  "pathName": "2 to 5"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "NO MORE SLURPY"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5 to Shoot AMP"
                 }
               }
             ]
@@ -117,13 +118,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "PITCH OMEGA BEAM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "EVERYTHING BAGEL"
+                  "name": "FIRE OMEGA BEAM"
                 }
               }
             ]
@@ -136,57 +131,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SLURPY IN"
+                  "name": "LONGER SLURPY IN"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 to 1"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "CENTER OMEGA BEAM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PITCH OMEGA BEAM"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "EVERYTHING BAGEL"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "1 to 4"
+                  "pathName": "Shoot to 6 AMP"
                 }
               }
             ]
@@ -195,32 +146,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 back"
+            "pathName": "6 to shoot"
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "PITCH OMEGA BEAM"
+                  "name": "CENTER OMEGA BEAM"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "CENTER OMEGA BEAM"
+                  "name": "FIRE OMEGA BEAM"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "EVERYTHING BAGEL"
           }
         },
         {
