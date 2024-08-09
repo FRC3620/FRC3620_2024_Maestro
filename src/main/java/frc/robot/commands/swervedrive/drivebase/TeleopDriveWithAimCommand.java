@@ -38,7 +38,7 @@ public class TeleopDriveWithAimCommand extends Command {
   private final DoubleSupplier vY;
   private final DoubleSupplier omega;
   private final BooleanSupplier driveMode;
-  private final SuperSwerveController controller;
+  private final SwerveController controller;
 
   private final VisionSubsystem vision;
   private boolean areweaiming;
@@ -54,13 +54,13 @@ public class TeleopDriveWithAimCommand extends Command {
    * @param swerve The subsystem used by this command.
    */
   public TeleopDriveWithAimCommand(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier omega,
-      BooleanSupplier driveMode, VisionSubsystem vision, SuperSwerveController superDupSwerveController) {
+      BooleanSupplier driveMode, VisionSubsystem vision, SwerveController YAGSLController) {
     this.swerve = swerve;
     this.vX = vX;
     this.vY = vY;
     this.omega = omega;
     this.driveMode = driveMode;
-    this.controller = superDupSwerveController;
+    this.controller = YAGSLController;
     this.vision = vision;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve);
@@ -144,7 +144,7 @@ public class TeleopDriveWithAimCommand extends Command {
         SmartDashboard.putNumber("aimDrive.headingToTag", headingToTag);
         SmartDashboard.putNumber("aimDrive.targetHeading", targetHeading);
         SmartDashboard.putNumber("aimDrive.lastAngVelocity", angVelocity);
-        SmartDashboard.putNumber("aimDrive.headingError", controller.headingPID.getPositionError());
+        //SmartDashboard.putNumber("aimDrive.headingError", controller.headingPID.getPositionError());
       }
     
     

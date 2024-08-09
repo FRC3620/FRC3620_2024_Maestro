@@ -148,7 +148,7 @@ public class RobotContainer {
         () -> -getDriveSpinJoystick(),
         () -> true,
         visionSubsystem,
-        superSwerveController);
+        drivebase.getSwerveController());
 
     drivebase.setDefaultCommand(aimDrive);
 
