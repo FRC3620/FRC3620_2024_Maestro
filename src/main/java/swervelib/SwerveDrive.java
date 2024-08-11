@@ -104,7 +104,10 @@ public class SwerveDrive
   /**
    * Deadband for speeds in heading correction.
    */
+
+   //GCF: Changed from 0.01 to 0.05
   private       double                   HEADING_CORRECTION_DEADBAND                     = 0.01;
+  private       double                   HEADING_CORRECTION_DEADBAND_OMEGA               = 0.15;
   /**
    * Swerve IMU device for sensing the heading of the robot.
    */
@@ -452,7 +455,7 @@ public class SwerveDrive
     // Modified by Team 7525 Pioneers and BoiledBurntBagel of 6036
     if (headingCorrection)
     {
-      if (Math.abs(velocity.omegaRadiansPerSecond) < HEADING_CORRECTION_DEADBAND
+      if (Math.abs(velocity.omegaRadiansPerSecond) < HEADING_CORRECTION_DEADBAND_OMEGA
           && (Math.abs(velocity.vxMetersPerSecond) > HEADING_CORRECTION_DEADBAND
               || Math.abs(velocity.vyMetersPerSecond) > HEADING_CORRECTION_DEADBAND))
       {
@@ -462,6 +465,8 @@ public class SwerveDrive
       } else
       {
         lastHeadingRadians = getOdometryHeading().getRadians();
+        //lastHeadingRadians = 0.0;
+
       }
 
       if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH) {

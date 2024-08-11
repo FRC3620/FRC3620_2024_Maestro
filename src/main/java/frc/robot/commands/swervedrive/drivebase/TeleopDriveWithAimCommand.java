@@ -84,9 +84,14 @@ public class TeleopDriveWithAimCommand extends Command {
     double yJoy = vY.getAsDouble();
     double aJoy = omega.getAsDouble();
 
-    double xVelocity = xJoy * xJoy * xJoy;
-    double yVelocity = yJoy * yJoy * yJoy;
-    double angVelocity = aJoy * aJoy * aJoy;
+    //double xVelocity = xJoy * xJoy * xJoy;
+    //double yVelocity = yJoy * yJoy * yJoy;
+    //double angVelocity = aJoy * aJoy * aJoy;
+
+    double xVelocity = xJoy;
+    double yVelocity = yJoy;
+    double angVelocity = aJoy;
+    
 
     var color = DriverStation.getAlliance();
     if(color.isPresent()){
