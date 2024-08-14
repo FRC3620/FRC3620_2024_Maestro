@@ -368,6 +368,11 @@ public class RobotContainer {
     SmartDashboard.putData("Run Indexer until gone", new RunIndexerUntilGamePieceGoneCommand(() -> 0.2));
 
     // test Shooter
+
+    // TODO: Trying to build a way for the shooter testing Dashboard to read the slider. It won't work here, because
+    // this is read on init and never updated after that.
+    SmartDashboard.putNumber("shooter.manual.angle", 68.5);
+    SmartDashboard.putNumber("shooter.manual.speed", 5000);
     SmartDashboard.putData("Test Shooter angle to 60",
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 60)));
     SmartDashboard.putData("Test Shooter angle to 35",
@@ -378,6 +383,10 @@ public class RobotContainer {
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 27.5)));
     SmartDashboard.putData("Test Shooter angle to 25",
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 25)));
+    SmartDashboard.putData("Test Shooter Manual Angle", 
+        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(SmartDashboard.getNumber("shooter.manual.speed",5000), 
+            SmartDashboard.getNumber("shooter.manual.angle",68.5))));
+
 
     SmartDashboard.putData("Test Shooter Angle PID zapper", new ShooterAnglePIDZapper());
     SmartDashboard.putData("Test Shooter Top PID zapper",
