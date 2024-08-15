@@ -384,8 +384,7 @@ public class RobotContainer {
     SmartDashboard.putData("Test Shooter angle to 25",
         new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(0, 25)));
     SmartDashboard.putData("Test Shooter Manual Angle", 
-        new SetShooterSpeedAndAngleCommand(new ShooterSpeedAndAngle(SmartDashboard.getNumber("shooter.manual.speed",5000), 
-            SmartDashboard.getNumber("shooter.manual.angle",68.5))));
+        new ManualShooterSpeedAndAngleCommand());
 
 
     SmartDashboard.putData("Test Shooter Angle PID zapper", new ShooterAnglePIDZapper());
