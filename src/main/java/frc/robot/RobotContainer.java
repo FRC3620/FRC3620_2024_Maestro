@@ -365,7 +365,7 @@ public class RobotContainer {
 
     // test indexer and rollers
     SmartDashboard.putData("Run Indexer and Rollers until slurped", new RunIndexerAndRollersUntilGamePieceDetectedCommand());
-    SmartDashboard.putData("Run Indexer until gone", new RunIndexerUntilGamePieceGoneCommand(() -> 0.2));
+    SmartDashboard.putData("Run Indexer until gone", new RunIndexerUntilGamePieceGoneCommand(() -> 0.4));
 
     // test Shooter
 
