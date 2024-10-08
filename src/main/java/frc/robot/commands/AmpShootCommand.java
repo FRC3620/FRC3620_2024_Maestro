@@ -13,7 +13,7 @@ import frc.robot.subsystems.ShooterWheelsAndAmpBarSubsystem;
 public class AmpShootCommand extends Command {
   ShooterElevationSubsystem shooterElevationSubsystem = RobotContainer.shooterElevationSubsystem;
   ShooterWheelsAndAmpBarSubsystem shooterWheelsAndAmpBarSubsystem = RobotContainer.shooterWheelsAndAmpBarSubsystem;
-  ShooterSpeedAndAngle shooterSpeedAndAngle = new ShooterSpeedAndAngle(900, 54);
+  ShooterSpeedAndAngle shooterSpeedAndAngle = new ShooterSpeedAndAngle(1100, 54);
   ShooterSpeedAndAngle stopShooterSpeedAndAngle = new ShooterSpeedAndAngle(0, 54);
 
   /** Creates a new AmpShootCommand. */
