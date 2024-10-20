@@ -222,6 +222,9 @@ public class SwerveController
   public double headingCalculate(double currentHeadingAngleRadians, double targetHeadingAngleRadians)
   {
 
+    // Calculate ThetaController value so it can be displayed in Shuffleboard
+    double targetOmega = thetaController.calculate(currentHeadingAngleRadians, targetHeadingAngleRadians) * config.maxAngularVelocity;
+
     // Display PID Inputs
     if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH)
     {
@@ -233,8 +236,9 @@ public class SwerveController
       SmartDashboard.putNumber("SwerveController.targetHeadingAngleRadians", targetHeadingAngleRadians);
       SmartDashboard.putNumber("SwerveController.currentHeadingAngleDegrees", Units.radiansToDegrees(currentHeadingAngleRadians));
       SmartDashboard.putNumber("SwerveController.targetHeadingAngleDegrees", Units.radiansToDegrees(targetHeadingAngleRadians));
+      SmartDashboard.putNumber("SwerveController.calculatedOmega", targetOmega);
     }
-    return thetaController.calculate(currentHeadingAngleRadians, targetHeadingAngleRadians) * config.maxAngularVelocity;
+    return targetOmega;
   }
 
   /**

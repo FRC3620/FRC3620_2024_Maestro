@@ -150,7 +150,7 @@ public class ShooterElevationSubsystem extends SubsystemBase implements HasTelem
   }
 
   public void setElevationPosition(double position) {
-    position = MathUtil.clamp(position, 20, 68.5); // high end is a little short of the stop
+    position = MathUtil.clamp(position, 27.5, 68.5); // high end is a little short of the stop
     SmartDashboard.putNumber(name + ".elevation.requestedPosition", position);
     requestedPosition = position;
     if (encoderCalibrated) {
