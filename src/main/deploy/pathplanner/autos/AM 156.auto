@@ -55,7 +55,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "CENTER OMEGA BEAM"
+                  "name": "LONG CENTER OMEGA BEAM"
                 }
               },
               {
@@ -68,12 +68,6 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 0.5
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "UPDATE ODOM"
                 }
               },
               {
