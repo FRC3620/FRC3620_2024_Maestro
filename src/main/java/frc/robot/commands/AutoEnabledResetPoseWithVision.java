@@ -33,8 +33,8 @@ public class AutoEnabledResetPoseWithVision extends Command {
     logger.info("Initialized");
 
     var lastResults = RobotContainer.visionSubsystem.getLastLimelightResults();
-    int targetsSeen = lastResults.targetingResults.targets_Fiducials.length;
-    Pose2d visPose = lastResults.targetingResults.getBotPose2d_wpiBlue();
+    int targetsSeen = lastResults.targets_Fiducials.length;
+    Pose2d visPose = lastResults.getBotPose2d_wpiBlue();
     Pose2d vPose = visPose; // Our pose is set in VisionSubsystem periodic automatically when we see at least two tags
     
       if (targetsSeen > 1) {
