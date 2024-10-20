@@ -64,7 +64,7 @@ public class AutoShooterVisionAngleAdjustmentContinuousCommand extends Command {
       SmartDashboard.putNumber("shooterVision.Yaw", visionSubsystem.getCamYawToSpeaker());
       double actualElevationPosition = shooterElevationSubsystem.getActualElevationPosition();
       
-      Optional<Alliance> ally = DriverStation.getAlliance();
+      /*Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
           if (ally.get() == Alliance.Red && swerveSubsystem.getPose().getX() > 8.3) {
               shooterElevationSubsystem.setElevationPosition(angle.getPosition());
@@ -76,7 +76,9 @@ public class AutoShooterVisionAngleAdjustmentContinuousCommand extends Command {
               shooterElevationSubsystem.setElevationPosition(ShooterSpeedAndAngle.sourcePickup);
               new InstantCommand(() -> swerveSubsystem.setAreWeAiming(false));
           }
-      }
+      }*/
+
+      
       
       //SmartDashboard.putNumber("shooterVision.desiredPosition", desiredElevationPosition);
       //SmartDashboard.putNumber("shooterVision.actualPosition", actualElevationPosition);

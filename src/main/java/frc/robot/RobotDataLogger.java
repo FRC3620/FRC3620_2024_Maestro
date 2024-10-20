@@ -210,7 +210,7 @@ public class RobotDataLogger {
     public String getVisionAge() {
       if (limelightResults == null) return "";
       // convert microseconds to seconds
-      return DataLogger.f2((fpgaTime - limelightResults.targetingResults.timestamp_RIOFPGA_capture) / 1000000);
+      return DataLogger.f2((fpgaTime - limelightResults.timestamp_RIOFPGA_capture) / 1000000);
     }
 
     public String getFPGATime() {
@@ -220,12 +220,12 @@ public class RobotDataLogger {
     public String getVisionCaptureFPGATime() {
       if (limelightResults == null) return "";
       // convert microseconds to seconds
-      return Double.toString(limelightResults.targetingResults.timestamp_RIOFPGA_capture);
+      return Double.toString(limelightResults.timestamp_RIOFPGA_capture);
     }
 
     public String getVisionTs() {
       if (limelightResults == null) return "";
-      return DataLogger.f2(limelightResults.targetingResults.timestamp_LIMELIGHT_publish);
+      return DataLogger.f2(limelightResults.timestamp_LIMELIGHT_publish);
     }
     
     public String odometryPoseX() {

@@ -34,8 +34,8 @@ public class EnabledResetPoseWithVision extends Command {
   @Override
   public void execute() {
     var lastResults = RobotContainer.visionSubsystem.getLastLimelightResults();
-    int targetsSeen = lastResults.targetingResults.targets_Fiducials.length;
-    Pose2d visPose = lastResults.targetingResults.getBotPose2d_wpiBlue();
+    int targetsSeen = lastResults.targets_Fiducials.length;
+    Pose2d visPose = lastResults.getBotPose2d_wpiBlue();
     Pose2d vPose = visPose; // Our pose is set in VisionSubsystem periodic automatically when we see at least two tags
     double xmps = RobotContainer.drivebase.getRobotVelocity().vxMetersPerSecond;
     double ymps = RobotContainer.drivebase.getRobotVelocity().vyMetersPerSecond;

@@ -37,9 +37,9 @@ public class PracticeVisionPoseCommand extends Command {
     if(DriverStation.isDisabled()){
       Pose2d pose = null;
       var limelight_results = vision.getLastLimelightResults();
-      double targetsSeen = limelight_results.targetingResults.targets_Fiducials.length;
+      double targetsSeen = limelight_results.targets_Fiducials.length;
       if(targetsSeen>1){
-        pose  = limelight_results.targetingResults.getBotPose2d_wpiBlue();
+        pose  = limelight_results.getBotPose2d_wpiBlue();
       } else {
         logger.info ("only see {} targers, guessing at location", targetsSeen);
       }

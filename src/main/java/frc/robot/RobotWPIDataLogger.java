@@ -184,7 +184,7 @@ public class RobotWPIDataLogger {
 
     public int getTargetCount() {
       if (limelightResults == null) return 0;
-      return limelightResults.targetingResults.targets_Fiducials.length;
+      return limelightResults.targets_Fiducials.length;
     }
 
     public double getRobotVelocity() {
@@ -197,7 +197,7 @@ public class RobotWPIDataLogger {
     public Pose2d getVisionPose() {
       Pose2d rv = null;
       if (limelightResults != null) {
-        rv = limelightResults.targetingResults.getBotPose2d_wpiBlue();
+        rv = limelightResults.getBotPose2d_wpiBlue();
       }
       return pp(rv);
     }
@@ -205,7 +205,7 @@ public class RobotWPIDataLogger {
     public Pose2d getVisionPose2() {
       Pose2d rv = null;
       if (limelightResults != null) {
-        rv = limelightResults.targetingResults.getBotPose2d_wpiBlue();
+        rv = limelightResults.getBotPose2d_wpiBlue();
       }
       return pp(rv);
     }
@@ -225,7 +225,7 @@ public class RobotWPIDataLogger {
     public double getVisionAge() {
       if (limelightResults == null) return Double.NaN;
       // convert microseconds to seconds
-      return (fpgaTime - limelightResults.targetingResults.timestamp_RIOFPGA_capture) / 1000000;
+      return (fpgaTime - limelightResults.timestamp_RIOFPGA_capture) / 1000000;
     }
 
     public long getFPGATime() {
@@ -243,12 +243,12 @@ public class RobotWPIDataLogger {
     public double getVisionCaptureFPGATime() {
       if (limelightResults == null) return Double.NaN;
       // convert microseconds to seconds
-      return limelightResults.targetingResults.timestamp_RIOFPGA_capture;
+      return limelightResults.timestamp_RIOFPGA_capture;
     }
 
     public double getVisionTs() {
       if (limelightResults == null) return Double.NaN;
-      return limelightResults.targetingResults.timestamp_LIMELIGHT_publish;
+      return limelightResults.timestamp_LIMELIGHT_publish;
     }
     
     public Pose2d odometryPose() {
