@@ -73,7 +73,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     Double camYawToSpeaker = null;
 
-    Double camDistToSpeakerTag = null;
+    Double camDistToSpeakerTag;
+    Double camDisplacementFromSpeaker;
+    Double camGroundDistFromSpeakerFT;
 
     LimelightHelpers.LimelightResults lastLimelightResults = null;
     Pose2d lastPose = null;
@@ -110,6 +112,10 @@ public class VisionSubsystem extends SubsystemBase {
     /** Creates a new Vision. */
     public VisionSubsystem() {
 
+        color = DriverStation.getAlliance();
+        // added this to handle case where color is not yet set, otherwise we blow up in the simulator
+        if (color.isEmpty()) return;
+
         SmartDashboard.putNumber("rotation", 0);
 
         // noteDetectCam.setPipelineIndex(0);
@@ -125,7 +131,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults("");
+        LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults("limelight");
         lastLimelightResults = results;
 
         if (lastTimestamp == null || lastTimestamp != results.targetingResults.timestamp_LIMELIGHT_publish) {
@@ -145,13 +151,10 @@ public class VisionSubsystem extends SubsystemBase {
         }
         // vectorToSpeaker result = new vectorToSpeaker();
         // gets alliance color
-        color = DriverStation.getAlliance();
+        
 
-        // added this to handle case where color is not yet set, otherwise we blow up in the simulator
-        if (color.isEmpty()) return;
-
-        Pose2d currentPose = lastLimelightResults.targetingResults.getBotPose2d_wpiBlue();
-
+        //Pose2d currentPoseBlue = lastLimelightResults.targetingResults.getBotPose2d_wpiBlue();
+        //Pose2d currentPoseRed = lastLimelightResults.targetingResults.getBotPose2d_wpiRed();
         /* 20240336 - I don't think we need these anymore. Commenting them out for now.
         // if alliance is blue.
         int desiredTargetId = (color.get() == Alliance.Blue) ? 7 : 4;
@@ -165,12 +168,41 @@ public class VisionSubsystem extends SubsystemBase {
             camDistToSpeakerTag = null;
         } else {*/
 
-            if (color.get() == Alliance.Blue) {
-                camDistToSpeakerTag = currentPose.getTranslation().getDistance(blueSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
-                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(blueSpeakerPos).getAngle().getDegrees() + SHOOTER_AIM_OFFSET);
+            
+            if(color.get()==Alliance.Blue){
+
+                LimelightHelpers.setPriorityTagID("limelight", 7);
+
+                if(findTargetInResults(results, 7)!= null){
+                //camDistToSpeakerTag = currentPoseBlue.getTranslation().getDistance(blueSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;//ApriltagcamFrontoffset if neccesary
+                camDistToSpeakerTag = LimelightHelpers.getTargetPose3d_RobotSpace("limelight").getZ();//in meters
+                Double camDistToSpeakerTagFT =Units.metersToFeet(camDistToSpeakerTag);
+                camDisplacementFromSpeaker = LimelightHelpers.getTargetPose3d_RobotSpace("limelight").getX();
+                Double camDisplacementFromSpeakerFT = Units.metersToFeet(camDistToSpeakerTagFT);
+                camGroundDistFromSpeakerFT = Math.sqrt((camDistToSpeakerTagFT*camDistToSpeakerTagFT)+(camDisplacementFromSpeakerFT*camDisplacementFromSpeakerFT));
+
+                camYawToSpeaker = Utilities.normalizeAngle(Math.atan(camDisplacementFromSpeakerFT/camDistToSpeakerTagFT));
+                Double camYawToSpeakerDegrees = Math.toDegrees(camYawToSpeaker);
+
+            
+
+                }
             } else {
-                camDistToSpeakerTag = currentPose.getTranslation().getDistance(redSpeakerPos)-APRILTAGCAM_FRONT_OFFSET;
-                camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()+SHOOTER_AIM_OFFSET);
+                LimelightHelpers.setPriorityTagID("limelight", 4);
+                if(findTargetInResults(results, 4)!=null){
+                
+                camDistToSpeakerTag = LimelightHelpers.getTargetPose3d_RobotSpace("limelight").getZ();//in meters
+                Double camDistToSpeakerTagFT =Units.metersToFeet(camDistToSpeakerTag);
+                camDisplacementFromSpeaker = LimelightHelpers.getTargetPose3d_RobotSpace("limelight").getX();
+                Double camDisplacementFromSpeakerFT = Units.metersToFeet(camDistToSpeakerTagFT);
+                camGroundDistFromSpeakerFT = Math.sqrt((camDistToSpeakerTagFT*camDistToSpeakerTagFT)+(camDisplacementFromSpeakerFT*camDisplacementFromSpeakerFT));
+
+                camYawToSpeaker = Utilities.normalizeAngle(Math.atan(camDisplacementFromSpeakerFT/camDistToSpeakerTagFT));
+                Double camYawToSpeakerDegrees = Math.toDegrees(camYawToSpeaker);
+
+
+
+                }
 
                 /* Not sure if we'll need this so commenting it out for now.
                 if (Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
@@ -179,13 +211,13 @@ public class VisionSubsystem extends SubsystemBase {
                     camYawToSpeaker = Utilities.normalizeAngle(currentPose.getTranslation().minus(redSpeakerPos).getAngle().getDegrees()-180+3);
                 }
                 */
-            }
-
-            SmartDashboard.putNumber("Vision.DistToSpeakerTag", Units.metersToFeet(camDistToSpeakerTag));
-            SmartDashboard.putNumber("Vision.camYawToSpeaker", camYawToSpeaker);
-        /* } */
     }
 
+    if(camGroundDistFromSpeakerFT!= null){
+    SmartDashboard.putNumber("Vision.groundDistToSpeakerTagFT", camGroundDistFromSpeakerFT);
+    //SmartDashboard.putNumber("Vision.camYawToSpeakerDeg", Math.toDegrees(camYawToSpeaker));
+}
+    }
     public Double getCamYawToSpeaker() {
 
         // NOTE: This method returns the heading angle which points to the robot toward the target. This is FIELD-RELATIVE
