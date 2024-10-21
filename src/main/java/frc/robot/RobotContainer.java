@@ -277,7 +277,7 @@ public class RobotContainer {
       */
 
     // bring intake to home position
-    operatorDpad.up().onTrue(new EnabledResetPoseWithVision());
+    operatorDpad.right().onTrue(new EnabledResetPoseWithVision());
 
   /*  new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
@@ -328,7 +328,7 @@ public class RobotContainer {
 
     operatorDpad.left().whileTrue(new ShuttleShootCommand());
 
-    operatorDpad.down().onTrue(new ActivateClimberDPadCommand());
+    operatorDpad.up().onTrue(new ActivateClimberDPadCommand());
     
     
 

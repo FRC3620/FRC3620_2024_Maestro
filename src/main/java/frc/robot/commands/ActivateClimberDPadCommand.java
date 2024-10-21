@@ -24,11 +24,11 @@ public class ActivateClimberDPadCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetIntakeLocationCommand(IntakeLocation.IntakeOut),
-      new InstantCommand(() -> ampBarSubsystem.setAmpBarPosition(AmpBarPosition.UP)),
-      new SetClimberPositionCommand(5),
-      new WaitUntilCommand(() -> climbElevationSubsystem.getActualPosition() > 4.95),
-      new SetClimberPowerPositionCommand()
+      new SetIntakeLocationCommand(IntakeLocation.IntakeOut), //Intake out
+      new InstantCommand(() -> ampBarSubsystem.setAmpBarPosition(AmpBarPosition.UP)), //put up AMP bar
+      new SetClimberPositionCommand(6), //set CLIMBER position to 6
+      new WaitUntilCommand(() -> climbElevationSubsystem.getActualPosition() > 5.95), //wait till climber is over 5.95
+      new SetClimberPowerPositionCommand() //enable manual control
     );
   }
 }
