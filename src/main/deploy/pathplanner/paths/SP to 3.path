@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8735540604984342,
-        "y": 4.923239020267214
+        "x": 1.932024832710634,
+        "y": 5.180510418000893
       },
       "isLocked": false,
       "linkedName": "SP"
     },
     {
       "anchor": {
-        "x": 2.4699559370628714,
-        "y": 4.36
+        "x": 2.68045071702679,
+        "y": 4.455472842569617
       },
       "prevControl": {
-        "x": 2.128714399472908,
-        "y": 4.8572376690596615
+        "x": 2.2126845393291923,
+        "y": 5.028486410249174
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,7 +36,25 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Slurp Slurp",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SLURPY IN"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -45,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -27.699472808055084,
+    "rotation": -32.471192290848464,
     "rotateFast": false
   },
   "reversed": false,

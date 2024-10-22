@@ -3,34 +3,58 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4699559370628714,
-        "y": 4.36
+        "x": 2.68045071702679,
+        "y": 4.455472842569617
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6396709716496354,
-        "y": 4.537331923666697
+        "x": 1.850165751613554,
+        "y": 4.632804766236314
       },
       "isLocked": false,
       "linkedName": "3"
     },
     {
       "anchor": {
-        "x": 2.7,
-        "y": 5.57
+        "x": 2.9377221147604686,
+        "y": 5.695053213468251
       },
       "prevControl": {
-        "x": 1.652137096943935,
-        "y": 5.742607589728245
+        "x": 1.8898592117044035,
+        "y": 5.867660803196496
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Slurp Slurp",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SLURPY IN"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

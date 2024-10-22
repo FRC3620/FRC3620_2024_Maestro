@@ -38,12 +38,6 @@
                 "data": {
                   "pathName": "SP to 3"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
               }
             ]
           }
@@ -72,12 +66,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "LONGER SLURPY IN"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "3 to 6 SC"
@@ -90,12 +78,6 @@
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "NO MORE SLURPY"
-                }
-              },
               {
                 "type": "path",
                 "data": {

@@ -8,53 +8,29 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.28613907774946,
-        "y": 3.265367428740556
+        "x": 6.831875544092969,
+        "y": 4.584108541436456
       },
       "isLocked": false,
       "linkedName": "6"
     },
     {
       "anchor": {
-        "x": 1.932024832710634,
-        "y": 3.7772118849081013
+        "x": 4.28,
+        "y": 5.15
       },
       "prevControl": {
-        "x": 3.6627596901917445,
-        "y": 1.9178413285601514
+        "x": 4.56320958225962,
+        "y": 3.6953528038110206
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "WMRI Under Stage Shoot"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.45,
-      "rotationDegrees": 26.793175232228077,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.2,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "NO MORE SLURPY"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -63,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -45.00000000000005,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,

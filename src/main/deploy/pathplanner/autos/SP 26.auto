@@ -38,12 +38,6 @@
                 "data": {
                   "pathName": "SP to 2"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
               }
             ]
           }
@@ -71,12 +65,6 @@
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "LONGER SLURPY IN"
-                }
-              },
               {
                 "type": "path",
                 "data": {

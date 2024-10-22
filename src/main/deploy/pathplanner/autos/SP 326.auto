@@ -38,12 +38,6 @@
                 "data": {
                   "pathName": "SP to 3"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
               }
             ]
           }
@@ -71,12 +65,6 @@
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SLURPY IN"
-                }
-              },
               {
                 "type": "path",
                 "data": {
@@ -110,12 +98,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "LONGER SLURPY IN"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "2 to 6"
@@ -128,12 +110,6 @@
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "NO MORE SLURPY"
-                }
-              },
               {
                 "type": "path",
                 "data": {

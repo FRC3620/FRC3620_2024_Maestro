@@ -12,7 +12,7 @@
         "y": 3.850048356628779
       },
       "isLocked": false,
-      "linkedName": "5"
+      "linkedName": "Amp 5"
     },
     {
       "anchor": {
@@ -32,39 +32,21 @@
     },
     {
       "anchor": {
-        "x": 4.233856638734657,
-        "y": 5.489113876089985
+        "x": 4.235773257871302,
+        "y": 5.8
       },
       "prevControl": {
-        "x": 4.789592857095454,
-        "y": 3.9876511106941464
+        "x": 4.7915094762320996,
+        "y": 4.2985372346041615
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "back"
+      "linkedName": "AMP out shoot"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.8,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "NO MORE SLURPY"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,

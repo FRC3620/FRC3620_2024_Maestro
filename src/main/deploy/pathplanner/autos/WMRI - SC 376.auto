@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6924444618120005,
-      "y": 4.387391197585246
+      "x": 0.77,
+      "y": 4.42
     },
-    "rotation": -61.821409890040826
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.9
+            "waitTime": 0.8
           }
         },
         {
@@ -30,7 +30,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -38,19 +38,6 @@
                 "data": {
                   "pathName": "SC to 3"
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "CENTER OMEGA BEAM"
-                }
               },
               {
                 "type": "parallel",
@@ -59,23 +46,29 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "UPDATE ODOM"
+                        "name": "NO MORE SLURPY"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "FIRE OMEGA BEAM"
+                        "name": "CENTER OMEGA BEAM"
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FIRE OMEGA BEAM"
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -83,31 +76,6 @@
                 "data": {
                   "pathName": "3 to 7"
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "7 to shoot"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "LONG CENTER OMEGA BEAM"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
               },
               {
                 "type": "parallel",
@@ -116,51 +84,18 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "FIRE OMEGA BEAM"
+                        "name": "NO MORE SLURPY"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "UPDATE ODOM"
+                        "pathName": "6 back"
                       }
                     }
                   ]
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Shoot to 6"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "6 to shoot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
+              },
               {
                 "type": "named",
                 "data": {
@@ -170,16 +105,54 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "EVERYTHING BAGEL"
+                  "name": "FIRE OMEGA BEAM"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "DISABLE OMEGA BEAM"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shoot to 6 SC 76"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "NO MORE SLURPY"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "6 to Shoot SC"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CENTER OMEGA BEAM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FIRE OMEGA BEAM"
+                }
+              }
+            ]
           }
         }
       ]
