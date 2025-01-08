@@ -220,7 +220,7 @@ public class RobotContainer {
     addSubsystem(drivebase);
 
     // all subsystems present, can make default commands now
-    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
+    //shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
 
     Robot.printMemoryStatus("making superSwerveController");
 
@@ -256,7 +256,7 @@ public class RobotContainer {
     operatorJoystick = new Joystick(1);
 
     DPad operatorDpad = new DPad(operatorJoystick, 0);
-
+/*
     // Driver controls
     if (drivebase != null) {
       // reset NavX
@@ -272,16 +272,24 @@ public class RobotContainer {
     }
 
     // intake
-    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnTrue(new GroundPickupCommand());
     driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnFalse(new GroundToHomeCommand());
-
+*/
     // well, shoot
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(
       new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
 
+    /*new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
+      .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp)); */
+    driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
     // barf out a piece
-    driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).whileTrue(new RunRollersCommand(() -> -0.8));
+    //driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).onTrue(new RunRollersCommand(() -> -0.8));
 
+    driverJoystick.button(XBoxConstants.BUTTON_Y, FlySkyConstants.BUTTON_SWD).onTrue(new SourcePickupCommand());
+    //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).toggleOnTrue(new SourcePickupCommand());
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnTrue(new SetShooterSpeedCommand(500));
+/*
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
+        .toggleOnTrue(new SetShooterSpeedCommand(1000));
     /*
     driverJoystick.button(XBoxConstants.BUTTON_X, 99)
       .onTrue(new InstantCommand(() -> drivebase.lock(), drivebase));
@@ -294,13 +302,12 @@ public class RobotContainer {
       */
 
     // bring intake to home position
-    operatorDpad.right().onTrue(new EnabledResetPoseWithVision());
+    //operatorDpad.right().onTrue(new EnabledResetPoseWithVision());
 
   /*  new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER)
         .onTrue(new SetIntakeLocationCommand(IntakeLocation.ampPosition));
 */
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
-        .toggleOnTrue(new SetShooterSpeedCommand(5000));
+    
         //.onTrue(new EnabledResetPoseWithVision().withTimeout(5));
         //.toggleOnTrue(new ShooterVisionAngleAdjustmentCommand(visionSubsystem, shooterElevationSubsystem));
 
@@ -311,7 +318,7 @@ public class RobotContainer {
 
     // operator right joystick bumps the amp bar position
     // remember that Y-axis is inverted. pushing up makes a negative
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.3)
+    /*new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.3)
       .onTrue(new InstantCommand(()->shooterWheelsAndAmpBarSubsystem.bumpAmpBar(-0.2)));
     // remember that Y-axis is inverted. pushing up makes a negative
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.3)
@@ -320,18 +327,17 @@ public class RobotContainer {
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.1)
       .whileTrue(new ShoulderElevatePowerCommand(intakeSubsystem, 4));
     */
-
+/*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_TRIGGER, 0.1)
       .whileTrue(new SetShooterSpeedAndAngleAlwaysCommand(ShooterSpeedAndAngle.subWoofShot));
+*/
 
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
-      .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp));
 
     /*new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
         .onTrue(new TrapShootCommand()
                 .andThen(new WaitUntilCommand(() -> intakeSubsystem.getActualShoulderElevation() > 50))
                 .andThen(new ActivateClimberJoystickCommand()));*/
-
+/*
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER).and(new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A))
         .onTrue(new ActivateClimberJoystickCommand());    
 
@@ -340,12 +346,10 @@ public class RobotContainer {
 
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X)
     .onTrue(new RunRollersCommand(() -> -0.9).withTimeout(1.5));
+*/
+    //operatorDpad.left().whileTrue(new ShuttleShootCommand());
 
-    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).toggleOnTrue(new SourcePickupCommand());
-
-    operatorDpad.left().whileTrue(new ShuttleShootCommand());
-
-    operatorDpad.up().onTrue(new ActivateClimberDPadCommand());
+    //operatorDpad.up().onTrue(new ActivateClimberDPadCommand());
     
     
 

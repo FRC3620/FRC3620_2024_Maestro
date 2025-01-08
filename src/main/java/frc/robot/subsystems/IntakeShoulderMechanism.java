@@ -74,6 +74,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
 
   public void periodic() {
     // only do something if we actually have a motor
+    /*
     if (motor != null) {
       if (motorEncoder != null) {
         if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
@@ -84,7 +85,7 @@ public class IntakeShoulderMechanism implements HasTelemetry {
           }
         }
       }
-    }
+    } */
   }
 
   void periodicOnceCalibrated() {
