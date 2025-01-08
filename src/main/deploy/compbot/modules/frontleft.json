@@ -1,11 +1,11 @@
 {
   "location": {
-    "front": 11.375,
-    "left": 11.375
+    "front": 9.85,
+    "left": 9.85
   },
-  "absoluteEncoderOffset": 332.6,
+  "absoluteEncoderOffset": 333.5,
   "drive": {
-    "type": "sparkmax",
+    "type": "talonfx",
     "id": 3,
     "canbus": null
   },
@@ -23,6 +23,5 @@
     "drive": true,
     "angle": true
   },
-  "useCosineCompensator": false,
   "absoluteEncoderInverted": false
 }

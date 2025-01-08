@@ -1,10 +1,12 @@
 package frc.robot;
 
+import frc.robot.commands.swervedrive.drivebase.SimpleTeleopDrive;
 import frc.robot.commands.swervedrive.drivebase.TeleopDriveWithAimCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveModule;
 import swervelib.encoders.SwerveAbsoluteEncoder;
 import swervelib.motors.SwerveMotor;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,6 +19,7 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.blinky.DefaultBlinkyCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -66,7 +69,6 @@ public class RobotContainer {
   public static ShooterElevationSubsystem shooterElevationSubsystem;
   public static ShooterWheelsAndAmpBarSubsystem shooterWheelsAndAmpBarSubsystem;
   public static BlinkySubsystem blinkySubsystem;
-  public static SwerveSubsystem drivebase;
   public static SwerveMotorTestSubsystem swerveMotorTestSubsystem;
   public static VisionSubsystem visionSubsystem;
   public static IndexerSubsystem indexerSubsystem;
@@ -91,6 +93,12 @@ public class RobotContainer {
   // joysticks here....
   public static Joystick operatorJoystick;
   public static ChameleonController driverJoystick;
+
+  public static SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+"compbot"));
+
+  XboxController driverXbox = new XboxController(0);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -141,7 +149,7 @@ public class RobotContainer {
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
-
+/*
     TeleopDriveWithAimCommand aimDrive = new TeleopDriveWithAimCommand(drivebase,
         () -> -getDriveVerticalJoystick(),
         () -> -getDriveHorizontalJoystick(),
@@ -149,8 +157,17 @@ public class RobotContainer {
         () -> true,
         visionSubsystem,
         drivebase.getSwerveController());
+*/
 
-    drivebase.setDefaultCommand(aimDrive);
+          
+    SimpleTeleopDrive teleOpDrive = new SimpleTeleopDrive(
+      drivebase, 
+      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(1) * 0.4, OperatorConstants.LEFT_X_DEADBAND), 
+      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(0) * 0.4, OperatorConstants.LEFT_Y_DEADBAND), 
+      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(4) * 0.6, OperatorConstants.RIGHT_X_DEADBAND), 
+      () -> true);
+  
+    drivebase.setDefaultCommand(teleOpDrive);
 
     // TODO this just runs when the robot comes up, probably need to move it to 
     // a periodic() somewhere (probably in SwerveSubsystem)?
@@ -199,7 +216,7 @@ public class RobotContainer {
     if (swerveFolder == null)
       swerveFolder = "compbot";
     SmartDashboard.putString("swerveFolder", swerveFolder);
-    drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
+    //drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
     addSubsystem(drivebase);
 
     // all subsystems present, can make default commands now

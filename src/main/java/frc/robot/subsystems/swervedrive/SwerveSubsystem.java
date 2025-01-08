@@ -251,6 +251,7 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SwerveModule[] swerveModules = swerveDrive.getModules();
+    /*
     for (var swerveModule : swerveModules) {
       String configName = swerveModule.getConfiguration().name;
 
@@ -265,6 +266,7 @@ public class SwerveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Motor Speed", swerveModule.getDriveMotor().getVelocity());
       SmartDashboard.putNumber("SwerveMotor[" + configName + "] Drive Temperature", driveMotor.getMotorTemperature());
     }
+    */
 
     SmartDashboard.putNumber("maxAngleVelocity", swerveDrive.getMaximumAngularVelocity());
     SmartDashboard.putNumber("Drive Radius", swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters());
