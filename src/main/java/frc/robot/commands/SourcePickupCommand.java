@@ -34,7 +34,7 @@ public class SourcePickupCommand extends SequentialCommandGroup {
     /** Creates a new SourcePickupCommand. */
     public InnerSourcePickupCommand() {
       // addCommands().
-      super(new RunIndexerUntilGamePieceDetectedCommand(() -> -0.8));
+      super(new RunIndexerUntilGamePieceDetectedCommand(() -> -0.5));
       addCommands(
           new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.sourcePickup)
         );

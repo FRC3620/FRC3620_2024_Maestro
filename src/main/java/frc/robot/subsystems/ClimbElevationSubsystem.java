@@ -93,6 +93,8 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
 
   @Override
   public void periodic() {
+
+    /*
     // only do something if we actually have a motor
     if (motor != null && !disabledForDebugging) { 
       if (motorEncoder != null) { // if there is an encoder, display these
@@ -132,7 +134,7 @@ public class ClimbElevationSubsystem extends SubsystemBase implements HasTelemet
           }
         }
       }
-    }
+    }*/
   }
 
   /**

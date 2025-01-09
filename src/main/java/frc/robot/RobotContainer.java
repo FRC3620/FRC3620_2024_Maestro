@@ -236,7 +236,7 @@ public class RobotContainer {
       swerveAbsoluteEncoders.put(moduleName, module.getAbsoluteEncoder());
     }
 
-    shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
+    //shooterElevationSubsystem.setDefaultCommand(new AutoShooterVisionAngleAdjustmentContinuousCommand(visionSubsystem, shooterElevationSubsystem, drivebase));
 
   }
 
@@ -276,7 +276,7 @@ public class RobotContainer {
 */
     // well, shoot
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(
-      new RunIndexerUntilGamePieceGoneCommand(() -> 0.8));
+      new RunIndexerUntilGamePieceGoneCommand(() -> 0.5));
 
     /*new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp)); */
