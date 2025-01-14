@@ -162,9 +162,9 @@ public class RobotContainer {
           
     SimpleTeleopDrive teleOpDrive = new SimpleTeleopDrive(
       drivebase, 
-      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(1) * 0.4, OperatorConstants.LEFT_X_DEADBAND), 
-      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(0) * 0.4, OperatorConstants.LEFT_Y_DEADBAND), 
-      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(4) * 0.6, OperatorConstants.RIGHT_X_DEADBAND), 
+      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(1) * 0.6, OperatorConstants.LEFT_X_DEADBAND), 
+      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(0) * 0.6, OperatorConstants.LEFT_Y_DEADBAND), 
+      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(4) * 0.8, OperatorConstants.RIGHT_X_DEADBAND), 
       () -> true);
   
     drivebase.setDefaultCommand(teleOpDrive);
@@ -275,8 +275,9 @@ public class RobotContainer {
     driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnFalse(new GroundToHomeCommand());
 */
     // well, shoot
+    //driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(new RunIndexerUntilGamePieceGoneCommand(() -> 0.5));
     driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH).onTrue(
-      new RunIndexerUntilGamePieceGoneCommand(() -> 0.5));
+      new RunIndexerCommand(() -> 0.4).withTimeout(1));
 
     /*new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B)
       .onTrue(new SetShooterSpeedAndAngleCommand(ShooterSpeedAndAngle.disabledUp)); */
@@ -284,9 +285,14 @@ public class RobotContainer {
     // barf out a piece
     //driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWC).onTrue(new RunRollersCommand(() -> -0.8));
 
-    driverJoystick.button(XBoxConstants.BUTTON_Y, FlySkyConstants.BUTTON_SWD).onTrue(new SourcePickupCommand());
+    //driverJoystick.button(XBoxConstants.BUTTON_Y, FlySkyConstants.BUTTON_SWD).onTrue(new SourcePickupCommand());
+    driverJoystick.button(XBoxConstants.BUTTON_Y, FlySkyConstants.BUTTON_SWD).whileTrue(
+      new RunIndexerCommand(() -> -0.4)
+      .alongWith(new SetShooterSpeedCommand(-500))
+      .withTimeout(0.75));
+
     //new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).toggleOnTrue(new SourcePickupCommand());
-    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnTrue(new SetShooterSpeedCommand(500));
+    driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE).toggleOnTrue(new SetShooterSpeedCommand(1000));
 /*
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_TRIGGER, 0.1)
         .toggleOnTrue(new SetShooterSpeedCommand(1000));
